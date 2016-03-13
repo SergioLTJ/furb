@@ -5,6 +5,7 @@
 /// \date 03/05/13.
 /// Obs.: variaveis globais foram usadas por questoes didaticas mas nao sao recomendas para aplicacoes reais.
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -67,7 +68,8 @@ public class Main implements GLEventListener, KeyListener {
 		desenharCirculo(-100, 100);
 		desenharCirculo(0, -100);
 		
-		gl.glColor3f(0, 0, 15);
+		Color azul = Color.CYAN;
+		gl.glColor3f(azul.getRed(), azul.getGreen(), azul.getBlue());
 		gl.glLineWidth(1);
 		Ponto4D ponto1 = new Ponto4D(-100, 100, 1, 1);
 		Ponto4D ponto2 = new Ponto4D(100, 100, 1, 1);

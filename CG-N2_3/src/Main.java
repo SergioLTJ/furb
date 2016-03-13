@@ -121,12 +121,12 @@ public class Main implements GLEventListener, KeyListener {
 			limiteDireita += locomocao;
 			glDrawable.display();
 			break;
-		case KeyEvent.VK_C:
+		case KeyEvent.VK_B:
 			limiteCima -= locomocao;
 			limiteBaixo -= locomocao;
 			glDrawable.display();
 			break;
-		case KeyEvent.VK_B:
+		case KeyEvent.VK_C:
 			limiteCima += locomocao;
 			limiteBaixo += locomocao;
 			glDrawable.display();

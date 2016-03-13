@@ -112,12 +112,12 @@ public class Main implements GLEventListener, KeyListener {
 			limiteDireita += incrementoCamera;
 			glDrawable.display();
 			break;
-		case KeyEvent.VK_C:
+		case KeyEvent.VK_B:
 			limiteCima -= incrementoCamera;
 			limiteBaixo -= incrementoCamera;
 			glDrawable.display();
 			break;
-		case KeyEvent.VK_B:
+		case KeyEvent.VK_C:
 			limiteCima += incrementoCamera;
 			limiteBaixo += incrementoCamera;
 			glDrawable.display();

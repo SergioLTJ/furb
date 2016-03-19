@@ -32,7 +32,6 @@ public class Frame extends JFrame{
 		 * o numero de bits por pixel para RGBA
 		 */
 		GLCapabilities glCaps = new GLCapabilities();
-		glCaps.setRedBits(8);
 		glCaps.setBlueBits(8);
 		glCaps.setGreenBits(8);
 		glCaps.setAlphaBits(8); 

@@ -19,6 +19,10 @@ public final class Ponto4D {
 		this(0, 0, 0, 1);
 	}
 	
+	public Ponto4D(double x, double y) {
+		this(x, y, 0, 1);
+	}
+	
 	 /// Cria o ponto (0,0,0,1).
 	public Ponto4D(double x, double y, double z, double w) {
 		this.x = x;
@@ -69,6 +73,38 @@ public final class Ponto4D {
 		this.z = z;
 	}
 
+	public void incrementarX(double incremento) {
+		this.x += incremento;
+	}
+	
+	public void incrementarY(double incremento) {
+		this.y += incremento;
+	}
+	
+	public void incrementarZ(double incremento) {
+		this.z += incremento;
+	}
+	
+	public void incrementarW(double incremento) {
+		this.w += incremento;
+	}
+	
+	public void decrementarX(double incremento) {
+		this.x -= incremento;
+	}
+	
+	public void decrementarY(double incremento) {
+		this.y -= incremento;
+	}
+	
+	public void decrementarZ(double incremento) {
+		this.z -= incremento;
+	}
+	
+	public void decrementarW(double incremento) {
+		this.w -= incremento;
+	}
+	
 	/// Atribuir valor W do ponto.
 //	public void AtribuirW(double w) {
 //		this.w = w;

@@ -8,7 +8,6 @@
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 
 import javax.media.opengl.DebugGL;
 import javax.media.opengl.GL;
@@ -20,13 +19,17 @@ public class Main implements GLEventListener, KeyListener {
 	private GL gl;
 	private GLU glu;
 	private GLAutoDrawable glDrawable;
-	private ArrayList<Ponto4D> pontos;
 	
 	private float limiteEsquerda = -400.0f;
 	private float limiteDireita = 400.0f;
 	private float limiteBaixo = -400.0f;
 	private float limiteCima = 400.0f;
 	private float locomocao = 10.0f;
+	
+	private Circulo circulo1;
+	private Circulo circulo2;
+	private Circulo circulo3;
+	private Triangulo triangulo;
 	
 	public void init(GLAutoDrawable drawable) {
 		System.out.println(" --- init ---");
@@ -36,18 +39,15 @@ public class Main implements GLEventListener, KeyListener {
 		glDrawable.setGL(new DebugGL(gl));
 		System.out.println("Espaco de desenho com tamanho: " + drawable.getWidth() + " x " + drawable.getHeight());
 		gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		carregarPontos();
-	}
-
-	private void carregarPontos() {
-		pontos = new ArrayList<>();
 		
-		for (int angulo = 0; angulo < 360; angulo += 5) {
-			double x = RetornaX(angulo, 100);
-			double y = RetornaY(angulo, 100);
-			Ponto4D ponto = new Ponto4D(x, y, 1, 1);
-			pontos.add(ponto);
-		}
+		this.circulo1 = new Circulo(Color.BLACK, new Ponto4D(100, 100), 100, 72, GL.GL_LINE_LOOP, 2, 2);
+		this.circulo2 = new Circulo(Color.BLACK, new Ponto4D(-100, 100), 100, 72, GL.GL_LINE_LOOP, 2, 2);
+		this.circulo3 = new Circulo(Color.BLACK, new Ponto4D(0, -100), 100, 72, GL.GL_LINE_LOOP, 2, 2);
+		
+		Ponto4D ponto1 = new Ponto4D(-100, 100);
+		Ponto4D ponto2 = new Ponto4D(100, 100);
+		Ponto4D ponto3 = new Ponto4D(0, -100);
+		this.triangulo = new Triangulo(ponto1, ponto2, ponto3, Color.CYAN, GL.GL_LINE_LOOP, 1);
 	}
 
 	// exibicaoPrincipal
@@ -64,42 +64,15 @@ public class Main implements GLEventListener, KeyListener {
 		gl.glColor3f(0, 0, 0);
 		gl.glLineWidth(2);
 
-		desenharCirculo(100, 100);
-		desenharCirculo(-100, 100);
-		desenharCirculo(0, -100);
+		this.circulo1.desenhar(gl);
+		this.circulo2.desenhar(gl);
+		this.circulo3.desenhar(gl);
 		
-		Color azul = Color.CYAN;
-		gl.glColor3f(azul.getRed(), azul.getGreen(), azul.getBlue());
-		gl.glLineWidth(1);
-		Ponto4D ponto1 = new Ponto4D(-100, 100, 1, 1);
-		Ponto4D ponto2 = new Ponto4D(100, 100, 1, 1);
-		Ponto4D ponto3 = new Ponto4D(0, -100, 1, 1);
-		desenharTriangulo(ponto1, ponto2, ponto3);
+		this.triangulo.desenhar(gl);
 		
 		gl.glFlush();
 	}
 
-	private void desenharTriangulo(Ponto4D ponto1, Ponto4D ponto2, Ponto4D ponto3) {
-		gl.glBegin(GL.GL_LINE_LOOP);
-		{
-			gl.glVertex2d(ponto1.obterX(), ponto1.obterY());
-			gl.glVertex2d(ponto2.obterX(), ponto2.obterY());
-			gl.glVertex2d(ponto3.obterX(), ponto3.obterY());
-		}
-		gl.glEnd();
-	}
-
-	private void desenharCirculo(int x, int y) {
-		gl.glBegin(GL.GL_LINE_LOOP);
-		{
-			for (int i = 0; i < 360; i += 1) {
-				gl.glVertex2d(x + RetornaX(i, 100), 
-							  y + RetornaY(i, 100));
-			}
-		}
-		gl.glEnd();
-	}
-	
 	public void keyPressed(KeyEvent e) {
 		System.out.println(" --- keyPressed ---");
 		switch (e.getKeyCode()) {
@@ -187,13 +160,4 @@ public class Main implements GLEventListener, KeyListener {
 		}
 		gl.glEnd();
 	}
-
-	public double RetornaX(double angulo, double raio) {
-		return (raio * Math.cos(Math.PI * angulo / 180.0));
-	}
-
-	public double RetornaY(double angulo, double raio) {
-		return (raio * Math.sin(Math.PI * angulo / 180.0));
-	}
-
 }

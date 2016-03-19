@@ -5,9 +5,9 @@
 /// \date 03/05/13.
 /// Obs.: variaveis globais foram usadas por questoes didaticas mas nao sao recomendas para aplicacoes reais.
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 
 import javax.media.opengl.DebugGL;
 import javax.media.opengl.GL;
@@ -19,11 +19,9 @@ public class Main implements GLEventListener, KeyListener {
 	private GL gl;
 	private GLU glu;
 	private GLAutoDrawable glDrawable;
-	private ArrayList<Ponto4D> pontos;
 	
 	private float angulo = 45;
 	private float raio = 100;
-	private Ponto4D posicao = new Ponto4D(0, 0, 1, 1);
 	private float incrementoRaio = 5;
 	private float incrementoAngulo = 5;
 	
@@ -32,6 +30,7 @@ public class Main implements GLEventListener, KeyListener {
 	private float limiteBaixo = -400.0f;
 	private float limiteCima = 400.0f;
 	private float incrementoCamera = 10.0f;
+	private Reta reta;
 	
 	public void init(GLAutoDrawable drawable) {
 		System.out.println(" --- init ---");
@@ -41,18 +40,8 @@ public class Main implements GLEventListener, KeyListener {
 		glDrawable.setGL(new DebugGL(gl));
 		System.out.println("Espaco de desenho com tamanho: " + drawable.getWidth() + " x " + drawable.getHeight());
 		gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		carregarPontos();
-	}
-
-	private void carregarPontos() {
-		pontos = new ArrayList<>();
 		
-		for (int angulo = 0; angulo < 360; angulo += 5) {
-			double x = RetornaX(angulo, 100);
-			double y = RetornaY(angulo, 100);
-			Ponto4D ponto = new Ponto4D(x, y, 1, 1);
-			pontos.add(ponto);
-		}
+		this.reta = new Reta(new Ponto4D(0, 0), Color.BLACK, GL.GL_LINE_STRIP, 3, 3);
 	}
 
 	// exibicaoPrincipal
@@ -65,26 +54,8 @@ public class Main implements GLEventListener, KeyListener {
 
 		SRU();
 
-		gl.glColor3f(0, 0, 0);
-		gl.glLineWidth(3);
-		gl.glPointSize(4);
-
-		double x = posicao.obterX();
-		double y = posicao.obterY();
-		
-		Ponto4D segundoPonto = new Ponto4D(x + RetornaX(angulo, raio),
-										   y + RetornaY(angulo, raio), 1, 1);
-		
-		int[] primitivas = {GL.GL_POINTS, GL.GL_LINES};
-		
-		for (int primitiva : primitivas) {
-			gl.glBegin(primitiva);
-			{
-				gl.glVertex2d(x, y);
-				gl.glVertex2d(segundoPonto.obterX(), segundoPonto.obterY());
-			}
-			gl.glEnd();
-		}
+		reta.atribuirPosicaoPonto2(angulo, raio);
+		reta.desenhar(gl, true);
 		
 		gl.glFlush();
 	}
@@ -123,11 +94,11 @@ public class Main implements GLEventListener, KeyListener {
 			glDrawable.display();
 			break;
 		case KeyEvent.VK_Q:
-			posicao.atribuirX(posicao.obterX() - incrementoCamera);
+			reta.getPonto1().decrementarX(incrementoCamera);
 			glDrawable.display();
 			break;
 		case KeyEvent.VK_W:
-			posicao.atribuirX(posicao.obterX() + incrementoCamera);
+			reta.getPonto1().incrementarX(incrementoCamera);
 			glDrawable.display();
 			break;
 		case KeyEvent.VK_A:
@@ -210,13 +181,4 @@ public class Main implements GLEventListener, KeyListener {
 		}
 		gl.glEnd();
 	}
-
-	public double RetornaX(double angulo, double raio) {
-		return (raio * Math.cos(Math.PI * angulo / 180.0));
-	}
-
-	public double RetornaY(double angulo, double raio) {
-		return (raio * Math.sin(Math.PI * angulo / 180.0));
-	}
-
 }

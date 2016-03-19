@@ -5,9 +5,9 @@
 /// \date 03/05/13.
 /// Obs.: variaveis globais foram usadas por questoes didaticas mas nao sao recomendas para aplicacoes reais.
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 
 import javax.media.opengl.DebugGL;
 import javax.media.opengl.GL;
@@ -19,7 +19,7 @@ public class Main implements GLEventListener, KeyListener {
 	private GL gl;
 	private GLU glu;
 	private GLAutoDrawable glDrawable;
-	private ArrayList<Ponto4D> pontos;
+	private Circulo circulo;	
 	
 	public void init(GLAutoDrawable drawable) {
 		System.out.println(" --- init ---");
@@ -29,18 +29,8 @@ public class Main implements GLEventListener, KeyListener {
 		glDrawable.setGL(new DebugGL(gl));
 		System.out.println("Espaco de desenho com tamanho: " + drawable.getWidth() + " x " + drawable.getHeight());
 		gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		carregarPontos();
-	}
-
-	private void carregarPontos() {
-		pontos = new ArrayList<>();
 		
-		for (int angulo = 0; angulo < 360; angulo += 5) {
-			double x = RetornaX(angulo, 100);
-			double y = RetornaY(angulo, 100);
-			Ponto4D ponto = new Ponto4D(x, y, 1, 1);
-			pontos.add(ponto);
-		}
+		this.circulo = new Circulo(Color.BLUE, new Ponto4D(0, 0), 100, 72, GL.GL_POINTS, 2, 2);
 	}
 
 	// exibicaoPrincipal
@@ -53,17 +43,8 @@ public class Main implements GLEventListener, KeyListener {
 
 		SRU();
 
-		// seu desenho ...
-		gl.glColor3f(0.0f, 0.0f, 255.0f);
-		gl.glPointSize(2.0f);
+		this.circulo.desenhar(gl);
 
-		gl.glBegin(GL.GL_POINTS);
-
-		for (Ponto4D ponto : pontos) {
-			gl.glVertex2d(ponto.obterX(), ponto.obterY());
-		}
-
-		gl.glEnd();
 		gl.glFlush();
 	}
 
@@ -112,13 +93,4 @@ public class Main implements GLEventListener, KeyListener {
 		}
 		gl.glEnd();
 	}
-
-	public double RetornaX(double angulo, double raio) {
-		return (raio * Math.cos(Math.PI * angulo / 180.0));
-	}
-
-	public double RetornaY(double angulo, double raio) {
-		return (raio * Math.sin(Math.PI * angulo / 180.0));
-	}
-
 }

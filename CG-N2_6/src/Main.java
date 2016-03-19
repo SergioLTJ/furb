@@ -206,14 +206,6 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 		gl.glEnd();
 	}
 
-	public double RetornaX(double angulo, double raio) {
-		return (raio * Math.cos(Math.PI * angulo / 180.0));
-	}
-
-	public double RetornaY(double angulo, double raio) {
-		return (raio * Math.sin(Math.PI * angulo / 180.0));
-	}
-
 	@Override
 	public void mouseClicked(MouseEvent e) {}
 

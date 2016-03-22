@@ -1,0 +1,7 @@
+package trabalho1;
+
+public class Professor {
+
+	private String nome;
+	
+}

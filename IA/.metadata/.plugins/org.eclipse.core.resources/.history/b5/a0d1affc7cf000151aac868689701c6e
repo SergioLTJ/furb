@@ -1,0 +1,33 @@
+package trabalho1;
+
+public class Dia {
+	private Disciplina aula1;
+	private Disciplina aula2;
+	
+	public boolean ehMesmaAula() {
+		return aula1 == aula2;
+	}
+	
+	public boolean professorEstaLivre(Professor professor) {
+		return aula1.getProfessorMinistrando() != professor &&
+			   aula2.getProfessorMinistrando() != professor;
+	}
+
+	public boolean estaCompleto() {
+		return aula1 != null && aula2 != null; 
+	}
+
+	
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Dia) {
+			Dia outro = (Dia) obj;
+			
+			if (outro.get)
+		}
+		
+		return false;
+	}
+	
+}

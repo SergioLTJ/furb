@@ -1,0 +1,22 @@
+package trabalho1;
+
+public enum Dia {
+	SEGUNDA,
+	TERCA,
+	QUARTA,
+	QUINTA,
+	SEXTA;
+	
+	private Disciplina aula1;
+	private Disciplina aula2;
+	
+	public boolean ehMesmaAula() {
+		return aula1 == aula2;
+	}
+	
+	public boolean professorEstaLivre(Professor professor) {
+		return aula1.getProfessorMinistrando() != professor &&
+		
+	}
+	
+}

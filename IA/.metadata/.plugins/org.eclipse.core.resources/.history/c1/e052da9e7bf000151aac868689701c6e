@@ -1,0 +1,58 @@
+package trabalho1;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import busca.Estado;
+
+public class EstadoSemestre implements Estado {
+
+	private ArrayList<Professor> professores;
+	private ArrayList<Dia> dias;
+	private ArrayList<Disciplina> disciplinas;
+	
+	private boolean professorTemDiaLivre(Professor professor) {
+		for (Dia dia : dias) {
+			if (dia.professorEstaLivre(professor)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean ehValido() {
+		if (!todosProfessoresTemDiaLivre()) return false;
+		if (!professoresSoTemUmaDisciplinaPorHorario())
+	}
+	
+
+	private boolean todosProfessoresTemDiaLivre() {
+		for (Professor professor : professores) {
+			if (!professorTemDiaLivre(professor)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public int custo() {
+		return 1;
+	}
+
+	@Override
+	public boolean ehMeta() {
+		for (Dia dia : dias) {
+			if (!dia.estaCompleto()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public List<Estado> sucessores() {
+		return null;
+	}
+	
+}

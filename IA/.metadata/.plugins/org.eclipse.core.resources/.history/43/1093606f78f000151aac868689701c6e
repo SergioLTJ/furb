@@ -1,0 +1,7 @@
+package trabalho1;
+
+import busca.Estado;
+
+public class EstadoSemestre implements Estado {
+
+}

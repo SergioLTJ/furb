@@ -86,10 +86,6 @@ public class Circulo extends GlDesenhavel {
 
 	@Override
 	protected void desenharEspecifico(GL gl, boolean desenharVertices) {
-		gl.glColor3f(this.cor.getRed(), this.cor.getGreen(), this.cor.getBlue());
-		gl.glLineWidth(this.larguraLinha);
-		gl.glPointSize(this.tamanhoPontos);
-		
 		double incremento = 360 / this.quantidadePontos;
 		
 		gl.glBegin(this.primitivaGl);

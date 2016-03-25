@@ -11,8 +11,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 
 import javax.media.opengl.DebugGL;
 import javax.media.opengl.GL;
@@ -31,13 +29,12 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 	private float limiteCima = 400.0f;
 	private float locomocao = 10.0f;
 
-	private int iteracoesSpline = 3;
-	
 	private int antigoX = 0;
 	private int antigoY = 0;
 	
-	private Ponto4D[] pontos;
-	private int pontoSelecionado = 0;
+	private Circulo circuloInterno;
+	private Circulo circuloExterno;
+	private BoundingBox boundingBox;
 	
 	public void init(GLAutoDrawable drawable) {
 		System.out.println(" --- init ---");
@@ -48,12 +45,16 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 		System.out.println("Espaco de desenho com tamanho: " + drawable.getWidth() + " x " + drawable.getHeight());
 		gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		
-		pontos = new Ponto4D[] {
-			new Ponto4D(100, -100, 1, 1),
-			new Ponto4D(100, 100, 1, 1),
-			new Ponto4D(-100, 100, 1, 1),
-			new Ponto4D(-100, -100, 1, 1),
-		};
+		circuloInterno = new Circulo(new Ponto4D(200, 200), 50, 1, 1);
+		circuloExterno = new Circulo(new Ponto4D(200, 200), 150, 1, 1);
+		
+		double menorX = 200 + Funcoes.RetornaX(225, 150);
+		double menorY = 200 + Funcoes.RetornaY(225, 150);
+		double maiorX = 200 + Funcoes.RetornaX(45, 150);
+		double maiorY = 200 + Funcoes.RetornaY(45, 150);
+		boundingBox = new BoundingBox(menorX, menorY, 1d, maiorX, maiorY, 1d);
+		
+		boundingBox.setLarguraLinha(1);
 	}
 
 	// exibicaoPrincipal
@@ -66,74 +67,38 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 
 		SRU();
 
-		gl.glLineWidth(3);
+		if(validarBoundingBox()) {
+			boundingBox.setCor(Color.MAGENTA); 
+		} else {
+			boundingBox.setCor(Color.YELLOW);
+		}
 		
-		Color cor = Color.CYAN;
+		circuloInterno.desenhar(gl);
+		boundingBox.desenharOpenGLBBox(gl);
+		circuloExterno.desenhar(gl);
+		
+		Color cor = Color.BLACK;
+		gl.glPointSize(5);
 		gl.glColor3f(cor.getRed(), cor.getGreen(), cor.getBlue());
-		
-		gl.glBegin(GL.GL_LINE_STRIP);
-		{
-			for (int i = 0; i < pontos.length; i++) {
-				gl.glVertex2d(pontos[i].obterX(), pontos[i].obterY());
-			}
-		}
-		gl.glEnd();
-
-		Color amarelo = Color.YELLOW;
-		gl.glColor3f(amarelo.getRed(), amarelo.getGreen(), amarelo.getBlue());
-		
-		ArrayList<Ponto4D> listaPontos = aplicarSpline(pontos);
-		
-		gl.glBegin(GL.GL_LINE_STRIP);
-		{
-			for (Ponto4D ponto4d : listaPontos) {
-				gl.glVertex2d(ponto4d.obterX(), ponto4d.obterY());
-			}
-		}
-		gl.glEnd();
-		
-		gl.glPointSize(7);
-		gl.glColor3f(255, 0, 0);
-		
+		Ponto4D centro = circuloInterno.getCentro();
 		gl.glBegin(GL.GL_POINTS);
 		{
-			Ponto4D ponto = pontos[pontoSelecionado];
-			gl.glVertex2d(ponto.obterX(), ponto.obterY());
+			gl.glVertex2d(centro.obterX(), centro.obterY());
 		}
 		gl.glEnd();
 		
 		gl.glFlush();
 	}
 
-	private ArrayList<Ponto4D> aplicarSpline(Ponto4D[] pontos) {
-		ArrayList<Ponto4D> retorno = new ArrayList<>();
-		BigDecimal incremento = new BigDecimal(1d / iteracoesSpline);
+	private boolean validarBoundingBox() {
+		Ponto4D centroInterno = circuloInterno.getCentro();
 		
-		for (BigDecimal t = new BigDecimal(0); t.doubleValue() <= 1d; t = t.add(incremento)) {
-			Ponto4D ponto1 = aplicarEquacaoParametrica(pontos[0], pontos[1], t);
-			Ponto4D ponto2 = aplicarEquacaoParametrica(pontos[1], pontos[2], t);
-			Ponto4D ponto3 = aplicarEquacaoParametrica(pontos[2], pontos[3], t);
-			
-			Ponto4D ponto4 = aplicarEquacaoParametrica(ponto1, ponto2, t);
-			Ponto4D ponto5 = aplicarEquacaoParametrica(ponto2, ponto3, t);
-			
-			Ponto4D ponto6 = aplicarEquacaoParametrica(ponto4, ponto5, t);
-			
-			retorno.add(ponto6);
-		}
+		if (centroInterno.obterX() < boundingBox.obterMenorX()) return false;
+		if (centroInterno.obterX() > boundingBox.obterMaiorX()) return false;
+		if (centroInterno.obterY() < boundingBox.obterMenorY()) return false;
+		if (centroInterno.obterY() > boundingBox.obterMaiorY()) return false;
 		
-		return retorno;
-	}
-
-	private Ponto4D aplicarEquacaoParametrica(Ponto4D ponto4d, Ponto4D ponto4d2, BigDecimal t) {
-		Ponto4D novoPonto = new Ponto4D();
-		novoPonto.atribuirX(resolverEquacao(ponto4d.obterX(), ponto4d2.obterX(), t));
-		novoPonto.atribuirY(resolverEquacao(ponto4d.obterY(), ponto4d2.obterY(), t));
-		return novoPonto;
-	}
-
-	private double resolverEquacao(double e1, double e2, BigDecimal t) {
-		return (e1 + (t.doubleValue() * (e2 - e1)));
+		return true;
 	}
 
 	public void keyPressed(KeyEvent e) {
@@ -169,32 +134,6 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 			limiteBaixo += locomocao;
 			glDrawable.display();
 			break;
-		case KeyEvent.VK_1:
-			pontoSelecionado = 0;
-			glDrawable.display();
-			break;
-		case KeyEvent.VK_2:
-			pontoSelecionado = 1;
-			glDrawable.display();
-			break;
-		case KeyEvent.VK_3:
-			pontoSelecionado = 2;
-			glDrawable.display();
-			break;
-		case KeyEvent.VK_4:
-			pontoSelecionado = 3;
-			glDrawable.display();
-			break;
-		case KeyEvent.VK_R:
-			if (iteracoesSpline > 0) {
-				iteracoesSpline--;	
-			}
-			glDrawable.display();
-			break;
-		case KeyEvent.VK_T:
-			iteracoesSpline++;
-			glDrawable.display();
-			break;
 		}
 	}
 
@@ -210,8 +149,7 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 		}
 	}
 
-	public void reshape(GLAutoDrawable drawable, int x, int y, int width,
-			int height) {
+	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
 		System.out.println(" --- reshape ---");
 		gl.glMatrixMode(GL.GL_PROJECTION);
 		gl.glLoadIdentity();
@@ -267,20 +205,32 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent e) {}
+	public void mouseReleased(MouseEvent e) {
+		Ponto4D centroExterno = circuloExterno.getCentro();
+		circuloInterno.setCentro(new Ponto4D(centroExterno.obterX(), centroExterno.obterY()));
+		
+		glDrawable.display();
+	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		Ponto4D ponto = pontos[pontoSelecionado];
+		Ponto4D centroInterno = circuloInterno.getCentro();
 		
 		int movtoX = e.getX() - antigoX;
 	    int movtoY = e.getY() - antigoY;
 	    
-	    ponto.atribuirX(ponto.obterX() + movtoX); 
-	    ponto.atribuirY(ponto.obterY() - movtoY);
+	    double novoX = centroInterno.obterX() + movtoX;
+	    double novoY = centroInterno.obterY() - movtoY;
+	    Ponto4D novoCentroInterno = new Ponto4D(novoX, novoY);
 	    
-	    antigoX = e.getX();
-		antigoY = e.getY();
+	    double distancia = circuloExterno.getCentro().calcularDistancia(novoCentroInterno);
+	    
+	    if (distancia < 22500) {
+	    	circuloInterno.setCentro(novoCentroInterno);
+	    
+	    	antigoX = e.getX();
+			antigoY = e.getY();
+	    }
 
 		glDrawable.display();
 	}

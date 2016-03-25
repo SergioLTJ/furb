@@ -1,0 +1,8 @@
+package trabalho1;
+
+public class Professor {
+
+	private String nome;
+	private ArrayList<Disciplina> disciplinasApto;
+	
+}

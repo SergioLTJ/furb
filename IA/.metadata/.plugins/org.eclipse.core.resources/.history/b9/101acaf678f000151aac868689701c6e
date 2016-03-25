@@ -1,0 +1,13 @@
+package trabalho1;
+
+public enum Dia {
+
+	SEGUNDA,
+	TERCA,
+	QUARTA,
+	QUINTA,
+	SEXTA,
+	
+	private 
+	
+}

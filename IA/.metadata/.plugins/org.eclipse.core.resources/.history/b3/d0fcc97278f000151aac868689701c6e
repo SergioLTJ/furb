@@ -1,0 +1,24 @@
+package trabalho1;
+
+import java.util.List;
+
+import busca.Estado;
+
+public class EstadoSemestre implements Estado {
+
+	@Override
+	public int custo() {
+		return 0;
+	}
+
+	@Override
+	public boolean ehMeta() {
+		return false;
+	}
+
+	@Override
+	public List<Estado> sucessores() {
+		return null;
+	}
+
+}

@@ -29,8 +29,10 @@ public class Professor implements Clonavel<Professor> {
 		return disciplinasAptoMinistrar;
 	}
 	
-	public Professor addDisciplinasAptoMinistrar(Disciplina disciplina) {
-		this.disciplinasAptoMinistrar.add(disciplina);
+	public Professor addDisciplinasAptoMinistrar(Disciplina... disciplinas) {
+		for (Disciplina disciplina : disciplinas) {
+			this.disciplinasAptoMinistrar.add(disciplina);			
+		}
 		return this;
 	}
 	

@@ -63,6 +63,14 @@ public class Dia implements Clonavel<Dia> {
 		this.nome = descricao;
 	}
 
+	public boolean estaPrimeiroHorario(Professor professor) {
+		return this.aula1 != null && this.aula1.getProfessorMinistrando().equals(professor); 
+	}
+	
+	public boolean estaSegundoHorario(Professor professor) {
+		return this.aula2 != null && this.aula2.getProfessorMinistrando().equals(professor); 
+	}
+	
 	@Override
 	public int hashCode() {
 		int hash = 17;
@@ -78,13 +86,29 @@ public class Dia implements Clonavel<Dia> {
 	public boolean equals(Object obj) {
 		if (obj == null)
 			return false;
-		if (!(obj instanceof Disciplina))
+		if (!(obj instanceof Dia))
 			return false;
 
 		Dia outro = (Dia) obj;
 
-		if (!this.getAula1().equals(outro.getAula1())) return false;
-		if (!this.getAula2().equals(outro.getAula2())) return false;
+		if (this.getAula1() != null) { 
+			if(!this.getAula1().equals(outro.getAula1()))
+				return false;
+		} else {
+			if (outro.getAula1() != null) {
+				return false;
+			}
+		}
+		
+		if (this.getAula2() != null) { 
+			if (!this.getAula2().equals(outro.getAula2()))
+				return false;
+		} else {
+			if (outro.getAula2() != null) {
+				return false;
+			}
+		}
+		
 		if (!this.getNome().equals(outro.getNome())) return false;
 
 		return true;
@@ -101,6 +125,14 @@ public class Dia implements Clonavel<Dia> {
 		return descricao;
 	}
 
+	public boolean professorEstaNoMesmoHorario(Dia outro, Professor professor) {
+		if (this.estaPrimeiroHorario(professor)) {
+			return outro.estaPrimeiroHorario(professor);
+		} else {
+			return outro.estaSegundoHorario(professor);
+		}
+	}
+	
 	private String criarDescricaoDisciplina(Disciplina aula) {
 		String descricao = "";
 		

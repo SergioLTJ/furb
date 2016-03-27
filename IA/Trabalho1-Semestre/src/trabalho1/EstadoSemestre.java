@@ -1,15 +1,20 @@
 package trabalho1;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import busca.BuscaLargura;
+import org.omg.CORBA.ARG_IN;
+
+import busca.AEstrela;
+import busca.BuscaProfundidade;
 import busca.Estado;
+import busca.Heuristica;
 import busca.MostraStatusConsole;
 import busca.Nodo;
 
-public class EstadoSemestre implements Estado {
+public class EstadoSemestre implements Estado, Heuristica {
 
 	private List<Professor> professores;
 	private List<Semestre> semestres;
@@ -26,22 +31,40 @@ public class EstadoSemestre implements Estado {
 			}
 		}
 		
-		if (!todosProfessoresTemDiaLivre(professores)) return false;
-//		if (!professoresSoTemUmaDisciplinaPorHorario()) Para depois...
+		if (!todosProfessoresTemDiaLivre()) return false;
+		if (!professoresSoTemUmaDisciplinaPorHorario()) return false;
 		
 		return true;
 	}
 
-	private boolean todosProfessoresTemDiaLivre(List<Professor> professores) {
+	private boolean professoresSoTemUmaDisciplinaPorHorario() {
 		for (Professor professor : professores) {
-			if (!professorTemDiaLivre(professor)) {
-				return false;
+			List<Dia> diasAula = semestres.get(0).obterDiasProfessor(professor, true);	
+			
+			for (int i = 1; i < this.semestres.size(); i++) {
+				Semestre semestre = this.semestres.get(i);
+				boolean horarioValido = semestre.validarHorariosProfessor(diasAula, professor);
+				if (!horarioValido) {
+					return false;
+				}
 			}
 		}
 		return true;
 	}
-	
-	
+
+	private boolean todosProfessoresTemDiaLivre() {
+		for (Professor professor : this.professores) {
+			List<Dia> diasLivres = semestres.get(0).obterDiasProfessor(professor, false);
+			
+			for (int i = 1; i < this.semestres.size(); i++) {
+				this.semestres.get(i).validarDiasLivres(diasLivres, professor);
+				if (diasLivres.isEmpty()) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 	
 	@Override
 	public int custo() {
@@ -50,8 +73,8 @@ public class EstadoSemestre implements Estado {
 
 	@Override
 	public boolean ehMeta() {
-		for (Disciplina disciplina : this.disciplinas) {
-			if (!disciplina.estaAlocada()) {
+		for (Semestre semestre : this.semestres) {
+			if (!semestre.estaCompleto()) {
 				return false;
 			}
 		}
@@ -60,54 +83,43 @@ public class EstadoSemestre implements Estado {
 
 	@Override
 	public List<Estado> sucessores() {
-		ArrayList<Estado> estados = new ArrayList<>();
+		Semestre incompleto = obterPrimeiroSemestreIncompleto();
+		int indiceSemestre = this.semestres.indexOf(incompleto);
 		
-		for (Disciplina disciplina : this.disciplinas) {
-			if (!disciplina.estaAlocada()) {
-				List<Integer> professoresParaDisciplina = this.encontrarProfessoresParaDisciplina(disciplina);
-				List<Estado> estadosValidos = this.gerarEstadosParaDisciplina(professoresParaDisciplina, disciplina); 
-				estados.addAll(estadosValidos);
-			}
-		}
-		
-		return estados;
-	}
-	
-	private List<Estado> gerarEstadosParaDisciplina(List<Integer> indiceProfessores, Disciplina disciplina) {
+		List<Semestre> semestres = incompleto.gerarEstadosSemestre(this.professores);
 		List<Estado> estados = new ArrayList<>();
 		
-		for (Integer indiceProfessor : indiceProfessores) {
-			List<Professor> professores = Utils.clonarLista(this.professores);
-			List<Disciplina> disciplinas = Utils.clonarLista(this.disciplinas);
-			List<Dia> dias = Utils.clonarLista(this.dias);
-			
-			int indiceDisciplina = disciplinas.indexOf(disciplina);
-			
-			EstadoSemestre estado = new EstadoSemestre(professores, dias, disciplinas); 
-			estado.adicionarDisciplina(indiceProfessor, indiceDisciplina);
-			
-			if (estado.ehValido()) {
-				estados.add(estado);
-			}			
+		for (Semestre semestre : semestres) {
+			List<Semestre> copiaSemestres = Utils.clonarLista(this.semestres);
+			copiaSemestres.set(indiceSemestre, semestre);
+
+			EstadoSemestre novo = new EstadoSemestre(this.professores, copiaSemestres);
+
+			if (novo.ehValido()) {
+				estados.add(novo);
+			}
 		}
 		
 		return estados;
 	}
-
-	private List<Integer> encontrarProfessoresParaDisciplina(Disciplina disciplina) {
-		List<Integer> professores = new ArrayList<>();
-		
-		for (int i = 0; i < this.professores.size(); i++) {
-			if (this.professores.get(i).podeMinistrarDisciplina(disciplina)) {
-				professores.add(i);
+	
+	private Semestre obterPrimeiroSemestreIncompleto() {
+		for (Semestre semestre : this.semestres) {
+			if (!semestre.estaCompleto()) {
+				return semestre;
 			}
 		}
-		
-		return professores;
+		return null;
 	}
 
+	public List<Professor> getProfessores() {
+		return this.professores;
+	}
 	
-
+	public List<Semestre> getSemestres() {
+		return this.semestres;
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) 
@@ -117,18 +129,37 @@ public class EstadoSemestre implements Estado {
 		
 		EstadoSemestre outro = (EstadoSemestre)obj;
 		
-		if (!diasIguais(outro)) 
+		if (!semestresIguais(outro)) 
 			return false;
 			
 		return true;
 	}
 
+	private boolean semestresIguais(EstadoSemestre outro) {
+		for (int i = 0; i < this.semestres.size(); i++) {
+			if (!this.semestres.get(i).equals(outro.getSemestres().get(i))) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 17;
+		
+		for (Semestre semestre : this.semestres) {
+			hash = 31 * hash + semestre.hashCode(); 
+		}
+		
+		return hash;
+	}
+	
 	@Override
 	public String toString() {
 		String descricaoEstado = "";
 		
 		for (Semestre semestre : this.semestres) {
-			descricaoEstado += "--------------------------------------------\n";
 			descricaoEstado += semestre.toString();
 		}
 
@@ -138,31 +169,81 @@ public class EstadoSemestre implements Estado {
 	}
 	
 	public static void main(String[] args) {
-		List<Dia> dias = new ArrayList<>();
-		dias.add(new Dia("Segunda"));
-		dias.add(new Dia("Terça"));
-		dias.add(new Dia("Quarta"));
-		dias.add(new Dia("Quinta"));
-		dias.add(new Dia("Sexta"));
+		EstadoSemestre estadoInicial = Teste.criarEstadoInicial(4);
 		
-		Disciplina ia = new Disciplina("Inteligência Artificial", CargaSemanalDisciplina.QUATRO_HORAS);
-		Disciplina ps2 = new Disciplina("Processos de Software II", CargaSemanalDisciplina.QUATRO_HORAS);
-		Disciplina rob = new Disciplina("Robótica", CargaSemanalDisciplina.QUATRO_HORAS);
-		Disciplina web = new Disciplina("Desenvolvimento Web", CargaSemanalDisciplina.QUATRO_HORAS);
-		Disciplina cg = new Disciplina("Computação Gráfica", CargaSemanalDisciplina.QUATRO_HORAS);
+//		Nodo nodoFinal = new BuscaIterativo().busca(inicial);
+//		Nodo nodoFinal = new BuscaLargura(new MostraStatusConsole()).busca(estadoInicial);
+//		Nodo nodoFinal = new BuscaProfundidade(new MostraStatusConsole()).busca(estadoInicial);
+		Nodo nodoFinal = new AEstrela(new MostraStatusConsole()).busca(estadoInicial);
 		
-		List<Disciplina> disciplinas = Arrays.asList(ia, ps2, rob, web, cg);
-		
-		Professor daniel = new Professor("Daniel").addDisciplinasAptoMinistrar(ia);
-		Professor dalton = new Professor("Dalton").addDisciplinasAptoMinistrar(cg);
-		Professor mauro = new Professor("Mauro").addDisciplinasAptoMinistrar(ps2);
-		Professor aurelio = new Professor("Aurélio").addDisciplinasAptoMinistrar(rob);
-		Professor matheus = new Professor("Matheus").addDisciplinasAptoMinistrar(web);
-		
-		List<Professor> professores = Arrays.asList(daniel, dalton, mauro, aurelio, matheus);
-		
-		EstadoSemestre inicial = new EstadoSemestre(professores, dias, disciplinas);
-		Nodo nodoFinal = new BuscaLargura(new MostraStatusConsole()).busca(inicial);
 		System.out.println(nodoFinal.montaCaminho());
+	}
+
+	@Override
+	public int h() {
+		int h = 0;
+		
+		h += obterNumeroDiasProfessoresTrabalham();
+		
+		return h;
+	}
+
+	private int obterNumeroDiasProfessoresTrabalham() {
+		int diasTotal = 0;
+		
+		for (Professor professor : this.professores) {
+			List<Dia> dias = new ArrayList<>(); 
+			for (Semestre semestre : this.semestres) {
+				dias.addAll(semestre.obterDiasProfessor(professor, true));
+			}
+			
+			diasTotal += obterDiasUnicos(dias);
+		}
+
+		return diasTotal;
+	}
+	
+	private int obterDiasUnicos(List<Dia> dias) {
+		boolean segunda = false;
+		boolean terca = false;
+		boolean quarta = false;
+		boolean quinta = false;
+		boolean sexta = false;
+		
+		for (Dia dia : dias) {
+			if (dia.getNome().equals("Segunda")) {
+				segunda = true;
+			}
+			if (dia.getNome().equals("Terça")) {
+				terca = true;
+			}
+			if (dia.getNome().equals("Quarta")) {
+				quarta = true;
+			}
+			if (dia.getNome().equals("Quinta")) {
+				quinta = true;
+			}
+			if (dia.getNome().equals("Sexta")) {
+				sexta = true;
+			}
+		}
+		
+		return (segunda ? 1 : 0) + (terca ? 1 : 0) + (quarta ? 1 : 0) + (quinta ? 1 : 0) + (sexta ? 1 : 0);
+	}
+
+	private int obterProfessoresEmMultiplosSemestres() {
+		int semestresTotal = 0;
+		
+		for (Professor professor : this.professores) {
+			int semestresProfessor = 0;
+			for (Semestre semestre : this.semestres) {
+				if (semestre.professorEstaTrabalhando(professor)) {
+					semestresProfessor++;
+				}
+			}
+			semestresTotal += semestresProfessor;
+		}
+
+		return semestresTotal;
 	}
 }

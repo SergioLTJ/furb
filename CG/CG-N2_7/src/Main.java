@@ -31,6 +31,9 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 
 	private int antigoX = 0;
 	private int antigoY = 0;
+
+	private boolean estaNoCirculo = true;
+	private boolean estaNaBoundingBox = true;
 	
 	private Circulo circuloInterno;
 	private Circulo circuloExterno;
@@ -67,7 +70,9 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 
 		SRU();
 
-		if(validarBoundingBox()) {
+		if (!estaNoCirculo) {
+			boundingBox.setCor(Color.CYAN);
+		} else if(estaNaBoundingBox) {
 			boundingBox.setCor(Color.MAGENTA); 
 		} else {
 			boundingBox.setCor(Color.YELLOW);
@@ -208,6 +213,8 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 	public void mouseReleased(MouseEvent e) {
 		Ponto4D centroExterno = circuloExterno.getCentro();
 		circuloInterno.setCentro(new Ponto4D(centroExterno.obterX(), centroExterno.obterY()));
+		estaNoCirculo = true;
+		estaNaBoundingBox = true;
 		
 		glDrawable.display();
 	}
@@ -223,15 +230,24 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 	    double novoY = centroInterno.obterY() - movtoY;
 	    Ponto4D novoCentroInterno = new Ponto4D(novoX, novoY);
 	    
-	    double distancia = circuloExterno.getCentro().calcularDistancia(novoCentroInterno);
-	    
-	    if (distancia < 22500) {
-	    	circuloInterno.setCentro(novoCentroInterno);
-	    
-	    	antigoX = e.getX();
-			antigoY = e.getY();
-	    }
+	    if (!validarBoundingBox()) {
+	    	estaNaBoundingBox = false;
+	    	double distancia = circuloExterno.getCentro().calcularDistancia(novoCentroInterno);
+		    
+		    if (distancia < 22500) {
+		    	circuloInterno.setCentro(novoCentroInterno);
+		    	estaNoCirculo = true;
+		    } else {
+		    	estaNoCirculo = false;
+		    }
+		} else {
+			circuloInterno.setCentro(novoCentroInterno);
+			estaNaBoundingBox = true;
+		}
 
+	    antigoX = e.getX();
+		antigoY = e.getY();
+	    
 		glDrawable.display();
 	}
 

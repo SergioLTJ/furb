@@ -1,5 +1,7 @@
 package labirinto;
 
+import mapeamentos.MapeamentoDirecoes;
+
 public class Movimento {
 
 	private TipoMovimento tipoMovimento;
@@ -27,19 +29,7 @@ public class Movimento {
 	}
 
 	public Movimento reverter() {
-		Direcao nova = null;
-		
-		switch (this.direcao) {
-		case Norte:
-			nova = Direcao.Sul;
-		case Sul:
-			nova = Direcao.Norte;
-		case Oeste:
-			nova = Direcao.Leste;
-		case Leste:
-			nova = Direcao.Oeste;
-		}
-				
+		Direcao nova = MapeamentoDirecoes.obterReverso(this.direcao);
 		Movimento novo = new Movimento(this.tipoMovimento, nova);
 		return novo;
 	}

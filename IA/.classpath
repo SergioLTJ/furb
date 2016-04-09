@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="Trabalho1-Semestre/src"/>
+	<classpathentry kind="src" path="Trabalho1/src"/>
+	<classpathentry kind="lib" path="Trabalho1-Semestre/buscaJava.jar"/>
+	<classpathentry kind="lib" path="Trabalho1/buscaJava.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

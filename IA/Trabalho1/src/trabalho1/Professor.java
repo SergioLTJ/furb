@@ -9,7 +9,7 @@ public class Professor implements Clonavel<Professor> {
 	private List<Disciplina> disciplinasAptoMinistrar;
 
 	public Professor(String nome) {
-		this(nome, new ArrayList<>());
+		this(nome, new ArrayList<Disciplina>());
 	}
 	
 	public Professor(String nome, List<Disciplina> disciplinas) {
@@ -29,8 +29,10 @@ public class Professor implements Clonavel<Professor> {
 		return disciplinasAptoMinistrar;
 	}
 	
-	public Professor addDisciplinasAptoMinistrar(Disciplina disciplina) {
-		this.disciplinasAptoMinistrar.add(disciplina);
+	public Professor addDisciplinasAptoMinistrar(Disciplina... disciplinas) {
+		for (Disciplina disciplina : disciplinas) {
+			this.disciplinasAptoMinistrar.add(disciplina);			
+		}
 		return this;
 	}
 	

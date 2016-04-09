@@ -47,7 +47,7 @@ public class Disciplina implements Clonavel<Disciplina> {
 	
 	public int getCargaSemanal() {
 		return this.cargaSemanal;
-	}
+	}                            
 
 	public int getCargaAlocada() {
 		return this.cargaAlocada;
@@ -55,7 +55,7 @@ public class Disciplina implements Clonavel<Disciplina> {
 	
 	public void setCargaAlocada(int carga) {
 		this.cargaAlocada = carga;
-	}
+	}                                                                          
 	
 	@Override
 	public int hashCode() {

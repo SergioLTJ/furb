@@ -31,6 +31,7 @@ public final class Ponto4D {
 		this.w = w;
 	}
 	
+	//// Inverte o sinal
 	public Ponto4D inverterSinal(Ponto4D pto) {
 		pto.atribuirX(pto.obterX()*-1);
 		pto.atribuirY(pto.obterY()*-1);

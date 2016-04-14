@@ -1,2 +1,5 @@
 /bin/
+*/nbproject/*
+*/build.xml
+*/manifest.mf
 .metadata

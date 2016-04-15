@@ -219,10 +219,14 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		Ponto4D ponto = new Ponto4D(e.getX(), e.getY());
-		ponto.setX(ponto.getX() + 200);
-		ponto.setY((-ponto.getY()) + 200);
-		mundo.atualizaConstrucaoObjeto(ponto);
-		glDrawable.display();
+            Ponto4D ponto = new Ponto4D(e.getX(), e.getY());
+            ponto.setX(ponto.getX() + 200);
+            ponto.setY((-ponto.getY()) + 200);
+                
+            mundo.atualizaConstrucaoObjeto(ponto);
+                
+            if (glDrawable != null)
+                glDrawable.display();
 	}
+        
 }

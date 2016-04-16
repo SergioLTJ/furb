@@ -21,6 +21,13 @@ public class Ponto4D {
         this.w = 1;
     }
     
+    public Ponto4D(Ponto4D ponto) {
+        this.x = ponto.x;
+        this.y = ponto.y;
+        this.z = ponto.z;
+        this.w = ponto.w;
+    }
+    
     public Ponto4D(double x, double y) {
         this.x = x;
         this.y = y;
@@ -33,6 +40,13 @@ public class Ponto4D {
         this.y = y;
         this.z = z;
         this.w = w;
+    }
+    
+    public Ponto4D inverterSinal(Ponto4D pto) {
+        pto.setX(pto.getX() * -1);
+        pto.setY(pto.getY() * -1);
+        pto.setZ(pto.getZ() * -1);
+        return pto;
     }
 
     // GET

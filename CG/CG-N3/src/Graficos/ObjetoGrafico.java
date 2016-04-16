@@ -175,6 +175,30 @@ public class ObjetoGrafico {
 	transform = translate.transformMatrix(transform);
     }
     
+    public void escala(double escala) {
+        Transform local = new Transform();
+        
+        // TODO: O ponto central devera ser capturado a partir da BBox gerada
+        Ponto4D pontoCentral = new Ponto4D(pontos.get(0));
+        Transform translate = new Transform();
+        
+        translate.atribuirTranslacao(pontoCentral.getX(), pontoCentral.getY(), pontoCentral.getZ());
+	local = translate.transformMatrix(local);
+
+        Transform scale = new Transform();
+        
+	scale.atribuirEscala(escala, escala, 1.0);
+	local = scale.transformMatrix(local);
+
+	pontoCentral.inverterSinal(pontoCentral);
+        translate.atribuirIdentidade();
+        
+	translate.atribuirTranslacao(pontoCentral.getX(), pontoCentral.getY(), pontoCentral.getZ());
+	local = translate.transformMatrix(local);
+
+	transform = transform.transformMatrix(local);
+    }
+    
     // ATRIBUTOS - LOGICA
     private BoundingBox bound;
     private Transform transform;

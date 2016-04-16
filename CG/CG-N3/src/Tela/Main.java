@@ -76,6 +76,12 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+            /* CONTROLES
+            WASD: Translação da viewport
+            +-: Zoom da viewport
+            Setas: Translação do objeto
+            */
+            
 		trace(" --- keyPressed ---");
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_EQUALS:
@@ -118,6 +124,14 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
                     break;
                 case KeyEvent.VK_DOWN:
                     mundo.moveObjeto(0, -10, 0);
+                    break;
+                    
+                // Escala objeto
+                case KeyEvent.VK_PAGE_UP: 
+                    mundo.escalaObjeto(1.5);
+                    break;
+                case KeyEvent.VK_PAGE_DOWN:   
+                    mundo.escalaObjeto(0.5);
                     break;
 		}
                 glDrawable.display();

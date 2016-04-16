@@ -71,7 +71,13 @@ public class Mundo {
     
     // FUNCOES - TRANSFORMACAO
     public void moveObjeto(double x, double y, double z) {
-        objetoSelecionado.translacao(x, y, z);
+        if (objetoSelecionado != null)
+            objetoSelecionado.translacao(x, y, z);
+    }
+    
+    public void escalaObjeto(double escala) {
+        if (objetoSelecionado != null)
+            objetoSelecionado.escala(escala);
     }
     
     // ATRIBUTOS

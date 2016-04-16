@@ -86,29 +86,41 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 			limiteDireita += locomocao;
 			limiteBaixo -= locomocao;
 			limiteCima += locomocao;
-			glDrawable.display();
 			break;
-		case KeyEvent.VK_RIGHT:
+                        
+                // Translacao camera        
+		case KeyEvent.VK_D:
 			limiteEsquerda -= locomocao;
 			limiteDireita -= locomocao;
-			glDrawable.display();
 			break;
-		case KeyEvent.VK_LEFT:
+		case KeyEvent.VK_A:
 			limiteEsquerda += locomocao;
 			limiteDireita += locomocao;
-			glDrawable.display();
 			break;
-		case KeyEvent.VK_UP:
+		case KeyEvent.VK_W:
 			limiteCima -= locomocao;
 			limiteBaixo -= locomocao;
-			glDrawable.display();
 			break;
-		case KeyEvent.VK_DOWN:
+		case KeyEvent.VK_S:
 			limiteCima += locomocao;
 			limiteBaixo += locomocao;
-			glDrawable.display();
 			break;
+                        
+                // Translacao objeto
+                case KeyEvent.VK_RIGHT:
+                    mundo.moveObjeto(10, 0, 0);
+                    break;
+                case KeyEvent.VK_LEFT:
+                    mundo.moveObjeto(-10, 0, 0);
+                    break;
+                case KeyEvent.VK_UP:
+                    mundo.moveObjeto(0, 10, 0);
+                    break;
+                case KeyEvent.VK_DOWN:
+                    mundo.moveObjeto(0, -10, 0);
+                    break;
 		}
+                glDrawable.display();
 	}
 
 	private void incrementarZoom() {
@@ -223,7 +235,8 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
             ponto.setX(ponto.getX() + 200);
             ponto.setY((-ponto.getY()) + 200);
                 
-            mundo.atualizaConstrucaoObjeto(ponto);
+            if (modoConstrucao)
+                mundo.atualizaConstrucaoObjeto(ponto);
                 
             if (glDrawable != null)
                 glDrawable.display();

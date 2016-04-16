@@ -26,19 +26,25 @@ public class ObjetoGrafico {
         pontoConstrucao = null;
         primitiva = GL.GL_LINE_STRIP;
         transform = new Transform();
+        filhos = new LinkedList<>();
     }
     
     // DISPLAY
-    public void display(GL gl) {
+    public void display(GL gl, boolean selecionado) {
         gl.glColor3f(cor.getRed(), cor.getGreen(), cor.getBlue());
-        gl.glPointSize(10);
+        gl.glLineWidth(selecionado ? 4 : 2);
+        
+        gl.glPushMatrix();
+        gl.glMultMatrixd(transform.getDate(), 0);
         gl.glBegin(primitiva);
         
+        // Desenhar objeto
         for (Ponto4D ponto : pontos) {
             gl.glVertex2d(ponto.getX(), ponto.getY());
         }
         
         gl.glEnd();
+        gl.glPopMatrix();
         
         // Se estiver em construcao, desenhar a linha em construcao
         if (pontoConstrucao != null) {
@@ -51,6 +57,11 @@ public class ObjetoGrafico {
             gl.glVertex2d(pontoConstrucao.getX(), pontoConstrucao.getY());
             
             gl.glEnd();
+        }
+        
+        // Desenhar filhos
+        for (ObjetoGrafico obj : filhos) {
+            obj.display(gl, selecionado);
         }
     }
     
@@ -155,6 +166,13 @@ public class ObjetoGrafico {
         }
         
         pontoConstrucao = null;
+    }
+    
+    // TRANSFORMACAO
+    public void translacao(double x, double y, double z) {
+        Transform translate = new Transform();
+	translate.atribuirTranslacao(x,y,z);
+	transform = translate.transformMatrix(transform);
     }
     
     // ATRIBUTOS - LOGICA

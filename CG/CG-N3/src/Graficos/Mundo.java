@@ -24,8 +24,12 @@ public class Mundo {
     
     // DISPLAY
     public void display(GL gl) {
-        for (ObjetoGrafico obj : listaObjetos)
-            obj.display(gl);
+        for (ObjetoGrafico obj : listaObjetos) {
+            obj.display(gl, false);
+        }
+        if (objetoSelecionado != null) {
+            objetoSelecionado.display(gl, true);
+        }
     }
     
     // FUNCOES - GET
@@ -63,7 +67,11 @@ public class Mundo {
     
     public void finalizaConstrucaoObjeto(int index) {
         objetoSelecionado.encerraObjeto(index);
-        objetoSelecionado = null;
+    }
+    
+    // FUNCOES - TRANSFORMACAO
+    public void moveObjeto(double x, double y, double z) {
+        objetoSelecionado.translacao(x, y, z);
     }
     
     // ATRIBUTOS

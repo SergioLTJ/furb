@@ -1,4 +1,4 @@
-package labirinto;
+package labirinto.dados;
 
 public enum EstadoNodo {
 

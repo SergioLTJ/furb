@@ -1,7 +1,9 @@
-package labirinto;
+package labirinto.operacoes;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import labirinto.dados.Nodo;
 
 public class BuscaLargura {
 

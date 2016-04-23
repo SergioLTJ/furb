@@ -1,13 +1,13 @@
-package labirinto;
+package labirinto.dados;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Nodo {
 
 	private EstadoNodo estado;
 	private boolean ehFinal;
-	private Set<Nodo> vizinhos;
+	private List<Nodo> vizinhos;
 	private int x;
 	private int y;
 	
@@ -16,7 +16,7 @@ public class Nodo {
 		this.x = x;
 		this.y = y;
 		this.estado = EstadoNodo.NAO_VISITADO;
-		this.vizinhos = new HashSet<>();
+		this.vizinhos = new ArrayList<>();
 		this.ehFinal = false;
 	}
 	
@@ -28,15 +28,17 @@ public class Nodo {
 		this.estado = estado;
 	}
 
-	public Set<Nodo> getVizinhos() {
+	public List<Nodo> getVizinhos() {
 		return vizinhos;
 	}
 	
 	public void addVizinho(Nodo nodo) {
-		this.vizinhos.add(nodo);
+		if (!this.vizinhos.contains(nodo)) {
+			this.vizinhos.add(nodo);
+		}
 	}
 
-	public void setVizinhos(Set<Nodo> vizinhos) {
+	public void setVizinhos(List<Nodo> vizinhos) {
 		this.vizinhos = vizinhos;
 	}
 	

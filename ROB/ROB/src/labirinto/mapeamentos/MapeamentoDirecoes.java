@@ -2,7 +2,7 @@ package labirinto.mapeamentos;
 
 import java.util.Hashtable;
 
-import labirinto.Direcao;
+import labirinto.dados.Direcao;
 
 public class MapeamentoDirecoes {
 

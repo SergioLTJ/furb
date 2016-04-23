@@ -1,7 +1,12 @@
-package labirinto;
+package labirinto.acoes;
 
 import java.util.List;
 
+import labirinto.Robo;
+import labirinto.dados.EstadoNodo;
+import labirinto.dados.Grafo;
+import labirinto.dados.Nodo;
+import labirinto.operacoes.BuscaLargura;
 import lejos.nxt.Button;
 import lejos.robotics.subsumption.Behavior;
 

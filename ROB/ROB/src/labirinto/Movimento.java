@@ -1,11 +1,15 @@
 package labirinto;
 
-import mapeamentos.MapeamentoDirecoes;
+import labirinto.mapeamentos.MapeamentoDirecoes;
 
 public class Movimento {
 
 	private TipoMovimento tipoMovimento;
 	private Direcao direcao;
+	
+	public Movimento(TipoMovimento tipoMovimento) {
+		this(tipoMovimento, Direcao.Norte);
+	}
 	
 	public Movimento(TipoMovimento tipoMovimento, Direcao direcao) {
 		this.tipoMovimento =tipoMovimento;

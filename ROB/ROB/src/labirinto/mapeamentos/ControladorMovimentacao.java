@@ -1,6 +1,10 @@
-package labirinto;
+package labirinto.mapeamentos;
 
 import java.awt.Point;
+
+import labirinto.Direcao;
+import labirinto.Grafo;
+import labirinto.Nodo;
 
 public class ControladorMovimentacao {
 

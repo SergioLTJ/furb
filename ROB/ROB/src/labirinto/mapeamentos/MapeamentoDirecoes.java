@@ -1,4 +1,4 @@
-package mapeamentos;
+package labirinto.mapeamentos;
 
 import java.util.Hashtable;
 

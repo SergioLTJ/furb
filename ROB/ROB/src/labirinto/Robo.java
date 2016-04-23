@@ -2,13 +2,16 @@ package labirinto;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
+import labirinto.constantes.ConstantesRobo;
+import labirinto.mapeamentos.ControladorMovimentacao;
+import labirinto.mapeamentos.MapeamentoDirecoes;
 import lejos.nxt.LightSensor;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.UltrasonicSensor;
-import mapeamentos.MapeamentoDirecoes;
 
 public class Robo {
 
@@ -23,7 +26,7 @@ public class Robo {
 	private Direcao orientacao;
 
 	private Stack<Movimento> movimentos;
-	private Movimento ultimoComPosicaoAberta;
+	private Stack<Point> posicoesAbertas;
 	
 	private int x;
 	private int y;
@@ -38,6 +41,7 @@ public class Robo {
 		this.orientacao = orientacao;
 		
 		this.movimentos = new Stack<>();
+		this.posicoesAbertas = new Stack<>();
 		this.x = 0;
 		this.y = 0;
 	}
@@ -46,29 +50,32 @@ public class Robo {
 		List<Movimento> movimentosPossiveis = new ArrayList<>();
 		
 		this.mapearMovimentoNaDirecao(grafo, Direcao.Norte, movimentosPossiveis);
-		
-		motorSensor.rotate(95);
+		motorSensor.rotate(ConstantesRobo.ROTACAO_SENSOR);
 		this.mapearMovimentoNaDirecao(grafo, Direcao.Leste, movimentosPossiveis);
-		
-		motorSensor.rotate(-190);
+		motorSensor.rotate(-(ConstantesRobo.ROTACAO_SENSOR * 2));
 		this.mapearMovimentoNaDirecao(grafo, Direcao.Oeste, movimentosPossiveis);
-		
-		motorSensor.rotate(95);
+		motorSensor.rotate(ConstantesRobo.ROTACAO_SENSOR);
 		
 		if (movimentosPossiveis.size() > 0) {
 			if (movimentosPossiveis.size() == 1) {
 				grafo.getMatriz()[this.x][this.y].setEstado(EstadoNodo.FECHADO);
+			} else {
+				// Adiciona a posição atual do robô como sendo um nodo ainda aberto,
+				// será usado para permitir que o robô volte para esse nodo mais
+				// facilmente mais tarde.
+				this.posicoesAbertas.push(new Point(this.x, this.y));
 			}
+			
 			return movimentosPossiveis.get(0);
 		}
 		
 		grafo.getMatriz()[this.x][this.y].setEstado(EstadoNodo.FECHADO);
-		return this.movimentos.pop().reverter();
+		return new Movimento(TipoMovimento.VOLTAR_POSICAO_ABERTA);
 	}
 
 	public void mapearMovimentoNaDirecao(Grafo grafo, Direcao direcao, List<Movimento> movimentos) {
 		int distancia = sensorDistancia.getDistance();
-		if (distancia > 30) {
+		if (distancia > ConstantesRobo.DISTANCIA_PAREDE) {
 			Nodo nodoAtual = grafo.getMatriz()[this.x][this.y];
 			Direcao direcaoNova = MapeamentoDirecoes.obterNovaDirecao(this.orientacao, direcao);
 			Nodo novo = ControladorMovimentacao.obterNodo(grafo, new Point(this.x, this.y), direcaoNova);
@@ -89,27 +96,51 @@ public class Robo {
 			return new Movimento(TipoMovimento.DESLOCAMENTO, Direcao.Norte);
 		} else {
 			Direcao direcaoRotacao = MapeamentoDirecoes.definirDirecaoRotacao(this.orientacao, direcaoNovoNodo);
-			return new Movimento(TipoMovimento.ROTACAO, direcaoRotacao);
+			return new Movimento(TipoMovimento.CURVA, direcaoRotacao);
 		}
 	}
 
 	public void executarMovimento(Movimento movimento, Grafo grafo) {
-		if (movimento.getTipoMovimento() == TipoMovimento.ROTACAO) {
-			this.executarRotacao(movimento.getDirecao());
-		} else {
-			this.executarDeslocamento(movimento.getDirecao(), grafo, grafo != null);
-		}
+		switch(movimento.getTipoMovimento()) {
 		
-		this.movimentos.push(movimento);
+		case DESLOCAMENTO:
+			this.executarDeslocamento(movimento.getDirecao(), grafo, grafo != null);
+			this.movimentos.push(movimento);
+			break;
+			
+		case CURVA:
+			this.executarRotacao(movimento.getDirecao());
+			this.movimentos.push(movimento);
+			// Executa um deslocamento depois de cada rotação, para evitar que o
+			// robô analise duas vezes os mesmos nodos sempre que executar uma
+			// rotação.
+			this.executarDeslocamento(Direcao.Norte, grafo, grafo != null);
+			this.movimentos.push(new Movimento(TipoMovimento.DESLOCAMENTO, Direcao.Norte));
+			break;
+		
+		case VOLTAR_POSICAO_ABERTA:
+			this.voltarUltimaPosicaoAberta(grafo);
+			break;
+			
+		}
 	}
 	
+	private void voltarUltimaPosicaoAberta(Grafo grafo) {
+		Point ultimaPosicao = this.posicoesAbertas.pop();
+		
+		while(this.x != ultimaPosicao.x &&
+			  this.y != ultimaPosicao.y) {
+			this.executarMovimento(this.movimentos.pop().reverter(), grafo);
+		}
+	}
+
 	public void executarRotacao(Direcao direcaoRotacao) {
 		if (direcaoRotacao == Direcao.Leste) {
-			motor1.rotate(190, true);
-			motor2.rotate(-190);
+			motor1.rotate(ConstantesRobo.ROTACAO, true);
+			motor2.rotate(-ConstantesRobo.ROTACAO);
 		} else {
-			motor1.rotate(-190, true);
-			motor2.rotate(190);
+			motor1.rotate(-ConstantesRobo.ROTACAO, true);
+			motor2.rotate(ConstantesRobo.ROTACAO);
 		}
 		
 		this.orientacao = MapeamentoDirecoes.obterNovaDirecao(this.orientacao, direcaoRotacao);
@@ -117,11 +148,11 @@ public class Robo {
 
 	public void executarDeslocamento(Direcao direcao, Grafo grafo, boolean procurarFinal) {
 		if (direcao == Direcao.Sul) {
-			motor1.rotate(-480, true);
-			motor2.rotate(-480);
+			motor1.rotate(-ConstantesRobo.DESLOCAMENTO, true);
+			motor2.rotate(-ConstantesRobo.DESLOCAMENTO);
 		} else {
-			motor1.rotate(480, true);
-			motor2.rotate(480);	
+			motor1.rotate(ConstantesRobo.DESLOCAMENTO, true);
+			motor2.rotate(ConstantesRobo.DESLOCAMENTO);	
 		}
 		
 		atualizarPosicao(direcao);
@@ -137,12 +168,11 @@ public class Robo {
 		
 		this.x = novaPosicao.x;
 		this.y = novaPosicao.y;
-		
 	}
 
 	private void verificarNodoFinal(Grafo grafo) {
 		int nivelLuz = this.sensorLuz.getLightValue();
-		if (nivelLuz < 60) {
+		if (nivelLuz < ConstantesRobo.NIVEL_VERDE) {
 			grafo.getMatriz()[this.x][this.y].setFinal(true);
 		}
 	}

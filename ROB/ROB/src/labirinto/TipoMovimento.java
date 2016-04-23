@@ -3,6 +3,7 @@ package labirinto;
 public enum TipoMovimento {
 
 	DESLOCAMENTO,
-	ROTACAO,
+	CURVA,
+	VOLTAR_POSICAO_ABERTA,
 	
 }

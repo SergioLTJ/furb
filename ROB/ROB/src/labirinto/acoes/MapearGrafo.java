@@ -1,5 +1,8 @@
-package labirinto;
+package labirinto.acoes;
 
+import labirinto.Robo;
+import labirinto.dados.Grafo;
+import labirinto.dados.Movimento;
 import lejos.robotics.subsumption.Behavior;
 
 public class MapearGrafo implements Behavior {
@@ -7,7 +10,7 @@ public class MapearGrafo implements Behavior {
 	private Robo robo;
 	private Grafo grafo;
 
-	public MapearGrafo(Grafo grafo, int xAtual, int yAtual, Robo robo) {
+	public MapearGrafo(Grafo grafo, Robo robo) {
 		super();
 		this.grafo = grafo;
 		this.robo = robo;

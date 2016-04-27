@@ -1,6 +1,11 @@
 package labirinto;
 
-import lejos.nxt.LightSensor;
+import labirinto.acoes.ExecutarMenorCaminho;
+import labirinto.acoes.MapearGrafo;
+import labirinto.dados.Direcao;
+import labirinto.dados.Grafo;
+import labirinto.dados.Nodo;
+import lejos.nxt.ColorSensor;
 import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.UltrasonicSensor;
@@ -19,14 +24,14 @@ public class RoboDijkstra {
 		
 		Grafo grafo = new Grafo(nodos);
 		
-		UltrasonicSensor ultrasonico = new UltrasonicSensor(SensorPort.S2);
-		LightSensor luz = new LightSensor(SensorPort.S1);
-		Robo robo = new Robo(Motor.A, Motor.C, Motor.B, ultrasonico, luz, Direcao.Sul);
+		UltrasonicSensor ultrasonico = new UltrasonicSensor(SensorPort.S4);
+		ColorSensor cor = new ColorSensor(SensorPort.S1);
+		Robo robo = new Robo(Motor.A, Motor.C, Motor.B, ultrasonico, cor, Direcao.Sul);
 		
-		MapearGrafo mapear = new MapearGrafo(grafo, 0, 0, robo);
+		MapearGrafo mapear = new MapearGrafo(grafo, robo);
 		ExecutarMenorCaminho executar = new ExecutarMenorCaminho(grafo, robo, grafo.getMatriz()[0][0]);
 		
-		Arbitrator arb = new Arbitrator(new Behavior[] { executar, mapear });
+		Arbitrator arb = new Arbitrator(new Behavior[] { mapear, executar });
 		arb.start();
 	}
 }

@@ -6,6 +6,7 @@
 package Logica;
 
 import Graficos.Ponto4D;
+import Tela.Main;
 import java.awt.Color;
 import javax.media.opengl.GL;
 
@@ -48,6 +49,8 @@ public class BoundingBox {
 		this.maiorY = greaterY;
 		this.maiorZ = greaterZ;
 		processarCentroBBox();
+                
+                Main.trace("Atualiza BBox");
 	}
 		
 	public void atualizarBBox(Ponto4D point) {
@@ -163,6 +166,20 @@ public class BoundingBox {
         
         public Ponto4D centro() {
             return null;
+        }
+        
+        public void display(GL gl) {
+            Color corConstrucao = Color.GREEN;
+            gl.glColor3f(corConstrucao.getRed(), corConstrucao.getGreen(), corConstrucao.getBlue());
+            gl.glLineWidth(1);
+            gl.glBegin(GL.GL_LINE_LOOP);
+            
+            gl.glVertex2d(menorX, menorY);
+            gl.glVertex2d(menorX, maiorY);
+            gl.glVertex2d(maiorX, maiorY);
+            gl.glVertex2d(maiorX, menorY);
+            
+            gl.glEnd();
         }
 }
 

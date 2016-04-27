@@ -7,6 +7,7 @@ package Graficos;
 
 import Logica.BoundingBox;
 import Logica.Transform;
+import Tela.Main;
 import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,6 +63,11 @@ public class ObjetoGrafico {
         // Desenhar filhos
         for (ObjetoGrafico obj : filhos) {
             obj.display(gl, selecionado);
+        }
+        
+        // Desenhar BoundingBox apenas em debug
+        if (Main.modoDebug) {
+            bound.display(gl);
         }
     }
     
@@ -165,7 +171,34 @@ public class ObjetoGrafico {
             primitiva = GL.GL_LINE_STRIP;
         }
         
+        atualizaBoundingBox();
         pontoConstrucao = null;
+    }
+    
+    private void atualizaBoundingBox() {
+        Ponto4D primeiroPonto = pontos.get(0);
+        
+        double minX = primeiroPonto.getX();
+        double maxX = primeiroPonto.getX();
+        double minY = primeiroPonto.getY();
+        double maxY = primeiroPonto.getY();
+        double minZ = primeiroPonto.getZ();
+        double maxZ = primeiroPonto.getZ();
+        
+        for (Ponto4D ponto : pontos) {
+            double x = ponto.getX();
+            double y = ponto.getY();
+            double z = ponto.getZ();
+            
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+            if (z < minZ) minZ = z;
+            if (z > maxZ) maxZ = z;
+        }
+        
+        bound.atribuirBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
     }
     
     // TRANSFORMACAO
@@ -173,6 +206,8 @@ public class ObjetoGrafico {
         Transform translate = new Transform();
 	translate.atribuirTranslacao(x,y,z);
 	transform = translate.transformMatrix(transform);
+        
+        atualizaBoundingBox();
     }
     
     public void escala(double escala) {
@@ -197,6 +232,12 @@ public class ObjetoGrafico {
 	local = translate.transformMatrix(local);
 
 	transform = transform.transformMatrix(local);
+        
+        atualizaBoundingBox();
+    }
+    
+    public void rotacao() {
+        
     }
     
     // ATRIBUTOS - LOGICA

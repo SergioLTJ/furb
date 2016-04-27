@@ -49,15 +49,18 @@ public class ObjetoGrafico {
         
         // Se estiver em construcao, desenhar a linha em construcao
         if (pontoConstrucao != null) {
-            Color corConstrucao = Color.GREEN;
-            gl.glColor3f(corConstrucao.getRed(), corConstrucao.getGreen(), corConstrucao.getBlue());
-            gl.glBegin(GL.GL_LINE_STRIP);
-            
             Ponto4D ultimoPonto = getUltimoPonto();
-            gl.glVertex2d(ultimoPonto.getX(), ultimoPonto.getY());
-            gl.glVertex2d(pontoConstrucao.getX(), pontoConstrucao.getY());
             
-            gl.glEnd();
+            if (ultimoPonto != null) {
+                Color corConstrucao = Color.GREEN;
+                gl.glColor3f(corConstrucao.getRed(), corConstrucao.getGreen(), corConstrucao.getBlue());
+                gl.glBegin(GL.GL_LINE_STRIP);
+            
+                gl.glVertex2d(ultimoPonto.getX(), ultimoPonto.getY());
+                gl.glVertex2d(pontoConstrucao.getX(), pontoConstrucao.getY());
+            
+                gl.glEnd();
+            }
         }
         
         // Desenhar filhos
@@ -98,6 +101,8 @@ public class ObjetoGrafico {
     }
     
     public Ponto4D getUltimoPonto() {
+        if (pontos.isEmpty())
+            return null;
         return pontos.get(pontos.size() - 1);
     }
     

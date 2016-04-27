@@ -62,11 +62,19 @@ public class Mundo {
     }
     
     public void regressaConstrucaoObjeto() {
-        objetoSelecionado.removeUltimoPonto();
+        if (objetoSelecionado.getQuantPontos() > 0)
+            objetoSelecionado.removeUltimoPonto();
+        else
+            cancelaConstrucaoObjeto();
     }
     
     public void finalizaConstrucaoObjeto(int index) {
         objetoSelecionado.encerraObjeto(index);
+    }
+    
+    public void cancelaConstrucaoObjeto() {
+        listaObjetos.remove(objetoSelecionado);
+        objetoSelecionado = null;
     }
     
     // FUNCOES - TRANSFORMACAO

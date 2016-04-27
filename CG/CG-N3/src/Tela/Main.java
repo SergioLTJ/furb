@@ -209,7 +209,12 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 		ponto.setX(ponto.getX() + 200);
 		ponto.setY((-ponto.getY()) + 200);
 		
+                boolean rightClick = e.getButton() == MouseEvent.BUTTON3;
+                
 		if (modoConstrucao) {
+                    if (rightClick) {
+                        mundo.regressaConstrucaoObjeto();
+                    } else {
 			ObjetoGrafico selecao = mundo.getSelecao();
 			int index = selecao.indexPonto(ponto);
 
@@ -222,6 +227,7 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 				// Adiciona vertice
 				mundo.avancaConstrucaoObjeto(ponto);
 			}
+                    }
 		} else {
 			// Valida selecao de poligonos existentes
 

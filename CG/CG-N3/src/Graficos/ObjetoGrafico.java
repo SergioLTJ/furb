@@ -218,8 +218,7 @@ public class ObjetoGrafico {
     public void escala(double escala) {
         Transform local = new Transform();
         
-        // TODO: O ponto central devera ser capturado a partir da BBox gerada
-        Ponto4D pontoCentral = new Ponto4D(pontos.get(0));
+        Ponto4D pontoCentral = bound.obterCentro();
         Transform translate = new Transform();
         
         translate.atribuirTranslacao(pontoCentral.getX(), pontoCentral.getY(), pontoCentral.getZ());

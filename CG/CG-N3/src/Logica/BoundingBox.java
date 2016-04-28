@@ -29,6 +29,9 @@ public class BoundingBox {
 
 	public BoundingBox() {
 		this(0, 0, 0, 0, 0, 0);
+                processarCentroBBox();
+                
+		this.cor = Color.MAGENTA;
 	}
 	
 	public BoundingBox(double smallerX, double smallerY, double smallerZ, double greaterX, double greaterY, double greaterZ) {
@@ -38,6 +41,8 @@ public class BoundingBox {
 		this.maiorX = greaterX;
 		this.maiorY = greaterY;
 		this.maiorZ = greaterZ;
+                processarCentroBBox();
+                
 		this.cor = Color.MAGENTA;
 	}
 	
@@ -164,13 +169,8 @@ public class BoundingBox {
             return true;
         }
         
-        public Ponto4D centro() {
-            return null;
-        }
-        
         public void display(GL gl) {
-            Color corConstrucao = Color.GREEN;
-            gl.glColor3f(corConstrucao.getRed(), corConstrucao.getGreen(), corConstrucao.getBlue());
+            gl.glColor3f(cor.getRed(), cor.getGreen(), cor.getBlue());
             gl.glLineWidth(1);
             gl.glBegin(GL.GL_LINE_LOOP);
             

@@ -88,6 +88,11 @@ public class Mundo {
             objetoSelecionado.escala(escala);
     }
     
+    public void rotacaoObjeto(double rotacao) {
+        if (objetoSelecionado != null)
+            objetoSelecionado.rotacao(rotacao);
+    }
+    
     // ATRIBUTOS
     List<ObjetoGrafico> listaObjetos;
     ObjetoGrafico objetoSelecionado;

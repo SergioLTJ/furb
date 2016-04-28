@@ -143,6 +143,16 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
                     if (!modoConstrucao)
                         mundo.escalaObjeto(0.5);
                     break;
+                    
+                // Rotação objeto
+                case KeyEvent.VK_COMMA: 
+                    if (!modoConstrucao)
+                        mundo.rotacaoObjeto(15);
+                    break;
+                case KeyEvent.VK_PERIOD: 
+                    if (!modoConstrucao)
+                        mundo.rotacaoObjeto(-15);
+                    break;
 		}
                 glDrawable.display();
 	}

@@ -211,37 +211,54 @@ public class ObjetoGrafico {
         Transform translate = new Transform();
 	translate.atribuirTranslacao(x,y,z);
 	transform = translate.transformMatrix(transform);
-        
-        atualizaBoundingBox();
     }
     
     public void escala(double escala) {
         Transform local = new Transform();
         
         Ponto4D pontoCentral = bound.obterCentro();
+        pontoCentral.inverterSinal(pontoCentral);
         Transform translate = new Transform();
         
         translate.atribuirTranslacao(pontoCentral.getX(), pontoCentral.getY(), pontoCentral.getZ());
-	local = translate.transformMatrix(local);
+        local = translate.transformMatrix(local);
 
         Transform scale = new Transform();
         
 	scale.atribuirEscala(escala, escala, 1.0);
 	local = scale.transformMatrix(local);
 
-	pontoCentral.inverterSinal(pontoCentral);
-        translate.atribuirIdentidade();
+	translate.atribuirIdentidade();
+        pontoCentral.inverterSinal(pontoCentral);
         
 	translate.atribuirTranslacao(pontoCentral.getX(), pontoCentral.getY(), pontoCentral.getZ());
 	local = translate.transformMatrix(local);
 
 	transform = transform.transformMatrix(local);
-        
-        atualizaBoundingBox();
     }
     
-    public void rotacao() {
+    public void rotacao(double rotacao) {
+        Transform local = new Transform();
+
+        Ponto4D pontoCentral = bound.obterCentro();
+        pontoCentral.inverterSinal(pontoCentral);
+        Transform translate = new Transform();
         
+	translate.atribuirTranslacao(pontoCentral.getX(),pontoCentral.getY(),pontoCentral.getZ());
+	local = translate.transformMatrix(local);
+
+        Transform rotate = new Transform();
+        
+	rotate.atribuirRotacaoZ(Transform.DEG_TO_RAD * rotacao);
+	local = rotate.transformMatrix(local);
+
+	pontoCentral.inverterSinal(pontoCentral);
+        translate.atribuirIdentidade();
+        
+	translate.atribuirTranslacao(pontoCentral.getX(),pontoCentral.getY(),pontoCentral.getZ());
+	local = translate.transformMatrix(local);
+
+	transform = transform.transformMatrix(local);
     }
     
     // ATRIBUTOS - LOGICA

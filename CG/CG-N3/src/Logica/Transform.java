@@ -21,7 +21,7 @@ import Graficos.Ponto4D;
  */
 public class Transform {
 
-    static final double DEG_TO_RAD = 0.017453292519943295769236907684886;
+    public static final double DEG_TO_RAD = 0.017453292519943295769236907684886;
 
     /// Cria uma matriz de Trasnformacao com uma matriz Identidade.
     private final double[] matriz = {

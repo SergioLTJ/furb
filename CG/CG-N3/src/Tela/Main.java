@@ -24,7 +24,11 @@ import javax.media.opengl.glu.GLU;
 
 public class Main implements GLEventListener, KeyListener, MouseListener, MouseMotionListener {
 
+        // DEBUG
+        public static final boolean modoDebug = true;
+    
 	public static void trace(String str) {
+            if (modoDebug)
 		System.out.println(str);
 	}
 
@@ -41,10 +45,10 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 	private float locomocao = 10.0f;
 
 	// MUNDO
-	Mundo mundo;
-	boolean modoConstrucao;
+	private Mundo mundo;
+	private boolean modoConstrucao;
 
-	@Override
+        @Override
 	public void init(GLAutoDrawable drawable) {
 		System.out.println(" --- init ---");
 		glDrawable = drawable;
@@ -114,24 +118,40 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
                         
                 // Translacao objeto
                 case KeyEvent.VK_RIGHT:
-                    mundo.moveObjeto(10, 0, 0);
+                    if (!modoConstrucao)
+                        mundo.moveObjeto(10, 0, 0);
                     break;
                 case KeyEvent.VK_LEFT:
-                    mundo.moveObjeto(-10, 0, 0);
+                    if (!modoConstrucao)
+                        mundo.moveObjeto(-10, 0, 0);
                     break;
                 case KeyEvent.VK_UP:
-                    mundo.moveObjeto(0, 10, 0);
+                    if (!modoConstrucao)
+                        mundo.moveObjeto(0, 10, 0);
                     break;
                 case KeyEvent.VK_DOWN:
-                    mundo.moveObjeto(0, -10, 0);
+                    if (!modoConstrucao)
+                        mundo.moveObjeto(0, -10, 0);
                     break;
                     
                 // Escala objeto
                 case KeyEvent.VK_PAGE_UP: 
-                    mundo.escalaObjeto(1.5);
+                    if (!modoConstrucao)
+                        mundo.escalaObjeto(1.5);
                     break;
-                case KeyEvent.VK_PAGE_DOWN:   
-                    mundo.escalaObjeto(0.5);
+                case KeyEvent.VK_PAGE_DOWN: 
+                    if (!modoConstrucao)
+                        mundo.escalaObjeto(0.5);
+                    break;
+                    
+                // Rotação objeto
+                case KeyEvent.VK_COMMA: 
+                    if (!modoConstrucao)
+                        mundo.rotacaoObjeto(15);
+                    break;
+                case KeyEvent.VK_PERIOD: 
+                    if (!modoConstrucao)
+                        mundo.rotacaoObjeto(-15);
                     break;
 		}
                 glDrawable.display();
@@ -199,7 +219,12 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 		ponto.setX(ponto.getX() + 200);
 		ponto.setY((-ponto.getY()) + 200);
 		
+                boolean rightClick = e.getButton() == MouseEvent.BUTTON3;
+                
 		if (modoConstrucao) {
+                    if (rightClick) {
+                        mundo.regressaConstrucaoObjeto();
+                    } else {
 			ObjetoGrafico selecao = mundo.getSelecao();
 			int index = selecao.indexPonto(ponto);
 
@@ -212,6 +237,7 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 				// Adiciona vertice
 				mundo.avancaConstrucaoObjeto(ponto);
 			}
+                    }
 		} else {
 			// Valida selecao de poligonos existentes
 

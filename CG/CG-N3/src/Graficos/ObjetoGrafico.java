@@ -7,6 +7,7 @@ package Graficos;
 
 import Logica.BoundingBox;
 import Logica.Transform;
+import Tela.Main;
 import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,20 +49,28 @@ public class ObjetoGrafico {
         
         // Se estiver em construcao, desenhar a linha em construcao
         if (pontoConstrucao != null) {
-            Color corConstrucao = Color.GREEN;
-            gl.glColor3f(corConstrucao.getRed(), corConstrucao.getGreen(), corConstrucao.getBlue());
-            gl.glBegin(GL.GL_LINE_STRIP);
-            
             Ponto4D ultimoPonto = getUltimoPonto();
-            gl.glVertex2d(ultimoPonto.getX(), ultimoPonto.getY());
-            gl.glVertex2d(pontoConstrucao.getX(), pontoConstrucao.getY());
             
-            gl.glEnd();
+            if (ultimoPonto != null) {
+                Color corConstrucao = Color.GREEN;
+                gl.glColor3f(corConstrucao.getRed(), corConstrucao.getGreen(), corConstrucao.getBlue());
+                gl.glBegin(GL.GL_LINE_STRIP);
+            
+                gl.glVertex2d(ultimoPonto.getX(), ultimoPonto.getY());
+                gl.glVertex2d(pontoConstrucao.getX(), pontoConstrucao.getY());
+            
+                gl.glEnd();
+            }
         }
         
         // Desenhar filhos
         for (ObjetoGrafico obj : filhos) {
             obj.display(gl, selecionado);
+        }
+        
+        // Desenhar BoundingBox apenas em debug
+        if (Main.modoDebug) {
+            bound.display(gl);
         }
     }
     
@@ -92,6 +101,8 @@ public class ObjetoGrafico {
     }
     
     public Ponto4D getUltimoPonto() {
+        if (pontos.isEmpty())
+            return null;
         return pontos.get(pontos.size() - 1);
     }
     
@@ -165,7 +176,34 @@ public class ObjetoGrafico {
             primitiva = GL.GL_LINE_STRIP;
         }
         
+        atualizaBoundingBox();
         pontoConstrucao = null;
+    }
+    
+    private void atualizaBoundingBox() {
+        Ponto4D primeiroPonto = pontos.get(0);
+        
+        double minX = primeiroPonto.getX();
+        double maxX = primeiroPonto.getX();
+        double minY = primeiroPonto.getY();
+        double maxY = primeiroPonto.getY();
+        double minZ = primeiroPonto.getZ();
+        double maxZ = primeiroPonto.getZ();
+        
+        for (Ponto4D ponto : pontos) {
+            double x = ponto.getX();
+            double y = ponto.getY();
+            double z = ponto.getZ();
+            
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+            if (z < minZ) minZ = z;
+            if (z > maxZ) maxZ = z;
+        }
+        
+        bound.atribuirBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
     }
     
     // TRANSFORMACAO
@@ -178,22 +216,46 @@ public class ObjetoGrafico {
     public void escala(double escala) {
         Transform local = new Transform();
         
-        // TODO: O ponto central devera ser capturado a partir da BBox gerada
-        Ponto4D pontoCentral = new Ponto4D(pontos.get(0));
+        Ponto4D pontoCentral = bound.obterCentro();
+        pontoCentral.inverterSinal(pontoCentral);
         Transform translate = new Transform();
         
         translate.atribuirTranslacao(pontoCentral.getX(), pontoCentral.getY(), pontoCentral.getZ());
-	local = translate.transformMatrix(local);
+        local = translate.transformMatrix(local);
 
         Transform scale = new Transform();
         
 	scale.atribuirEscala(escala, escala, 1.0);
 	local = scale.transformMatrix(local);
 
+	translate.atribuirIdentidade();
+        pontoCentral.inverterSinal(pontoCentral);
+        
+	translate.atribuirTranslacao(pontoCentral.getX(), pontoCentral.getY(), pontoCentral.getZ());
+	local = translate.transformMatrix(local);
+
+	transform = transform.transformMatrix(local);
+    }
+    
+    public void rotacao(double rotacao) {
+        Transform local = new Transform();
+
+        Ponto4D pontoCentral = bound.obterCentro();
+        pontoCentral.inverterSinal(pontoCentral);
+        Transform translate = new Transform();
+        
+	translate.atribuirTranslacao(pontoCentral.getX(),pontoCentral.getY(),pontoCentral.getZ());
+	local = translate.transformMatrix(local);
+
+        Transform rotate = new Transform();
+        
+	rotate.atribuirRotacaoZ(Transform.DEG_TO_RAD * rotacao);
+	local = rotate.transformMatrix(local);
+
 	pontoCentral.inverterSinal(pontoCentral);
         translate.atribuirIdentidade();
         
-	translate.atribuirTranslacao(pontoCentral.getX(), pontoCentral.getY(), pontoCentral.getZ());
+	translate.atribuirTranslacao(pontoCentral.getX(),pontoCentral.getY(),pontoCentral.getZ());
 	local = translate.transformMatrix(local);
 
 	transform = transform.transformMatrix(local);

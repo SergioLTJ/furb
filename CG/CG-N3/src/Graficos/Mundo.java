@@ -62,11 +62,19 @@ public class Mundo {
     }
     
     public void regressaConstrucaoObjeto() {
-        objetoSelecionado.removeUltimoPonto();
+        if (objetoSelecionado.getQuantPontos() > 0)
+            objetoSelecionado.removeUltimoPonto();
+        else
+            cancelaConstrucaoObjeto();
     }
     
     public void finalizaConstrucaoObjeto(int index) {
         objetoSelecionado.encerraObjeto(index);
+    }
+    
+    public void cancelaConstrucaoObjeto() {
+        listaObjetos.remove(objetoSelecionado);
+        objetoSelecionado = null;
     }
     
     // FUNCOES - TRANSFORMACAO
@@ -78,6 +86,11 @@ public class Mundo {
     public void escalaObjeto(double escala) {
         if (objetoSelecionado != null)
             objetoSelecionado.escala(escala);
+    }
+    
+    public void rotacaoObjeto(double rotacao) {
+        if (objetoSelecionado != null)
+            objetoSelecionado.rotacao(rotacao);
     }
     
     // ATRIBUTOS

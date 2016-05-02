@@ -12,7 +12,7 @@ import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 
-public class RoboDijkstra {
+public class RoboMenorCaminho {
 
 	public static void main(String[] args) {
 		Nodo[][] nodos = new Nodo[][] {

@@ -5,7 +5,7 @@ import lejos.nxt.UltrasonicSensor;
 
 public class TesteUltrasonico {
 public static void main(String[] args) {
-	UltrasonicSensor sensorDistancia = new UltrasonicSensor(SensorPort.S2);
+	UltrasonicSensor sensorDistancia = new UltrasonicSensor(SensorPort.S4);
 	
 	Motor.C.setSpeed(900);
 	

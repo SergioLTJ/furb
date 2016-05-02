@@ -31,10 +31,10 @@ public class ExecutarMenorCaminho implements Behavior{
 
 	@Override
 	public void action() {
-		if (!estaNoPontoInicial) {
-			robo.voltarAoPontoInicial();
-			estaNoPontoInicial = true;
-		}
+//		if (!estaNoPontoInicial) {
+//			robo.voltarAoPontoInicial();
+//			estaNoPontoInicial = true;
+//		}
 		
 		if (Button.ENTER.isPressed()) {
 			resetarEstadoNodos(this.nodoInicial);
@@ -44,11 +44,12 @@ public class ExecutarMenorCaminho implements Behavior{
 	}
 
 	private void resetarEstadoNodos(Nodo nodo) {
+		nodo.setEstado(EstadoNodo.NAO_VISITADO);
 		for (Nodo vizinho : nodo.getVizinhos()) {
 			if (vizinho.getEstado() != EstadoNodo.NAO_VISITADO) {
 				vizinho.setEstado(EstadoNodo.NAO_VISITADO);
+				resetarEstadoNodos(vizinho);
 			}
-			resetarEstadoNodos(vizinho);
 		}
 	}
 

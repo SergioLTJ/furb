@@ -1,5 +1,6 @@
 package labirinto.operacoes;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,18 +16,33 @@ public class BuscaLargura {
 	}
 
 	private boolean buscar(Nodo nodo, LinkedList<Nodo> nodos) {
-		if (nodo.ehFinal()) {
-			nodos.add(0, nodo);
-			return true;
-		}
-		
-		for (Nodo vizinho : nodo.getVizinhos()) {
-			if (buscar(vizinho, nodos)) {
-				nodos.add(0, vizinho);
-				return true;
+		ArrayList<Nodo> fila = new ArrayList<>();
+		fila.add(nodo);
+		Nodo nodoAtual = null;
+		do {
+			nodoAtual = fila.get(fila.size() - 1);
+			if (nodoAtual.ehFinal()) {
+				break;
 			}
-		}
+			for (Nodo viz : nodoAtual.getVizinhos()) {
+				fila.add(viz);
+			}
+		} while(!nodoAtual.ehFinal());
 		
-		return false;
+		return nodos.addAll(fila);
+		
+//		for (Nodo vizinho : nodo.getVizinhos()) {
+//			if (buscar(vizinho, nodos)) {
+//				nodos.add(0, vizinho);
+//				return true;
+//			}
+//		}
+//		
+//		if (nodo.ehFinal()) {
+//			nodos.add(0, nodo);
+//			return true;
+//		}
+//		
+//		return false;
 	}
 }

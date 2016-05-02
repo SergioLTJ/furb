@@ -75,11 +75,12 @@ public class Robo {
 		List<Movimento> movimentosPossiveis = new ArrayList<>();
 		
 		this.mapearMovimentoNaDirecao(grafo, Direcao.Norte, movimentosPossiveis);
+		
 		motorSensor.rotate(ConstantesRobo.ROTACAO_SENSOR);
-		this.mapearMovimentoNaDirecao(grafo, Direcao.Leste, movimentosPossiveis);
+		this.mapearMovimentoNaDirecao(grafo, Direcao.Oeste, movimentosPossiveis);
 		
 		motorSensor.rotate(-(ConstantesRobo.ROTACAO_SENSOR * 2));
-		this.mapearMovimentoNaDirecao(grafo, Direcao.Oeste, movimentosPossiveis);
+		this.mapearMovimentoNaDirecao(grafo, Direcao.Leste, movimentosPossiveis);
 		
 		motorSensor.rotate(ConstantesRobo.ROTACAO_SENSOR);
 		
@@ -127,9 +128,10 @@ public class Robo {
 			// Executa um deslocamento depois de cada rotação, para evitar que o
 			// robô analise duas vezes os mesmos nodos sempre que executar uma
 			// rotação.
-			Direcao direcaoDeslocamento = movimento.ehReverso() ? Direcao.Sul : Direcao.Norte; 
-			this.executarDeslocamento(direcaoDeslocamento, grafo, grafo != null);
-			adicionarMovimentoPilha(movimento);
+			if (!movimento.ehReverso()) {
+				Movimento movimentoDeslocamento = new Movimento(TipoMovimento.DESLOCAMENTO, Direcao.Norte);
+				this.executarMovimento(movimentoDeslocamento, grafo);				
+			}
 			break;
 		
 		case VOLTAR_POSICAO_ABERTA:
@@ -146,21 +148,23 @@ public class Robo {
 	}
 
 	private void voltarUltimaPosicaoAberta(Grafo grafo) {
-		Point ultimaPosicao = this.posicoesAbertas.pop();
+		Point ultimaPosicaoAberta = this.posicoesAbertas.pop();
 		
-		while(this.x != ultimaPosicao.x &&
-			  this.y != ultimaPosicao.y) {
-			this.executarMovimento(this.movimentos.pop().reverter(), grafo);
+		while(this.x != ultimaPosicaoAberta.x ||
+			  this.y != ultimaPosicaoAberta.y) {
+			Movimento movimento = this.movimentos.pop();
+			Movimento movimentoR = movimento.reverter();
+			this.executarMovimento(movimentoR, grafo);
 		}
 	}
 
 	public void executarRotacao(Direcao direcaoRotacao) {
 		if (direcaoRotacao == Direcao.Leste) {
-			motor1.rotate(ConstantesRobo.ROTACAO, true);
-			motor2.rotate(-ConstantesRobo.ROTACAO);
-		} else {
 			motor1.rotate(-ConstantesRobo.ROTACAO, true);
 			motor2.rotate(ConstantesRobo.ROTACAO);
+		} else {
+			motor1.rotate(ConstantesRobo.ROTACAO, true);
+			motor2.rotate(-ConstantesRobo.ROTACAO);
 		}
 		
 		this.orientacao = MapeamentoDirecoes.obterNovaDirecao(this.orientacao, direcaoRotacao);
@@ -198,10 +202,15 @@ public class Robo {
 	}
 
 	public void voltarAoPontoInicial() {
+		ConstantesRobo.DESLOCAMENTO = 630;
+		
 		while (!this.movimentos.isEmpty()) {
-			Movimento movimento = this.movimentos.pop().reverter();
-			this.executarMovimento(movimento, null);
+			Movimento movimento = this.movimentos.pop();
+			Movimento movimentoR = movimento.reverter();
+			this.executarMovimento(movimentoR, null);
 		}
+		
+		ConstantesRobo.DESLOCAMENTO = 690;
 	}
 	
 	public void movimentarEntreNodos(List<Nodo> nodos) {

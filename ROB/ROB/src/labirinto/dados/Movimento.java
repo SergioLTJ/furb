@@ -34,6 +34,10 @@ public class Movimento {
 		this.direcao = direcao;
 	}
 
+	public void setReverso(boolean ehReverso) {
+		this.ehReverso = ehReverso;
+	}
+	
 	public boolean ehReverso() {
 		return this.ehReverso;
 	}

@@ -256,12 +256,17 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 			}
                     }
 		} else {
+                    if (rightClick) {
+                        mundo.removeSelecao();
+                    } else
+                    {
 			// Valida selecao de poligonos existentes
                         if (!mundo.selecionaObjeto(ponto)) {
                             // Cria novo poligono
                             mundo.iniciaObjeto(ponto);
                             modoConstrucao = true;
                         }
+                    }
 		}
 
 		glDrawable.display();

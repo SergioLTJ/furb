@@ -104,6 +104,10 @@ public class Mundo {
         return false;
     }
     
+    public void removeSelecao() {
+        objetoSelecionado = null;
+    }
+    
     // ATRIBUTOS
     List<ObjetoGrafico> listaObjetos;
     ObjetoGrafico objetoSelecionado;

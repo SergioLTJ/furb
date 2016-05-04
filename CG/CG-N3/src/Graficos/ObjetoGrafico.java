@@ -19,9 +19,12 @@ import javax.media.opengl.GL;
  */
 public class ObjetoGrafico {
     
+    // CORES
+    private static Color cores[] = { Color.BLACK, Color.YELLOW, Color.ORANGE, Color.RED, Color.GREEN, Color.CYAN, Color.BLUE, Color.MAGENTA };
+    
     // CONSTRUTORES
     public ObjetoGrafico() {
-        cor = Color.BLACK; 
+        indiceCor = 0; 
         bound = new BoundingBox();
         pontos = new LinkedList<>();
         pontoConstrucao = null;
@@ -32,7 +35,7 @@ public class ObjetoGrafico {
     
     // DISPLAY
     public void display(GL gl, boolean selecionado) {
-        gl.glColor3f(cor.getRed(), cor.getGreen(), cor.getBlue());
+        gl.glColor3f(getCor().getRed(), getCor().getGreen(), getCor().getBlue());
         gl.glLineWidth(selecionado ? 4 : 2);
         
         gl.glPushMatrix();
@@ -80,7 +83,7 @@ public class ObjetoGrafico {
     }
 
     public Color getCor() {
-        return cor;
+        return cores[indiceCor];
     }
 
     public int getPrimitiva() {
@@ -124,8 +127,10 @@ public class ObjetoGrafico {
     }
     
     // SET
-    public void setCor(Color cor) {
-        this.cor = cor;
+    public void proximaCor() {
+        indiceCor++;
+        if (indiceCor >= cores.length)
+            indiceCor = 0;
     }
 
     public void setPrimitiva(int primitiva) {
@@ -268,7 +273,7 @@ public class ObjetoGrafico {
     // ATRIBUTOS - GRAFICOS
     private List<Ponto4D> pontos;
     private Ponto4D pontoConstrucao;
-    private Color cor;
+    private int indiceCor;
     private int primitiva;
     
     // ATRIBUTOS - OUTROS

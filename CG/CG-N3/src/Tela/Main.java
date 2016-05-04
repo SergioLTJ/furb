@@ -162,6 +162,12 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
                     if (!modoConstrucao)
                         mundo.rotacaoObjeto(-15);
                     break;
+                    
+                // Outras funções objeto
+                case KeyEvent.VK_C:
+                    if (mundo.possuiSelecao())
+                        mundo.getSelecao().proximaCor();
+                    break;
 		}
                 glDrawable.display();
 	}

@@ -48,6 +48,8 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 	private Mundo mundo;
 	private boolean modoConstrucao;
 
+        Ponto4D cursor;
+        
         @Override
 	public void init(GLAutoDrawable drawable) {
 		System.out.println(" --- init ---");
@@ -58,6 +60,7 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 		trace("Espaco de desenho com tamanho: " + drawable.getWidth() + " x " + drawable.getHeight());
 		gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
+                cursor = new Ponto4D();
 		mundo = new Mundo();
 		modoConstrucao = false;
 	}
@@ -73,6 +76,12 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 
 		SRU();
 
+                gl.glColor3d(0, 0, 0);
+                gl.glPointSize(5);
+                gl.glBegin(GL.GL_POINTS);
+                gl.glVertex2d(cursor.getX(), cursor.getY());
+                gl.glEnd();
+                
 		mundo.display(gl);
 
 		gl.glFlush();
@@ -224,6 +233,8 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 		if (modoConstrucao) {
                     if (rightClick) {
                         mundo.regressaConstrucaoObjeto();
+                        if (!mundo.possuiSelecao())
+                            modoConstrucao = false;
                     } else {
 			ObjetoGrafico selecao = mundo.getSelecao();
 			int index = selecao.indexPonto(ponto);
@@ -240,10 +251,11 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
                     }
 		} else {
 			// Valida selecao de poligonos existentes
-
-			// Cria novo poligono
-			mundo.iniciaObjeto(ponto);
-			modoConstrucao = true;
+                        if (!mundo.selecionaObjeto(ponto)) {
+                            // Cria novo poligono
+                            mundo.iniciaObjeto(ponto);
+                            modoConstrucao = true;
+                        }
 		}
 
 		glDrawable.display();
@@ -271,12 +283,13 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-            Ponto4D ponto = new Ponto4D(e.getX(), e.getY());
-            ponto.setX(ponto.getX() + 200);
-            ponto.setY((-ponto.getY()) + 200);
+            if (cursor != null) {
+                cursor.setX(e.getX() + 200);
+                cursor.setY((-e.getY()) + 200);
+            }
                 
             if (modoConstrucao)
-                mundo.atualizaConstrucaoObjeto(ponto);
+                mundo.atualizaConstrucaoObjeto(cursor);
                 
             if (glDrawable != null)
                 glDrawable.display();

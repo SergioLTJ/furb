@@ -62,7 +62,7 @@ public class Mundo {
     }
     
     public void regressaConstrucaoObjeto() {
-        if (objetoSelecionado.getQuantPontos() > 0)
+        if (objetoSelecionado.getQuantPontos() > 1)
             objetoSelecionado.removeUltimoPonto();
         else
             cancelaConstrucaoObjeto();
@@ -91,6 +91,17 @@ public class Mundo {
     public void rotacaoObjeto(double rotacao) {
         if (objetoSelecionado != null)
             objetoSelecionado.rotacao(rotacao);
+    }
+    
+    // FUNCOES - SELECAO
+    public boolean selecionaObjeto(Ponto4D ponto) {
+        for (ObjetoGrafico obj : listaObjetos) {
+            if (obj.getBound().calcula(ponto)) {
+                objetoSelecionado = obj;
+                return true;
+            }
+        }
+        return false;
     }
     
     // ATRIBUTOS

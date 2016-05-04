@@ -124,6 +124,11 @@ public class Mundo {
         return false;
     }
     
+    public void deletaSelecao() {
+        listaObjetos.remove(objetoSelecionado);
+        removeSelecao();
+    }
+    
     public void removeSelecao() {
         objetoSelecionado = null;
     }

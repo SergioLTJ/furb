@@ -168,7 +168,13 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
                     if (mundo.possuiSelecao())
                         mundo.getSelecao().proximaCor();
                     break;
+		
+                case KeyEvent.VK_DELETE:
+                    if (mundo.possuiSelecao())
+                        mundo.deletaSelecao();
+                    break;
 		}
+                
                 glDrawable.display();
 	}
 

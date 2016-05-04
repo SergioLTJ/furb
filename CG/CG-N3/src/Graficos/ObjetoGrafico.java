@@ -68,12 +68,45 @@ public class ObjetoGrafico {
         
         // Desenhar filhos
         for (ObjetoGrafico obj : filhos) {
-            obj.display(gl, selecionado);
+            obj.displayChild(gl, selecionado, this);
         }
         
         // Desenhar BoundingBox apenas em debug
         if (Main.modoDebug) {
             bound.display(gl);
+        }
+    }
+    
+    public void displayChild(GL gl, boolean selecionado, ObjetoGrafico pai) {
+        gl.glColor3f(pai.getCor().getRed(), pai.getCor().getGreen(), pai.getCor().getBlue());
+        gl.glLineWidth(selecionado ? 4 : 2);
+        
+        gl.glPushMatrix();
+        gl.glMultMatrixd(pai.getMatriz().getDate(), 0);
+        gl.glBegin(primitiva);
+        
+        // Desenhar objeto
+        for (Ponto4D ponto : pontos) {
+            gl.glVertex2d(ponto.getX(), ponto.getY());
+        }
+        
+        gl.glEnd();
+        gl.glPopMatrix();
+        
+        // Se estiver em construcao, desenhar a linha em construcao
+        if (pontoConstrucao != null) {
+            Ponto4D ultimoPonto = getUltimoPonto();
+            
+            if (ultimoPonto != null) {
+                Color corConstrucao = Color.GREEN;
+                gl.glColor3f(corConstrucao.getRed(), corConstrucao.getGreen(), corConstrucao.getBlue());
+                gl.glBegin(GL.GL_LINE_STRIP);
+            
+                gl.glVertex2d(ultimoPonto.getX(), ultimoPonto.getY());
+                gl.glVertex2d(pontoConstrucao.getX(), pontoConstrucao.getY());
+            
+                gl.glEnd();
+            }
         }
     }
     
@@ -92,6 +125,10 @@ public class ObjetoGrafico {
     
     public Ponto4D getPontoConstrucao() {
         return pontoConstrucao;
+    }
+    
+    public Transform getMatriz() {
+        return transform;
     }
     
     // GET - PONTOS
@@ -148,6 +185,10 @@ public class ObjetoGrafico {
     
     public ObjetoGrafico removeFilho(int index) {
         return filhos.remove(index);
+    }
+    
+    public boolean removeFilho(ObjetoGrafico obj) {
+        return filhos.remove(obj);
     }
     
     // SET - PONTOS

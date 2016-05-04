@@ -238,12 +238,11 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
                 
 		if (modoConstrucao) {
                     if (rightClick) {
-                        mundo.regressaConstrucaoObjeto();
-                        if (!mundo.possuiSelecao())
+                        if (mundo.regressaConstrucaoObjeto())
                             modoConstrucao = false;
                     } else {
-			ObjetoGrafico selecao = mundo.getSelecao();
-			int index = selecao.indexPonto(ponto);
+			ObjetoGrafico constr = mundo.getConstrucao();
+			int index = constr.indexPonto(ponto);
 
 			// Valida clique em ponto existente
 			if (index >= 0) {

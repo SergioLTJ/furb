@@ -19,6 +19,7 @@ public class Mundo {
     public Mundo() {
         listaObjetos = new LinkedList<>();
         objetoSelecionado = null;
+        objetoConstrucao = null;
         camera = new Camera();
     }
     
@@ -41,40 +42,59 @@ public class Mundo {
         return objetoSelecionado;
     }
     
+    public ObjetoGrafico getConstrucao() {
+        return objetoConstrucao;
+    }
+    
     // FUNCOES - CONSTRUCAO
     public void iniciaObjeto(Ponto4D pontoInicial) {
         ObjetoGrafico novoObjeto = new ObjetoGrafico();
         novoObjeto.addPonto(new Ponto4D(pontoInicial.getX(), pontoInicial.getY()));
         novoObjeto.setPontoConstrucao(pontoInicial);
         
-        listaObjetos.add(novoObjeto);
-        objetoSelecionado = novoObjeto;
+        objetoConstrucao = novoObjeto;
+        
+        if (possuiSelecao()) {
+            objetoSelecionado.addFilho(novoObjeto);
+        } else {
+            listaObjetos.add(novoObjeto);
+            objetoSelecionado = novoObjeto;
+        }
     }
     
     public void atualizaConstrucaoObjeto(Ponto4D ponto) {
-        if (objetoSelecionado != null)
-            objetoSelecionado.setPontoConstrucao(ponto);
+        if (objetoConstrucao != null)
+            objetoConstrucao.setPontoConstrucao(ponto);
     }
     
     public void avancaConstrucaoObjeto(Ponto4D ponto) {
         atualizaConstrucaoObjeto(ponto);
-        objetoSelecionado.addPonto(ponto);
+        objetoConstrucao.addPonto(ponto);
     }
     
-    public void regressaConstrucaoObjeto() {
-        if (objetoSelecionado.getQuantPontos() > 1)
-            objetoSelecionado.removeUltimoPonto();
-        else
-            cancelaConstrucaoObjeto();
+    public boolean regressaConstrucaoObjeto() {
+        if (objetoConstrucao.getQuantPontos() > 1) {
+            objetoConstrucao.removeUltimoPonto();
+            return false;
+        }
+        
+        cancelaConstrucaoObjeto();
+        return true;
     }
     
     public void finalizaConstrucaoObjeto(int index) {
-        objetoSelecionado.encerraObjeto(index);
+        objetoConstrucao.encerraObjeto(index);
     }
     
     public void cancelaConstrucaoObjeto() {
-        listaObjetos.remove(objetoSelecionado);
-        objetoSelecionado = null;
+        if (objetoSelecionado == objetoConstrucao) {
+            listaObjetos.remove(objetoSelecionado);
+            objetoSelecionado = null;
+        } else {
+            objetoSelecionado.removeFilho(objetoConstrucao);
+        }
+        
+        objetoConstrucao = null;
     }
     
     // FUNCOES - TRANSFORMACAO
@@ -111,5 +131,6 @@ public class Mundo {
     // ATRIBUTOS
     List<ObjetoGrafico> listaObjetos;
     ObjetoGrafico objetoSelecionado;
+    ObjetoGrafico objetoConstrucao;
     Camera camera;
 }

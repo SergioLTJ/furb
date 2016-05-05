@@ -27,6 +27,7 @@ public class ObjetoGrafico {
         indiceCor = 0; 
         bound = new BoundingBox();
         pontos = new LinkedList<>();
+        pontoSelecionado = null;
         pontoConstrucao = null;
         primitiva = GL.GL_LINE_STRIP;
         transform = new Transform();
@@ -72,8 +73,11 @@ public class ObjetoGrafico {
         }
         
         // Desenhar BoundingBox apenas em debug
-        if (Main.modoDebug) {
+        if (Main.modoDebug || selecionado) {
             bound.display(gl);
+        }
+        if (selecionado && pontoSelecionado != null) {
+            pontoSelecionado.getAreaSelecao().display(gl);
         }
     }
     
@@ -150,6 +154,14 @@ public class ObjetoGrafico {
         return pontos.size();
     }
     
+    public boolean possuiPontoSelecionado() {
+        return pontoSelecionado != null;
+    }
+    
+    public Ponto4D getPontoSelecionado() {
+        return pontoSelecionado;
+    }
+    
     // GET - FILHOS
     public List<ObjetoGrafico> getFilhos() {
         return filhos;
@@ -212,6 +224,14 @@ public class ObjetoGrafico {
         }
         
         return -1;
+    }
+    
+    public void selecionaPonto(int indexPonto) {
+        pontoSelecionado = pontos.get(indexPonto);
+    }
+    
+    public void removeSelecaoPonto() {
+        pontoSelecionado = null;
     }
     
     public void encerraObjeto(int index) {
@@ -307,9 +327,15 @@ public class ObjetoGrafico {
 	transform = transform.transformMatrix(local);
     }
     
+    public void translacaoPonto(double x, double y, double z) {
+        pontoSelecionado.translacaoPonto(x, y, z);
+        atualizaBoundingBox();
+    }
+    
     // ATRIBUTOS - LOGICA
     private BoundingBox bound;
     private Transform transform;
+    private Ponto4D pontoSelecionado;
     
     // ATRIBUTOS - GRAFICOS
     private List<Ponto4D> pontos;

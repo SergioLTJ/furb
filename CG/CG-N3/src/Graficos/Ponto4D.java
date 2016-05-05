@@ -49,6 +49,12 @@ public class Ponto4D {
         return pto;
     }
 
+    public void translacaoPonto(double x, double y, double z) {
+        this.x += x;
+        this.y += y;
+        this.z += z;
+    }
+    
     // GET
     public double getX() {
         return x;
@@ -85,8 +91,8 @@ public class Ponto4D {
 
     // BOUNDING
     public BoundingBox getAreaSelecao() {
-        Ponto4D top = new Ponto4D(x + 5, y + 5, z + 5, w);
-        Ponto4D bot = new Ponto4D(x - 5, y - 5, z + 5, w);
+        Ponto4D top = new Ponto4D(x + 8, y + 8, z + 8, w);
+        Ponto4D bot = new Ponto4D(x - 8, y - 8, z + 8, w);
         
         return new BoundingBox(bot.x, bot.y, bot.z, top.x, top.y, top.z);
     }

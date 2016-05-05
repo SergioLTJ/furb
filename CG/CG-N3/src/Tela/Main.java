@@ -25,7 +25,7 @@ import javax.media.opengl.glu.GLU;
 public class Main implements GLEventListener, KeyListener, MouseListener, MouseMotionListener {
 
         // DEBUG
-        public static final boolean modoDebug = true;
+        public static final boolean modoDebug = false;
     
 	public static void trace(String str) {
             if (modoDebug)

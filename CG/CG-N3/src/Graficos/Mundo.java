@@ -99,8 +99,13 @@ public class Mundo {
     
     // FUNCOES - TRANSFORMACAO
     public void moveObjeto(double x, double y, double z) {
-        if (objetoSelecionado != null)
-            objetoSelecionado.translacao(x, y, z);
+        if (objetoSelecionado != null) {
+            if (objetoSelecionado.possuiPontoSelecionado()) {
+                objetoSelecionado.translacaoPonto(x, y, z);
+            } else {
+                objetoSelecionado.translacao(x, y, z);
+            }
+        }
     }
     
     public void escalaObjeto(double escala) {
@@ -115,13 +120,29 @@ public class Mundo {
     
     // FUNCOES - SELECAO
     public boolean selecionaObjeto(Ponto4D ponto) {
+        ObjetoGrafico novaSelecao = null;
+        
         for (ObjetoGrafico obj : listaObjetos) {
             if (obj.getBound().calcula(ponto)) {
-                objetoSelecionado = obj;
-                return true;
+                novaSelecao = obj;
+                break;
             }
         }
-        return false;
+        
+        if (novaSelecao == null)
+            return false;
+        
+        if (objetoSelecionado == novaSelecao) {
+            int indexPonto = novaSelecao.indexPonto(ponto);
+            if (indexPonto < 0) {
+                novaSelecao.removeSelecaoPonto();
+            } else {
+                novaSelecao.selecionaPonto(indexPonto);
+            }
+        }
+        
+        objetoSelecionado = novaSelecao;
+        return true;
     }
     
     public void deletaSelecao() {

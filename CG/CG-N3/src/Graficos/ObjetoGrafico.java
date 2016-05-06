@@ -272,6 +272,34 @@ public class ObjetoGrafico {
         bound.atribuirBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
     }
     
+    public boolean pontoNoPoligono(Ponto4D ponto) {
+        int interseccoes = 0;
+        for (int i = 0; i < pontos.size(); ++i) {
+            Ponto4D vertice = pontos.get(i);
+            Ponto4D proxVert = pontos.get((i == (pontos.size()-1)) ? 0 : i+1);
+            
+            if (vertice.getY() != ponto.getY()) {
+                Ponto4D intersec = ponto.intersecHorizontal(vertice, proxVert);
+                if (intersec.getX() == ponto.getX()) {
+                    break;
+                } else {
+                    if (intersec.getX() > ponto.getX() && 
+                        intersec.getY() > Math.min(vertice.getY(), proxVert.getY()) &&
+                        intersec.getY() <= Math.max(vertice.getY(), proxVert.getY())) {
+                        interseccoes++;
+                    }
+                }
+            } else {
+                if (ponto.getY() == vertice.getY() && 
+                    ponto.getX() >= Math.min(vertice.getX(), proxVert.getX()) &&
+                    ponto.getX() <= Math.max(vertice.getX(), proxVert.getX())) {
+                    break;
+                }
+            }
+        }
+        return interseccoes % 2 == 1;
+    }
+    
     // TRANSFORMACAO
     public void translacao(double x, double y, double z) {
         Transform translate = new Transform();

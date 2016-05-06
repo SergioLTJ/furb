@@ -124,8 +124,10 @@ public class Mundo {
         
         for (ObjetoGrafico obj : listaObjetos) {
             if (obj.getBound().calcula(ponto)) {
-                novaSelecao = obj;
-                break;
+                if (obj.pontoNoPoligono(ponto)) {
+                    novaSelecao = obj;
+                    break;
+                }
             }
         }
         

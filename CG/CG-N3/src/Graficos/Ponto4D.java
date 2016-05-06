@@ -97,6 +97,14 @@ public class Ponto4D {
         return new BoundingBox(bot.x, bot.y, bot.z, top.x, top.y, top.z);
     }
     
+    public Ponto4D intersecHorizontal(Ponto4D ptA, Ponto4D ptB) {
+        double a = (ptB.getY() - ptA.getY()) / (ptB.getX() - ptA.getX());
+        double b = ptA.getY() - (a * ptA.getX());
+        
+        double newX = (y - b) / a;
+        return new Ponto4D(newX, this.y);
+    }
+    
     // EQUALS/HASHCODE
     @Override
     public int hashCode() {

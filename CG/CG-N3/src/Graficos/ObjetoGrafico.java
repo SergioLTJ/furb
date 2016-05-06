@@ -301,13 +301,17 @@ public class ObjetoGrafico {
     }
     
     // TRANSFORMACAO
-    public void translacao(double x, double y, double z) {
-        Transform translate = new Transform();
-	translate.atribuirTranslacao(x,y,z);
-	transform = translate.transformMatrix(transform);
+    public void translacaoSelecao(double x, double y, double z) {
+        if (pontoSelecionado != null) {
+            translacaoPonto(x, y, z);
+        } else {
+            Transform translate = new Transform();
+            translate.atribuirTranslacao(x,y,z);
+            transform = translate.transformMatrix(transform);
+        }
     }
     
-    public void escala(double escala) {
+    public void escalaSelecao(double escala) {
         Transform local = new Transform();
         
         Ponto4D pontoCentral = bound.obterCentro();
@@ -331,7 +335,7 @@ public class ObjetoGrafico {
 	transform = transform.transformMatrix(local);
     }
     
-    public void rotacao(double rotacao) {
+    public void rotacaoSelecao(double rotacao) {
         Transform local = new Transform();
 
         Ponto4D pontoCentral = bound.obterCentro();
@@ -355,7 +359,7 @@ public class ObjetoGrafico {
 	transform = transform.transformMatrix(local);
     }
     
-    public void translacaoPonto(double x, double y, double z) {
+    private void translacaoPonto(double x, double y, double z) {
         pontoSelecionado.translacaoPonto(x, y, z);
         atualizaBoundingBox();
     }

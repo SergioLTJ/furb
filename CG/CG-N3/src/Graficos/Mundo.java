@@ -98,24 +98,19 @@ public class Mundo {
     }
     
     // FUNCOES - TRANSFORMACAO
-    public void moveObjeto(double x, double y, double z) {
-        if (objetoSelecionado != null) {
-            if (objetoSelecionado.possuiPontoSelecionado()) {
-                objetoSelecionado.translacaoPonto(x, y, z);
-            } else {
-                objetoSelecionado.translacao(x, y, z);
-            }
-        }
+    public void translacaoObjetoSelecionado(double x, double y, double z) {
+        if (objetoSelecionado != null)
+            objetoSelecionado.translacaoSelecao(x, y, z);
     }
     
-    public void escalaObjeto(double escala) {
+    public void escalaObjetoSelecionado(double escala) {
         if (objetoSelecionado != null)
-            objetoSelecionado.escala(escala);
+            objetoSelecionado.escalaSelecao(escala);
     }
     
-    public void rotacaoObjeto(double rotacao) {
+    public void rotacaoObjetoSelecionado(double rotacao) {
         if (objetoSelecionado != null)
-            objetoSelecionado.rotacao(rotacao);
+            objetoSelecionado.rotacaoSelecao(rotacao);
     }
     
     // FUNCOES - SELECAO

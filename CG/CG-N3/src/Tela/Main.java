@@ -128,39 +128,39 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
                 // Translacao objeto
                 case KeyEvent.VK_RIGHT:
                     if (!modoConstrucao)
-                        mundo.moveObjeto(10, 0, 0);
+                        mundo.translacaoObjetoSelecionado(10, 0, 0);
                     break;
                 case KeyEvent.VK_LEFT:
                     if (!modoConstrucao)
-                        mundo.moveObjeto(-10, 0, 0);
+                        mundo.translacaoObjetoSelecionado(-10, 0, 0);
                     break;
                 case KeyEvent.VK_UP:
                     if (!modoConstrucao)
-                        mundo.moveObjeto(0, 10, 0);
+                        mundo.translacaoObjetoSelecionado(0, 10, 0);
                     break;
                 case KeyEvent.VK_DOWN:
                     if (!modoConstrucao)
-                        mundo.moveObjeto(0, -10, 0);
+                        mundo.translacaoObjetoSelecionado(0, -10, 0);
                     break;
                     
                 // Escala objeto
                 case KeyEvent.VK_PAGE_UP: 
                     if (!modoConstrucao)
-                        mundo.escalaObjeto(1.5);
+                        mundo.escalaObjetoSelecionado(1.5);
                     break;
                 case KeyEvent.VK_PAGE_DOWN: 
                     if (!modoConstrucao)
-                        mundo.escalaObjeto(0.5);
+                        mundo.escalaObjetoSelecionado(0.5);
                     break;
                     
                 // Rotação objeto
                 case KeyEvent.VK_COMMA: 
                     if (!modoConstrucao)
-                        mundo.rotacaoObjeto(15);
+                        mundo.rotacaoObjetoSelecionado(15);
                     break;
                 case KeyEvent.VK_PERIOD: 
                     if (!modoConstrucao)
-                        mundo.rotacaoObjeto(-15);
+                        mundo.rotacaoObjetoSelecionado(-15);
                     break;
                     
                 // Outras funções objeto

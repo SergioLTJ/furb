@@ -46,8 +46,7 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 
 	// MUNDO
 	private Mundo mundo;
-	private boolean modoConstrucao;
-
+	
         Ponto4D cursor;
         
         @Override
@@ -62,7 +61,6 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 
                 cursor = new Ponto4D();
 		mundo = new Mundo();
-		modoConstrucao = false;
 	}
 
 	// exibicaoPrincipal
@@ -89,13 +87,8 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-            /* CONTROLES
-            WASD: Translação da viewport
-            +-: Zoom da viewport
-            Setas: Translação do objeto
-            */
             
-		trace(" --- keyPressed ---");
+                trace(" --- keyPressed ---");
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_EQUALS:
 			incrementarZoom();
@@ -127,51 +120,41 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
                         
                 // Translacao objeto
                 case KeyEvent.VK_RIGHT:
-                    if (!modoConstrucao)
-                        mundo.translacaoObjetoSelecionado(10, 0, 0);
+                    mundo.translacaoObjetoSelecionado(10, 0, 0);
                     break;
                 case KeyEvent.VK_LEFT:
-                    if (!modoConstrucao)
-                        mundo.translacaoObjetoSelecionado(-10, 0, 0);
+                    mundo.translacaoObjetoSelecionado(-10, 0, 0);
                     break;
                 case KeyEvent.VK_UP:
-                    if (!modoConstrucao)
-                        mundo.translacaoObjetoSelecionado(0, 10, 0);
+                    mundo.translacaoObjetoSelecionado(0, 10, 0);
                     break;
                 case KeyEvent.VK_DOWN:
-                    if (!modoConstrucao)
-                        mundo.translacaoObjetoSelecionado(0, -10, 0);
+                    mundo.translacaoObjetoSelecionado(0, -10, 0);
                     break;
                     
                 // Escala objeto
                 case KeyEvent.VK_PAGE_UP: 
-                    if (!modoConstrucao)
-                        mundo.escalaObjetoSelecionado(1.5);
+                    mundo.escalaObjetoSelecionado(1.5);
                     break;
                 case KeyEvent.VK_PAGE_DOWN: 
-                    if (!modoConstrucao)
-                        mundo.escalaObjetoSelecionado(0.5);
+                    mundo.escalaObjetoSelecionado(0.5);
                     break;
                     
                 // Rotação objeto
                 case KeyEvent.VK_COMMA: 
-                    if (!modoConstrucao)
-                        mundo.rotacaoObjetoSelecionado(15);
+                    mundo.rotacaoObjetoSelecionado(15);
                     break;
                 case KeyEvent.VK_PERIOD: 
-                    if (!modoConstrucao)
-                        mundo.rotacaoObjetoSelecionado(-15);
+                    mundo.rotacaoObjetoSelecionado(-15);
                     break;
                     
                 // Outras funções objeto
                 case KeyEvent.VK_C:
-                    if (mundo.possuiSelecao())
-                        mundo.getSelecao().proximaCor();
+                    mundo.alteraCorObjetoSelecionado();
                     break;
 		
                 case KeyEvent.VK_DELETE:
-                    if (mundo.possuiSelecao())
-                        mundo.deletaSelecao();
+                    mundo.deletaSelecao();
                     break;
 		}
                 
@@ -242,34 +225,18 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 		
                 boolean rightClick = e.getButton() == MouseEvent.BUTTON3;
                 
-		if (modoConstrucao) {
+		if (mundo.possuiConstrucao()) {
                     if (rightClick) {
-                        if (mundo.regressaConstrucaoObjeto())
-                            modoConstrucao = false;
+                        mundo.regressaConstrucaoObjeto();
                     } else {
-			ObjetoGrafico constr = mundo.getConstrucao();
-			int index = constr.indexPonto(ponto);
-
-			// Valida clique em ponto existente
-			if (index >= 0) {
-				// Valida fechamento
-				mundo.finalizaConstrucaoObjeto(index);
-				modoConstrucao = false;
-			} else {
-				// Adiciona vertice
-				mundo.avancaConstrucaoObjeto(ponto);
-			}
+			mundo.avancaConstrucaoObjeto(ponto);
                     }
 		} else {
                     if (rightClick) {
                         mundo.removeSelecao();
-                    } else
-                    {
-			// Valida selecao de poligonos existentes
-                        if (!mundo.selecionaObjeto(ponto)) {
-                            // Cria novo poligono
+                    } else {
+			if (!mundo.selecionaObjeto(ponto)) {
                             mundo.iniciaObjeto(ponto);
-                            modoConstrucao = true;
                         }
                     }
 		}
@@ -304,7 +271,7 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
                 cursor.setY((-e.getY()) + 200);
             }
                 
-            if (modoConstrucao)
+            if (mundo != null)
                 mundo.atualizaConstrucaoObjeto(cursor);
                 
             if (glDrawable != null)

@@ -38,6 +38,10 @@ public class Mundo {
         return objetoSelecionado != null;
     }
     
+    public boolean possuiConstrucao() {
+        return objetoConstrucao != null;
+    }
+    
     public ObjetoGrafico getSelecao() {
         return objetoSelecionado;
     }
@@ -69,7 +73,13 @@ public class Mundo {
     
     public void avancaConstrucaoObjeto(Ponto4D ponto) {
         atualizaConstrucaoObjeto(ponto);
-        objetoConstrucao.addPonto(ponto);
+        
+        int index = objetoConstrucao.indexPonto(ponto);
+        if (index < 0) {
+            objetoConstrucao.addPonto(ponto);
+        } else {
+            finalizaConstrucaoObjeto(index);
+        }
     }
     
     public boolean regressaConstrucaoObjeto() {
@@ -84,6 +94,7 @@ public class Mundo {
     
     public void finalizaConstrucaoObjeto(int index) {
         objetoConstrucao.encerraObjeto(index);
+        objetoConstrucao = null;
     }
     
     public void cancelaConstrucaoObjeto() {
@@ -99,17 +110,17 @@ public class Mundo {
     
     // FUNCOES - TRANSFORMACAO
     public void translacaoObjetoSelecionado(double x, double y, double z) {
-        if (objetoSelecionado != null)
+        if (possuiSelecao() && !possuiConstrucao())
             objetoSelecionado.translacaoSelecao(x, y, z);
     }
     
     public void escalaObjetoSelecionado(double escala) {
-        if (objetoSelecionado != null)
+        if (possuiSelecao() && !possuiConstrucao())
             objetoSelecionado.escalaSelecao(escala);
     }
     
     public void rotacaoObjetoSelecionado(double rotacao) {
-        if (objetoSelecionado != null)
+        if (possuiSelecao() && !possuiConstrucao())
             objetoSelecionado.rotacaoSelecao(rotacao);
     }
     
@@ -143,7 +154,9 @@ public class Mundo {
     }
     
     public void deletaSelecao() {
-        listaObjetos.remove(objetoSelecionado);
+        if (possuiSelecao())
+            listaObjetos.remove(objetoSelecionado);
+        
         removeSelecao();
     }
     
@@ -151,9 +164,15 @@ public class Mundo {
         objetoSelecionado = null;
     }
     
+    // FUNCOES - OUTROS
+    public void alteraCorObjetoSelecionado() {
+        if (objetoSelecionado != null)
+            objetoSelecionado.proximaCor();
+    }
+    
     // ATRIBUTOS
-    List<ObjetoGrafico> listaObjetos;
-    ObjetoGrafico objetoSelecionado;
-    ObjetoGrafico objetoConstrucao;
-    Camera camera;
+    private List<ObjetoGrafico> listaObjetos;
+    private ObjetoGrafico objetoSelecionado;
+    private ObjetoGrafico objetoConstrucao;
+    private Camera camera;
 }

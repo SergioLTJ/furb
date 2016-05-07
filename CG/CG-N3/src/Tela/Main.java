@@ -51,7 +51,7 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
         
         @Override
 	public void init(GLAutoDrawable drawable) {
-		System.out.println(" --- init ---");
+		trace(" --- init ---");
 		glDrawable = drawable;
 		gl = drawable.getGL();
 		glu = new GLU();
@@ -63,7 +63,14 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 		mundo = new Mundo();
 	}
 
-	// exibicaoPrincipal
+	
+        public void translacaoCamera(double vertical, double horizontal) {
+            limiteCima += vertical;
+            limiteBaixo += vertical;
+            limiteEsquerda += horizontal;
+            limiteDireita += horizontal;
+        }
+        
 	@Override
 	public void display(GLAutoDrawable arg0) {
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
@@ -102,21 +109,17 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
                         
                 // Translacao camera        
 		case KeyEvent.VK_D:
-			limiteEsquerda -= locomocao;
-			limiteDireita -= locomocao;
-			break;
+                    translacaoCamera(0, -10);
+                    break;
 		case KeyEvent.VK_A:
-			limiteEsquerda += locomocao;
-			limiteDireita += locomocao;
-			break;
+                    translacaoCamera(0, 10);
+                    break;
 		case KeyEvent.VK_W:
-			limiteCima -= locomocao;
-			limiteBaixo -= locomocao;
-			break;
+                    translacaoCamera(-10, 0);
+                    break;
 		case KeyEvent.VK_S:
-			limiteCima += locomocao;
-			limiteBaixo += locomocao;
-			break;
+                    translacaoCamera(10, 0);
+                    break;
                         
                 // Translacao objeto
                 case KeyEvent.VK_RIGHT:
@@ -236,7 +239,7 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
                         mundo.removeSelecao();
                     } else {
 			if (!mundo.selecionaObjeto(ponto)) {
-                            mundo.iniciaObjeto(ponto);
+                            mundo.iniciaConstrucaoObjeto(ponto);
                         }
                     }
 		}

@@ -23,7 +23,7 @@ public class Mundo {
         camera = new Camera();
     }
     
-    // DISPLAY
+
     public void display(GL gl) {
         for (ObjetoGrafico obj : listaObjetos) {
             obj.display(gl, false);
@@ -33,7 +33,7 @@ public class Mundo {
         }
     }
     
-    // FUNCOES - GET
+    
     public boolean possuiSelecao() {
         return objetoSelecionado != null;
     }
@@ -42,16 +42,8 @@ public class Mundo {
         return objetoConstrucao != null;
     }
     
-    public ObjetoGrafico getSelecao() {
-        return objetoSelecionado;
-    }
     
-    public ObjetoGrafico getConstrucao() {
-        return objetoConstrucao;
-    }
-    
-    // FUNCOES - CONSTRUCAO
-    public void iniciaObjeto(Ponto4D pontoInicial) {
+    public void iniciaConstrucaoObjeto(Ponto4D pontoInicial) {
         ObjetoGrafico novoObjeto = new ObjetoGrafico();
         novoObjeto.addPonto(new Ponto4D(pontoInicial.getX(), pontoInicial.getY()));
         novoObjeto.setPontoConstrucao(pontoInicial);
@@ -108,7 +100,7 @@ public class Mundo {
         objetoConstrucao = null;
     }
     
-    // FUNCOES - TRANSFORMACAO
+    
     public void translacaoObjetoSelecionado(double x, double y, double z) {
         if (possuiSelecao() && !possuiConstrucao())
             objetoSelecionado.translacaoSelecao(x, y, z);
@@ -124,16 +116,14 @@ public class Mundo {
             objetoSelecionado.rotacaoSelecao(rotacao);
     }
     
-    // FUNCOES - SELECAO
+
     public boolean selecionaObjeto(Ponto4D ponto) {
         ObjetoGrafico novaSelecao = null;
         
         for (ObjetoGrafico obj : listaObjetos) {
-            if (obj.getBound().calcula(ponto)) {
-                if (obj.pontoNoPoligono(ponto)) {
-                    novaSelecao = obj;
-                    break;
-                }
+            if (obj.podeSelecionar(ponto)) {
+                novaSelecao = obj;
+                break;
             }
         }
         
@@ -141,12 +131,7 @@ public class Mundo {
             return false;
         
         if (objetoSelecionado == novaSelecao) {
-            int indexPonto = novaSelecao.indexPonto(ponto);
-            if (indexPonto < 0) {
-                novaSelecao.removeSelecaoPonto();
-            } else {
-                novaSelecao.selecionaPonto(indexPonto);
-            }
+            novaSelecao.selecionaPonto(ponto);
         }
         
         objetoSelecionado = novaSelecao;
@@ -164,7 +149,7 @@ public class Mundo {
         objetoSelecionado = null;
     }
     
-    // FUNCOES - OUTROS
+
     public void alteraCorObjetoSelecionado() {
         if (objetoSelecionado != null)
             objetoSelecionado.proximaCor();

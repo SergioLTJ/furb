@@ -20,9 +20,9 @@ import javax.media.opengl.GL;
 public class ObjetoGrafico {
     
     // CORES
-    private static Color cores[] = { Color.BLACK, Color.YELLOW, Color.ORANGE, Color.RED, Color.GREEN, Color.CYAN, Color.BLUE, Color.MAGENTA };
+    private static final Color cores[] = { Color.BLACK, Color.YELLOW, Color.ORANGE, Color.RED, Color.GREEN, Color.CYAN, Color.BLUE, Color.MAGENTA };
     
-    // CONSTRUTORES
+
     public ObjetoGrafico() {
         indiceCor = 0; 
         bound = new BoundingBox();
@@ -34,7 +34,7 @@ public class ObjetoGrafico {
         filhos = new LinkedList<>();
     }
     
-    // DISPLAY
+
     public void display(GL gl, boolean selecionado) {
         gl.glColor3f(getCor().getRed(), getCor().getGreen(), getCor().getBlue());
         gl.glLineWidth(selecionado ? 4 : 2);
@@ -81,7 +81,7 @@ public class ObjetoGrafico {
         }
     }
     
-    public void displayChild(GL gl, boolean selecionado, ObjetoGrafico pai) {
+    private void displayChild(GL gl, boolean selecionado, ObjetoGrafico pai) {
         gl.glColor3f(pai.getCor().getRed(), pai.getCor().getGreen(), pai.getCor().getBlue());
         gl.glLineWidth(selecionado ? 4 : 2);
         
@@ -114,32 +114,16 @@ public class ObjetoGrafico {
         }
     }
     
-    // GET
-    public BoundingBox getBound() {
-        return bound;
-    }
 
     public Color getCor() {
         return cores[indiceCor];
     }
 
-    public int getPrimitiva() {
-        return primitiva;
-    }
-    
-    public Ponto4D getPontoConstrucao() {
-        return pontoConstrucao;
-    }
-    
     public Transform getMatriz() {
         return transform;
     }
     
-    // GET - PONTOS
-    public List<Ponto4D> getPontos() {
-        return pontos;
-    }
-    
+
     public Ponto4D getPonto(int index) {
         return pontos.get(index);
     }
@@ -162,11 +146,7 @@ public class ObjetoGrafico {
         return pontoSelecionado;
     }
     
-    // GET - FILHOS
-    public List<ObjetoGrafico> getFilhos() {
-        return filhos;
-    }
-    
+
     public ObjetoGrafico getFilho(int index) {
         return filhos.get(index);
     }
@@ -175,7 +155,7 @@ public class ObjetoGrafico {
         return filhos.size();
     }
     
-    // SET
+
     public void proximaCor() {
         indiceCor++;
         if (indiceCor >= cores.length)
@@ -190,26 +170,18 @@ public class ObjetoGrafico {
         pontoConstrucao = ponto;
     }
     
-    // SET - FILHOS
+
     public void addFilho(ObjetoGrafico filho) {
         filhos.add(filho);
-    }
-    
-    public ObjetoGrafico removeFilho(int index) {
-        return filhos.remove(index);
     }
     
     public boolean removeFilho(ObjetoGrafico obj) {
         return filhos.remove(obj);
     }
     
-    // SET - PONTOS
+
     public void addPonto(Ponto4D ponto) {
         pontos.add(ponto);
-    }
-    
-    public Ponto4D removePonto(int index) {
-        return pontos.remove(index);
     }
     
     public Ponto4D removeUltimoPonto() {
@@ -226,8 +198,13 @@ public class ObjetoGrafico {
         return -1;
     }
     
-    public void selecionaPonto(int indexPonto) {
-        pontoSelecionado = pontos.get(indexPonto);
+    public void selecionaPonto(Ponto4D clique) {
+        int index = indexPonto(clique);
+        if (index < 0) {
+            removeSelecaoPonto();
+        } else {
+            pontoSelecionado = pontos.get(index);
+        }
     }
     
     public void removeSelecaoPonto() {
@@ -272,7 +249,11 @@ public class ObjetoGrafico {
         bound.atribuirBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
     }
     
-    public boolean pontoNoPoligono(Ponto4D ponto) {
+    public boolean podeSelecionar(Ponto4D ponto) {
+        return bound.calcula(ponto) && pontoNoPoligono(ponto);
+    }
+    
+    private boolean pontoNoPoligono(Ponto4D ponto) {
         int interseccoes = 0;
         for (int i = 0; i < pontos.size(); ++i) {
             Ponto4D vertice = pontos.get(i);
@@ -300,7 +281,7 @@ public class ObjetoGrafico {
         return interseccoes % 2 == 1;
     }
     
-    // TRANSFORMACAO
+
     public void translacaoSelecao(double x, double y, double z) {
         if (pontoSelecionado != null) {
             translacaoPonto(x, y, z);
@@ -365,16 +346,16 @@ public class ObjetoGrafico {
     }
     
     // ATRIBUTOS - LOGICA
-    private BoundingBox bound;
+    private final BoundingBox bound;
     private Transform transform;
     private Ponto4D pontoSelecionado;
     
     // ATRIBUTOS - GRAFICOS
-    private List<Ponto4D> pontos;
+    private final List<Ponto4D> pontos;
     private Ponto4D pontoConstrucao;
     private int indiceCor;
     private int primitiva;
     
     // ATRIBUTOS - OUTROS
-    private List<ObjetoGrafico> filhos;
+    private final List<ObjetoGrafico> filhos;
 }

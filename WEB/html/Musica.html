@@ -1,0 +1,123 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/padrao.css">
+    <script type="text/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="../js/controllers.js"></script>
+    <script type="text/javascript" src="../js/Busca.js"></script>
+    <meta charset="utf-8" />
+
+    <style>
+        #btnFavorita:active {
+            background-color: #DBD814 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <nav class="navbar navbar-default" style="margin-top: 10px">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                        aria-controls="navbar">
+                        <span class="sr-only">Toggle</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Nome do Site</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-left">
+                        <li>
+                            <a href="Busca.html"><strong>Realizar uma busca</strong></a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="Login.html">Login</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div ng-app="musica" ng-controller="MusicaController as controller" ng-init="controller.inicializarComponentes()">
+            <div class="panel panel-primary">
+                <div class="panel-heading clearfix">
+                    <h3 class="panel-title pull-left" style="margin-right: 12px; margin-top: 8px">
+                        {{ controller.musica.nome }}
+                    </h3>
+                    <div style="display:inline; cursor: pointer;" ng-repeat="i in [1, 2, 3, 4, 5]" ng-mouseenter="controller.ativarEstrelas(i);"
+                        ng-mouseleave="controller.desativarEstrelas()">
+                        <img id="imgEstrela{{ i }}" src="{{ controller.definirImagemNota(i) }}" alt="Nota {{ i }}" />
+                    </div>
+                    <input id="btnFavorita" type="button" class="btn btn-primary {{ controller.musica.favorita ? 'active' : ''}}" 
+                        style="margin-left: 8px" value="Favorita" />
+                    <div class="pull-right">
+                        <a id="btnHistoricoEdicoes" href="HistoricoEdicoes.html" class="btn btn-primary">Histórico de edições</a>
+                        <a id="btnEditar" class="btn btn-primary">Editar</a>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="pull-left col-xs-4">
+                        <img src="{{ controller.musica.album.capa }}" alt="Capa álbum" class="img-responsive img-rounded">
+                    </div>
+                    <div class="pull-right col-xs-8">
+                        <h2 class="text-left">{{ controller.musica.nome }}</h2>
+                        <h4 class="text-left">{{ controller.musica.banda }}</h3>
+                        <h4 class="text-left">{{ controller.musica.album.nome }} ({{ controller.musica.album.ano }})</h3>
+                        <br>
+                        <span class="text-left">Gênero: {{ controller.musica.genero }}</span>
+                        <br>
+                        <span class="text-left">Guitarrista(s): {{ controller.montarArtistasPorTipo(1) }}</span>
+                        <br>
+                        <span class="text-left">Cantor(es): {{ controller.montarArtistasPorTipo(2) }}</span>
+                        <br>
+                        <span class="text-left">Escritor(es): {{ controller.montarArtistasPorTipo(3) }}</span>
+                        <br>
+                        <span class="text-left">Produtor(es): {{ controller.montarArtistasPorTipo(4) }}</span>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="panel panel-primary">
+                <div id="divHeaderLetra" class="panel-heading clearfix">
+                    <h3 class="panel-title pull-left">
+                        Letra
+                    </h3>
+                </div>
+                <div id="divLetra" class="panel-body" style="display: none">
+                    <span style="white-space: pre-wrap">{{ controller.musica.letra }}</span>
+                </div>
+             </div>
+             
+             <div class="panel panel-primary">
+                <div id="divHeaderSobre" class="panel-heading clearfix">
+                    <h3 class="panel-title pull-left">
+                        Sobre
+                    </h3>
+                </div>
+                <div id="divSobre" class="panel-body" style="display: none">
+                    <span style="white-space: pre-wrap">{{ controller.musica.informacoes }}</span>
+                </div>
+             </div>
+             
+             <div class="panel panel-primary">
+                <div id="divHeaderTags" class="panel-heading clearfix">
+                    <h3 class="panel-title pull-left">
+                        Tags
+                    </h3>
+                </div>
+                <div id="divTags" class="panel-body" style="display: none">
+                    <span style="white-space: pre-wrap">{{ controller.montarTags() }}</span>
+                </div>
+             </div>
+        </div>
+    </div>
+</body>
+
+</html>

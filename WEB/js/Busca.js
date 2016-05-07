@@ -1,6 +1,4 @@
 $(function () {
-
-
     inicializarComponentes();
 
     function inicializarComponentes() {

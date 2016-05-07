@@ -25,7 +25,7 @@ import javax.media.opengl.glu.GLU;
 public class Main implements GLEventListener, KeyListener, MouseListener, MouseMotionListener {
 
         // DEBUG
-        public static final boolean modoDebug = true;
+        public static final boolean modoDebug = false;
     
 	public static void trace(String str) {
             if (modoDebug)
@@ -46,11 +46,12 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 
 	// MUNDO
 	private Mundo mundo;
-	private boolean modoConstrucao;
-
+	
+        Ponto4D cursor;
+        
         @Override
 	public void init(GLAutoDrawable drawable) {
-		System.out.println(" --- init ---");
+		trace(" --- init ---");
 		glDrawable = drawable;
 		gl = drawable.getGL();
 		glu = new GLU();
@@ -58,11 +59,18 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 		trace("Espaco de desenho com tamanho: " + drawable.getWidth() + " x " + drawable.getHeight());
 		gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
+                cursor = new Ponto4D();
 		mundo = new Mundo();
-		modoConstrucao = false;
 	}
 
-	// exibicaoPrincipal
+	
+        public void translacaoCamera(double vertical, double horizontal) {
+            limiteCima += vertical;
+            limiteBaixo += vertical;
+            limiteEsquerda += horizontal;
+            limiteDireita += horizontal;
+        }
+        
 	@Override
 	public void display(GLAutoDrawable arg0) {
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
@@ -73,6 +81,12 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 
 		SRU();
 
+                gl.glColor3d(0, 0, 0);
+                gl.glPointSize(5);
+                gl.glBegin(GL.GL_POINTS);
+                gl.glVertex2d(cursor.getX(), cursor.getY());
+                gl.glEnd();
+                
 		mundo.display(gl);
 
 		gl.glFlush();
@@ -80,13 +94,8 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-            /* CONTROLES
-            WASD: Translação da viewport
-            +-: Zoom da viewport
-            Setas: Translação do objeto
-            */
             
-		trace(" --- keyPressed ---");
+                trace(" --- keyPressed ---");
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_EQUALS:
 			incrementarZoom();
@@ -100,60 +109,58 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
                         
                 // Translacao camera        
 		case KeyEvent.VK_D:
-			limiteEsquerda -= locomocao;
-			limiteDireita -= locomocao;
-			break;
+                    translacaoCamera(0, -10);
+                    break;
 		case KeyEvent.VK_A:
-			limiteEsquerda += locomocao;
-			limiteDireita += locomocao;
-			break;
+                    translacaoCamera(0, 10);
+                    break;
 		case KeyEvent.VK_W:
-			limiteCima -= locomocao;
-			limiteBaixo -= locomocao;
-			break;
+                    translacaoCamera(-10, 0);
+                    break;
 		case KeyEvent.VK_S:
-			limiteCima += locomocao;
-			limiteBaixo += locomocao;
-			break;
+                    translacaoCamera(10, 0);
+                    break;
                         
                 // Translacao objeto
                 case KeyEvent.VK_RIGHT:
-                    if (!modoConstrucao)
-                        mundo.moveObjeto(10, 0, 0);
+                    mundo.translacaoObjetoSelecionado(10, 0, 0);
                     break;
                 case KeyEvent.VK_LEFT:
-                    if (!modoConstrucao)
-                        mundo.moveObjeto(-10, 0, 0);
+                    mundo.translacaoObjetoSelecionado(-10, 0, 0);
                     break;
                 case KeyEvent.VK_UP:
-                    if (!modoConstrucao)
-                        mundo.moveObjeto(0, 10, 0);
+                    mundo.translacaoObjetoSelecionado(0, 10, 0);
                     break;
                 case KeyEvent.VK_DOWN:
-                    if (!modoConstrucao)
-                        mundo.moveObjeto(0, -10, 0);
+                    mundo.translacaoObjetoSelecionado(0, -10, 0);
                     break;
                     
                 // Escala objeto
                 case KeyEvent.VK_PAGE_UP: 
-                    if (!modoConstrucao)
-                        mundo.escalaObjeto(1.5);
+                    mundo.escalaObjetoSelecionado(1.5);
                     break;
                 case KeyEvent.VK_PAGE_DOWN: 
-                    if (!modoConstrucao)
-                        mundo.escalaObjeto(0.5);
+                    mundo.escalaObjetoSelecionado(0.5);
                     break;
                     
                 // Rotação objeto
                 case KeyEvent.VK_COMMA: 
-                    if (!modoConstrucao)
-                        mundo.rotacaoObjeto(15);
+                    mundo.rotacaoObjetoSelecionado(15);
                     break;
                 case KeyEvent.VK_PERIOD: 
-                    if (!modoConstrucao)
-                        mundo.rotacaoObjeto(-15);
+                    mundo.rotacaoObjetoSelecionado(-15);
+                    break;
+                    
+                // Outras funções objeto
+                case KeyEvent.VK_C:
+                    mundo.alteraCorObjetoSelecionado();
+                    break;
+		
+                case KeyEvent.VK_DELETE:
+                    mundo.deletaSelecao();
                     break;
 		}
+                
                 glDrawable.display();
 	}
 
@@ -221,29 +228,20 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 		
                 boolean rightClick = e.getButton() == MouseEvent.BUTTON3;
                 
-		if (modoConstrucao) {
+		if (mundo.possuiConstrucao()) {
                     if (rightClick) {
                         mundo.regressaConstrucaoObjeto();
                     } else {
-			ObjetoGrafico selecao = mundo.getSelecao();
-			int index = selecao.indexPonto(ponto);
-
-			// Valida clique em ponto existente
-			if (index >= 0) {
-				// Valida fechamento
-				mundo.finalizaConstrucaoObjeto(index);
-				modoConstrucao = false;
-			} else {
-				// Adiciona vertice
-				mundo.avancaConstrucaoObjeto(ponto);
-			}
+			mundo.avancaConstrucaoObjeto(ponto);
                     }
 		} else {
-			// Valida selecao de poligonos existentes
-
-			// Cria novo poligono
-			mundo.iniciaObjeto(ponto);
-			modoConstrucao = true;
+                    if (rightClick) {
+                        mundo.removeSelecao();
+                    } else {
+			if (!mundo.selecionaObjeto(ponto)) {
+                            mundo.iniciaConstrucaoObjeto(ponto);
+                        }
+                    }
 		}
 
 		glDrawable.display();
@@ -271,12 +269,13 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-            Ponto4D ponto = new Ponto4D(e.getX(), e.getY());
-            ponto.setX(ponto.getX() + 200);
-            ponto.setY((-ponto.getY()) + 200);
+            if (cursor != null) {
+                cursor.setX(e.getX() + 200);
+                cursor.setY((-e.getY()) + 200);
+            }
                 
-            if (modoConstrucao)
-                mundo.atualizaConstrucaoObjeto(ponto);
+            if (mundo != null)
+                mundo.atualizaConstrucaoObjeto(cursor);
                 
             if (glDrawable != null)
                 glDrawable.display();

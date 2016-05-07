@@ -19,10 +19,11 @@ public class Mundo {
     public Mundo() {
         listaObjetos = new LinkedList<>();
         objetoSelecionado = null;
+        objetoConstrucao = null;
         camera = new Camera();
     }
     
-    // DISPLAY
+
     public void display(GL gl) {
         for (ObjetoGrafico obj : listaObjetos) {
             obj.display(gl, false);
@@ -32,69 +33,131 @@ public class Mundo {
         }
     }
     
-    // FUNCOES - GET
+    
     public boolean possuiSelecao() {
         return objetoSelecionado != null;
     }
     
-    public ObjetoGrafico getSelecao() {
-        return objetoSelecionado;
+    public boolean possuiConstrucao() {
+        return objetoConstrucao != null;
     }
     
-    // FUNCOES - CONSTRUCAO
-    public void iniciaObjeto(Ponto4D pontoInicial) {
+    
+    public void iniciaConstrucaoObjeto(Ponto4D pontoInicial) {
         ObjetoGrafico novoObjeto = new ObjetoGrafico();
         novoObjeto.addPonto(new Ponto4D(pontoInicial.getX(), pontoInicial.getY()));
         novoObjeto.setPontoConstrucao(pontoInicial);
         
-        listaObjetos.add(novoObjeto);
-        objetoSelecionado = novoObjeto;
+        objetoConstrucao = novoObjeto;
+        
+        if (possuiSelecao()) {
+            objetoSelecionado.addFilho(novoObjeto);
+        } else {
+            listaObjetos.add(novoObjeto);
+            objetoSelecionado = novoObjeto;
+        }
     }
     
     public void atualizaConstrucaoObjeto(Ponto4D ponto) {
-        if (objetoSelecionado != null)
-            objetoSelecionado.setPontoConstrucao(ponto);
+        if (objetoConstrucao != null)
+            objetoConstrucao.setPontoConstrucao(ponto);
     }
     
     public void avancaConstrucaoObjeto(Ponto4D ponto) {
         atualizaConstrucaoObjeto(ponto);
-        objetoSelecionado.addPonto(ponto);
+        
+        int index = objetoConstrucao.indexPonto(ponto);
+        if (index < 0) {
+            objetoConstrucao.addPonto(ponto);
+        } else {
+            finalizaConstrucaoObjeto(index);
+        }
     }
     
-    public void regressaConstrucaoObjeto() {
-        if (objetoSelecionado.getQuantPontos() > 0)
-            objetoSelecionado.removeUltimoPonto();
-        else
-            cancelaConstrucaoObjeto();
+    public boolean regressaConstrucaoObjeto() {
+        if (objetoConstrucao.getQuantPontos() > 1) {
+            objetoConstrucao.removeUltimoPonto();
+            return false;
+        }
+        
+        cancelaConstrucaoObjeto();
+        return true;
     }
     
     public void finalizaConstrucaoObjeto(int index) {
-        objetoSelecionado.encerraObjeto(index);
+        objetoConstrucao.encerraObjeto(index);
+        objetoConstrucao = null;
     }
     
     public void cancelaConstrucaoObjeto() {
-        listaObjetos.remove(objetoSelecionado);
+        if (objetoSelecionado == objetoConstrucao) {
+            listaObjetos.remove(objetoSelecionado);
+            objetoSelecionado = null;
+        } else {
+            objetoSelecionado.removeFilho(objetoConstrucao);
+        }
+        
+        objetoConstrucao = null;
+    }
+    
+    
+    public void translacaoObjetoSelecionado(double x, double y, double z) {
+        if (possuiSelecao() && !possuiConstrucao())
+            objetoSelecionado.translacaoSelecao(x, y, z);
+    }
+    
+    public void escalaObjetoSelecionado(double escala) {
+        if (possuiSelecao() && !possuiConstrucao())
+            objetoSelecionado.escalaSelecao(escala);
+    }
+    
+    public void rotacaoObjetoSelecionado(double rotacao) {
+        if (possuiSelecao() && !possuiConstrucao())
+            objetoSelecionado.rotacaoSelecao(rotacao);
+    }
+    
+
+    public boolean selecionaObjeto(Ponto4D ponto) {
+        ObjetoGrafico novaSelecao = null;
+        
+        for (ObjetoGrafico obj : listaObjetos) {
+            if (obj.podeSelecionar(ponto)) {
+                novaSelecao = obj;
+                break;
+            }
+        }
+        
+        if (novaSelecao == null)
+            return false;
+        
+        if (objetoSelecionado == novaSelecao) {
+            novaSelecao.selecionaPonto(ponto);
+        }
+        
+        objetoSelecionado = novaSelecao;
+        return true;
+    }
+    
+    public void deletaSelecao() {
+        if (possuiSelecao())
+            listaObjetos.remove(objetoSelecionado);
+        
+        removeSelecao();
+    }
+    
+    public void removeSelecao() {
         objetoSelecionado = null;
     }
     
-    // FUNCOES - TRANSFORMACAO
-    public void moveObjeto(double x, double y, double z) {
+
+    public void alteraCorObjetoSelecionado() {
         if (objetoSelecionado != null)
-            objetoSelecionado.translacao(x, y, z);
-    }
-    
-    public void escalaObjeto(double escala) {
-        if (objetoSelecionado != null)
-            objetoSelecionado.escala(escala);
-    }
-    
-    public void rotacaoObjeto(double rotacao) {
-        if (objetoSelecionado != null)
-            objetoSelecionado.rotacao(rotacao);
+            objetoSelecionado.proximaCor();
     }
     
     // ATRIBUTOS
-    List<ObjetoGrafico> listaObjetos;
-    ObjetoGrafico objetoSelecionado;
-    Camera camera;
+    private List<ObjetoGrafico> listaObjetos;
+    private ObjetoGrafico objetoSelecionado;
+    private ObjetoGrafico objetoConstrucao;
+    private Camera camera;
 }

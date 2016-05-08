@@ -69,7 +69,7 @@ public class ObjetoGrafico {
         
         // Desenhar filhos
         for (ObjetoGrafico obj : filhos) {
-            obj.displayChild(gl, this);
+            obj.displayChild(gl, transform, getCor());
         }
         
         if (selecionado) {
@@ -80,12 +80,16 @@ public class ObjetoGrafico {
         }
     }
     
-    private void displayChild(GL gl, ObjetoGrafico pai) {
-        gl.glColor3f(pai.getCor().getRed(), pai.getCor().getGreen(), pai.getCor().getBlue());
+    private void displayChild(GL gl, Transform matrizBase, Color corBase) {
+        gl.glColor3f(corBase.getRed(), corBase.getGreen(), corBase.getBlue());
         gl.glLineWidth(selecionado ? 4 : 2);
         
+        Transform matrizCombinada = new Transform();
+        matrizCombinada = matrizCombinada.transformMatrix(matrizBase);
+        matrizCombinada = matrizCombinada.transformMatrix(transform);
+        
         gl.glPushMatrix();
-        gl.glMultMatrixd(pai.getMatriz().getDate(), 0);
+        gl.glMultMatrixd(matrizCombinada.getDate(), 0);
         gl.glBegin(primitiva);
         
         // Desenhar objeto
@@ -113,7 +117,7 @@ public class ObjetoGrafico {
         }
         
         for (ObjetoGrafico obj : filhos) {
-            obj.displayChild(gl, this);
+            obj.displayChild(gl, matrizCombinada, getCor());
         }
         
         if (selecionado) {

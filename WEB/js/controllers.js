@@ -1,86 +1,154 @@
 (function (angular) {
     'use strict';
 
-    angular.module('busca', [])
-        .controller('BuscaController', function () {
-            this.campos = [
-                { nome: "Título", id: "txTitulo" },
-                { nome: "Banda", id: "txBanda" },
-                { nome: "Artista", id: "txArtista" },
-                { nome: "Gênero", id: "txGenero" },
-                { nome: "Letra", id: "txLetra" },
-                { nome: "Instrumento", id: "txInstrumento" },
-                { nome: "Termos de Busca", id: "txTermosBusca" },
+    var moduloBusca = angular.module('busca', []);
+
+    moduloBusca
+        .controller('BuscaController', function ($scope) {
+            $scope.container = {};
+
+            $scope.campos = [
+                { nome: "Título", id: "txTitulo", model: "titulo", modelPrioridade: "prioridadeTitulo" },
+                { nome: "Banda", id: "txBanda", model: "banda", modelPrioridade: "prioridadeBanda" },
+                { nome: "Artista", id: "txArtista", model: "artista", modelPrioridade: "prioridadeArtista" },
+                { nome: "Gênero", id: "txGenero", model: "genero", modelPrioridade: "prioridadeGenero" },
+                { nome: "Letra", id: "txLetra", model: "letra", modelPrioridade: "prioridadeLetra" },
+                { nome: "Instrumento", id: "txInstrumento", model: "instrumento", modelPrioridade: "prioridadeInstrumento" },
+                { nome: "Termos de Busca", id: "txTermosBusca", model: "termosBusca", modelPrioridade: "prioridadeTermosBusca" },
             ];
-        });
 
-    angular.module('login', [])
-        .controller('LoginController', function () {
-            this.usuario;
-            this.senha;
-            this.confirmacaoSenha;
-            this.email;
-            this.modo = 'login';
+            $scope.inicializarComponentes = function () {
+                $("#headerBuscaAvancada").click(function () {
+                    $("#pnlBuscaAvancada").slideToggle(500);
+                });
 
-            this.mostrarDivCadastro = function () {
-                this.modo = 'cadastro';
-
-                this.trocarTextoHeader("Cadastro")
-                $("#btnConfirmarLogin").fadeOut(500);
-                $("#btnRegistrar").fadeOut(347, function () {
-                    $("#divCadastro").slideToggle(500);
+                $(".numerico-maximo-100").bind("input", function () {
+                    if ($(this).val() > 100) {
+                        $(this).val(100);
+                    }
+                    if ($(this).val().indexOf('e') > -1) {
+                        var valorAtual = $(this).val();
+                        $(this).val(valorAtual.replace('e', ''));
+                    }
                 });
             }
+        });
 
-            this.esconderDivCadastro = function () {
+    angular.module('login', ['ui-notification'])
+        .controller('LoginController', ['Notification', '$location',
+            function (Notification, $location) {
+                this.usuario;
+                this.senha;
+                this.confirmacaoSenha;
+                this.email;
                 this.modo = 'login';
 
-                this.trocarTextoHeader("Login");
-                $("#divCadastro").slideToggle(500, function () {
-                    $("#btnRegistrar").fadeIn(500);
-                    $("#btnConfirmarLogin").fadeIn(500);
-                });
-            }
+                this.mostrarDivCadastro = function () {
+                    this.modo = 'cadastro';
 
-            this.trocarTextoHeader = function (novoTexto) {
-                $("#lblHeader").fadeOut(500, function () {
-                    $(this).text(novoTexto);
-                }).fadeIn();
-            }
-
-            this.validarSenhasIguais = function () {
-                if (this.senha != "" && this.confirmacaoSenha != "") {
-                    var campoSenha = $("#divSenha");
-                    var glifoSenha = $("#glpSenha");
-                    var campoConfirmacaoSenha = $("#divConfirmacaoSenha");
-                    var glifoConfirmacaoSenha = $("#glpConfirmacaoSenha");
-
-
-                    var classeErro = "has-error";
-                    var glifoErro = "glyphicon-remove"
-                    var classeValido = "has-success";
-                    var glifoValido = "glyphicon-ok";
-
-                    var senhaValida = this.senha == this.confirmacaoSenha;
-
-                    campoSenha.removeClass(senhaValida ? classeErro : classeValido);
-                    glifoSenha.removeClass(senhaValida ? glifoErro : glifoValido);
-                    campoConfirmacaoSenha.removeClass(senhaValida ? classeErro : classeValido);
-                    glifoConfirmacaoSenha.removeClass(senhaValida ? glifoErro : glifoValido);
-
-                    campoSenha.addClass(senhaValida ? classeValido : classeErro);
-                    glifoSenha.addClass(senhaValida ? glifoValido : glifoErro);
-                    campoConfirmacaoSenha.addClass(senhaValida ? classeValido : classeErro);
-                    glifoConfirmacaoSenha.addClass(senhaValida ? glifoValido : glifoErro);
+                    this.trocarTextoHeader("Cadastro")
+                    $("#btnConfirmarLogin").fadeOut(500);
+                    $("#btnRegistrar").fadeOut(347, function () {
+                        $("#divCadastro").slideToggle(500);
+                    });
                 }
 
-            }
-        });
+                this.esconderDivCadastro = function () {
+                    this.modo = 'login';
+
+                    this.trocarTextoHeader("Login");
+                    $("#divCadastro").slideToggle(500, function () {
+                        $("#btnRegistrar").fadeIn(500);
+                        $("#btnConfirmarLogin").fadeIn(500);
+
+                        var campoSenha = $("#divSenha");
+                        var glifoSenha = $("#glpSenha");
+
+                        campoSenha.removeClass("has-error");
+                        glifoSenha.removeClass("glyphicon-remove");
+                        campoSenha.removeClass("has-success");
+                        glifoSenha.removeClass("glyphicon-ok");
+                    });
+                }
+
+                this.trocarTextoHeader = function (novoTexto) {
+                    $("#lblHeader").fadeOut(500, function () {
+                        $(this).text(novoTexto);
+                    }).fadeIn();
+                }
+
+                this.validarSenhasIguais = function () {
+                    if (this.modo == 'cadastro' && this.confirmacaoSenha != undefined) {
+                        var campoSenha = $("#divSenha");
+                        var glifoSenha = $("#glpSenha");
+                        var campoConfirmacaoSenha = $("#divConfirmacaoSenha");
+                        var glifoConfirmacaoSenha = $("#glpConfirmacaoSenha");
+
+                        var classeErro = "has-error";
+                        var glifoErro = "glyphicon-remove"
+                        var classeValido = "has-success";
+                        var glifoValido = "glyphicon-ok";
+
+                        var senhaValida = this.senha == this.confirmacaoSenha;
+
+                        campoSenha.removeClass(senhaValida ? classeErro : classeValido);
+                        glifoSenha.removeClass(senhaValida ? glifoErro : glifoValido);
+                        campoConfirmacaoSenha.removeClass(senhaValida ? classeErro : classeValido);
+                        glifoConfirmacaoSenha.removeClass(senhaValida ? glifoErro : glifoValido);
+
+                        campoSenha.addClass(senhaValida ? classeValido : classeErro);
+                        glifoSenha.addClass(senhaValida ? glifoValido : glifoErro);
+                        campoConfirmacaoSenha.addClass(senhaValida ? classeValido : classeErro);
+                        glifoConfirmacaoSenha.addClass(senhaValida ? glifoValido : glifoErro);
+                    }
+                }
+
+                this.confirmarCadastro = function () {
+                    var mensagem = undefined;
+                    var tipoMensagem = "success";
+
+                    if (this.usuario == undefined || this.usuario.trim().length == 0) {
+                        tipoMensagem = 'warning';
+                        mensagem = this.adicionarMensagemErro(mensagem, 'Usuário não informado')
+                    }
+
+                    if (this.senha == undefined || this.senha.trim().length == 0) {
+                        tipoMensagem = 'warning';
+                        mensagem = this.adicionarMensagemErro(mensagem, 'Senha não informada');
+                    }
+                    else if (this.confirmacaoSenha == undefined || this.confirmacaoSenha.trim().length == 0) {
+                        tipoMensagem = 'warning';
+                        mensagem = this.adicionarMensagemErro(mensagem, 'Confirmação da senha não informada');
+                    }
+                    else if (this.senha != this.confirmacaoSenha) {
+                        tipoMensagem = 'warning';
+                        mensagem = this.adicionarMensagemErro(mensagem, 'Senhas são diferentes');
+                    }
+
+                    if (this.email == undefined || this.email.trim().length == 0) {
+                        tipoMensagem = 'warning';
+                        mensagem = this.adicionarMensagemErro(mensagem, 'Email informado não é valido');
+                    }
+
+                    if (mensagem == undefined) {
+                        mensagem = 'Cadastro finalizado com sucesso! Foi enviado um email de confirmação para o endereço informado.';
+                    }
+
+                    Notification({ message: mensagem, positionX: "center", positionY: "bottom", delay: 5000 }, tipoMensagem);
+                }
+
+                this.adicionarMensagemErro = function (mensagem, campo) {
+                    if (mensagem == undefined) {
+                        mensagem = "Erros ao validar os campos:";
+                    }
+                    return mensagem += '<br>- ' + campo;
+                }
+            }]);
 
     angular.module('musica', [])
         .controller('MusicaController', function () {
 
-            this.musica = criarMusica();
+            this.musica = musicaPrincipal;
 
             // Constantes
             this.CAMINHO_ESTRELA_CHEIA = "../img/estrela_cheia.png";
@@ -153,7 +221,7 @@
             function ($location) {
                 this.resultados = {
                     itens: [
-                        criarMusica(),
+                        musicaPrincipal,
                         {
                             nome: "Chain reaction",
                             banda: "Journey",
@@ -190,16 +258,174 @@
                 }
             }]);
 
-    angular.module('historicoEdicoes', [])
-        .controller('HistoricoController', function () {
-            this.alteracoes = {
-                musica: criarMusica(),
+    angular.module('historicoEdicoes', ['ui.bootstrap', 'ngAnimate'])
+        .controller('HistoricoController', function ($scope, $uibModal) {
+            $scope.historico = {
+                musica: musicaPrincipal,
+                alteracoes: [
+                    {
+                        usuario: "Sérgio Tomio",
+                        tipoAlteracao: "Adição",
+                        campo: "Sobre",
+                        descricao: 'Adicionado o campo "Sobre" com o conteúdo:\n\nSeparate Ways (Worlds Apart) é uma canção da banda de rock norte-americana Journey, do álbum Frontiers. Lançado em 5 de fevereiro de 1983, o single subiu para a oitava posição na Billboard Hot 100 e ficou lá por seis semanas consecutivas. ',
+                    },
+                    {
+                        usuario: "Guilherme Neto",
+                        tipoAlteracao: "Alteração",
+                        campo: "Letra",
+                        descricao: 'Alterado o campo "Letra"' +
+                        '<div style="background-color: #ff9999">How we touced</div>' +
+                        '<div style="background-color: #aeeaae">How we touched</div>' +
+                        '...\n<div style="background-color: #ff9999">If he eve hurts you</div>' +
+                        '<div style="background-color: #aeeaae">If he ever hurts you</div>' +
+                        '...\n<div style="background-color: #ff9999">True love on\'t desert you</div>' +
+                        '<div style="background-color: #aeeaae">True love won\'t desert you</div>' +
+                        '...\n<div style="background-color: #ff9999">You know I till love you</div>' +
+                        '<div style="background-color: #aeeaae">You know I still love you</div>' +
+                        '...\n<div style="background-color: #ff9999">Though we ouched</div>' +
+                        '<div style="background-color: #aeeaae">Though we touche</div>',
+                    },
+                ],
+            };
+
+            $scope.visualizarAlteracao = function (indiceAlteracao) {
+                var alteracao = $scope.historico.alteracoes[indiceAlteracao];
+
+                $uibModal.open({
+                    animation: true,
+                    templateUrl: 'alteracoes.html',
+                    controller: 'AlteracoesPopupController',
+                    resolve: {
+                        alteracao: function () {
+                            return alteracao.descricao;
+                        }
+                    },
+                });
             }
-            
+        });
+
+    angular.module('historicoEdicoes')
+        .controller('AlteracoesPopupController', function ($scope, $uibModalInstance, $sce, alteracao) {
+            $scope.alteracao = $sce.trustAsHtml(alteracao);
+
+            $scope.fechar = function () {
+                $uibModalInstance.dismiss('cancel');
+            }
+
+            $scope.removerArtistaSelecionado
+        });
+
+    angular.module('edicao', [])
+        .controller('EdicaoController', function ($scope) {
+            $scope.musica = musicaPrincipal;
+            $scope.artistaSelecionado = $scope.musica.artistas[0];
+            $scope.artistaNovo;
+            $scope.tiposArtista = [
+                { idTipo: 1, descricao: "Guitarrista" },
+                { idTipo: 2, descricao: "Cantor" },
+                { idTipo: 3, descricao: "Escritor" },
+                { idTipo: 4, descricao: "Produtor" },
+            ];
+            $scope.tipoNovoArtista;
+            $scope.tagNova;
+            $scope.tagSelecionada = $scope.musica.tags[0];
+
+            $scope.removerArtistaSelecionado = function () {
+                var selecionado = $scope.artistaSelecionado;
+                if (selecionado != null) {
+                    var indiceSelecionado = $scope.encontrarIndiceArtista(selecionado.idArtista);
+                    $scope.musica.artistas.splice(indiceSelecionado, 1);
+                    if (indiceSelecionado < $scope.musica.artistas.length) {
+                        $scope.artistaSelecionado = $scope.musica.artistas[indiceSelecionado];
+                    } else {
+                        $scope.artistaSelecionado = $scope.musica.artistas[0];
+                    }
+                }
+            }
+
+            $scope.encontrarIndiceArtista = function (idArtista) {
+                var artistas = $scope.musica.artistas;
+                for (var i = 0; i < artistas.length; i++) {
+                    if (artistas[i].idArtista == idArtista) return i;
+                }
+                return -1;
+            }
+
+            $scope.adicionarNovoArtista = function () {
+                var artistas = $scope.musica.artistas;
+                $scope.musica.artistas.push({
+                    idArtista: (artistas[artistas.length - 1].idArtista + 1),
+                    nome: $scope.artistaNovo,
+                    tipo: $scope.tipoNovoArtista,
+                });
+                $scope.artistaNovo = null;
+            }
+
+            $scope.montarDescricaoTipoArtista = function (artista) {
+                return artista.nome + ' (' + artista.tipo.descricao + ')';
+            }
+
+            $scope.removerTagSelecionada = function () {
+                var selecionada = $scope.tagSelecionada;
+                if (selecionada != null) {
+                    var indiceSelecionada = $scope.encontrarIndiceTag(selecionada);
+                    $scope.musica.tags.splice(indiceSelecionada, 1);
+                    if (indiceSelecionada < $scope.musica.artistas.length) {
+                        $scope.tagSelecionada = $scope.musica.tags[indiceSelecionada];
+                    } else {
+                        $scope.tagSelecionada = $scope.musica.tags[0];
+                    }
+                }
+            }
+
+            $scope.encontrarIndiceTag = function (tag) {
+                var tags = $scope.musica.tags;
+                for (var i = 0; i < tags.length; i++) {
+                    if (tags[i] == tag) return i;
+                }
+                return -1;
+            }
+
+            $scope.adicionarNovaTag = function () {
+                $scope.musica.tags.push($scope.tagNova);
+                $scope.tagNova = null;
+            }
+
+        });
+
+    angular.module('perfil', [])
+        .controller('PerfilController', function ($scope) {
+            $scope.usuario = {
+                nome: "Guilherme Diegoli Neto",
+                email: "gd_neto@hotmail.com",
+                imagemPerfil: "../img/imagem_perfil.jpg",
+                favoritos: [
+                    musicaPrincipal,
+                ],
+                pesquisas: [
+                    musicaPrincipal,
+                ]
+            };
+        });
+
+    angular.module('perfil')
+        .controller('EditarPerfilController', function ($scope) {
+            $scope.usuario = {
+                nome: "Guilherme Diegoli Neto",
+                email: "gd_neto@hotmail.com",
+                imagemPerfil: "../img/imagem_perfil.jpg",
+                favoritos: [
+                    musicaPrincipal,
+                ],
+                pesquisas: [
+                    musicaPrincipal,
+                ]
+            };
         });
 
 })(window.angular)
 
+var musicaPrincipal = criarMusica();
 
 function criarMusica() {
     return {
@@ -214,12 +440,12 @@ function criarMusica() {
         },
         genero: "Classic Metal",
         artistas: [
-            { nome: "...", tipo: { idTipo: 1 } },
-            { nome: "...", tipo: { idTipo: 2 } },
-            { nome: "Jonathan Cain", tipo: { idTipo: 3 } },
-            { nome: "Steve Perry", tipo: { idTipo: 3 } },
-            { nome: "Kevin Elson", tipo: { idTipo: 4 } },
-            { nome: "Mike Stone", tipo: { idTipo: 4 } },
+            { idArtista: 1, nome: "...", tipo: { idTipo: 1, descricao: "Guitarrista" } },
+            { idArtista: 2, nome: "...", tipo: { idTipo: 2, descricao: "Cantor" } },
+            { idArtista: 3, nome: "Jonathan Cain", tipo: { idTipo: 3, descricao: "Escritor" } },
+            { idArtista: 4, nome: "Steve Perry", tipo: { idTipo: 3, descricao: "Escritor" } },
+            { idArtista: 5, nome: "Kevin Elson", tipo: { idTipo: 4, descricao: "Produtor" } },
+            { idArtista: 6, nome: "Mike Stone", tipo: { idTipo: 4, descricao: "Produtor" } },
         ],
 
         letra: "Here we stand" +
@@ -280,12 +506,7 @@ function criarMusica() {
         "\nAnd if he ever hurts you" +
         "\nTrue love won't desert you" +
         "\nNo, no" +
-        "\nNo" +
-        "\nTradução" +
-        "\nAdd a playlist" +
-        "\nCifra" +
-        "\nImprimir" +
-        "\nCorrigir",
+        "\nNo",
 
         informacoes: "Separate Ways (Worlds Apart) é uma canção da banda de rock norte-americana Journey, do álbum Frontiers. Lançado em 5 de fevereiro de 1983, o single subiu para a oitava posição na Billboard Hot 100 e ficou lá por seis semanas consecutivas.",
         tags: ["Journey", "Frontier", "Separate Ways", "Worlds Apart", "Tron Legacy", "Yes Man"],

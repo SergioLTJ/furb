@@ -1,0 +1,78 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/padrao.css">
+    <script type="text/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="../js/controllers.js"></script>
+    <meta charset="utf-8" />
+</head>
+
+<body>
+    <div class="container">
+        <nav class="navbar navbar-default" style="margin-top: 10px">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                        aria-controls="navbar">
+                        <span class="sr-only">Toggle</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Nome do Site</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-left">
+                        <li>
+                            <a href="Busca.html"><strong>Realizar uma busca</strong></a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="Login.html">Login</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div ng-app="perfil" ng-controller="EditarPerfilController" class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Editando o perfil de {{ usuario.nome }}</h3>
+            </div>
+            <div class="panel-body">
+                <form action="Musica.html">
+                    <div class="form-group row">
+                        <div class="col-xs-2">
+                            <label for="txImagemPerfil" class="control-label">Imagem </label>
+                        </div>
+                        <div class="col-xs-8">
+                            <input type="file" class="form-control" id="txImagemPerfil" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-xs-2">
+                            <label for="txNome" class="control-label">Nome </label>
+                        </div>
+                        <div class="col-xs-8">
+                            <input type="text" class="form-control" id="txNome" ng-model="usuario.nome" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-xs-2">
+                            <label for="txEmail" class="control-label">E-mail </label>
+                        </div>
+                        <div class="col-xs-8">
+                            <input type="text" class="form-control" id="txEmail" ng-model="usuario.email" />
+                        </div>
+                    </div>
+                    <input type="submit" class="btn btn-primary" value="Salvar" />
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

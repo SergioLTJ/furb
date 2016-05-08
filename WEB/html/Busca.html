@@ -6,7 +6,6 @@
     <script type="text/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
     <script type="text/javascript" src="../js/controllers.js"></script>
-    <script type="text/javascript" src="../js/Busca.js"></script>
     <meta charset="utf-8" />
 </head>
 
@@ -33,6 +32,9 @@
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li>
+                            <a href="Perfil.html">Perfil</a>
+                        </li>
+                        <li>
                             <a href="Login.html">Login</a>
                         </li>
                     </ul>
@@ -51,7 +53,7 @@
                     <span>Use este campo para pesquisar músicas usando termos gerais como <strong>gênero</strong>,
                     <strong>nome</strong>, <strong>artistas participantes</strong>, etc. Vários termos podem ser combinados para ajudar a refinar a pesquisa.</span>
                 </div>
-                <form action='ResultadosBusca.html&TipoBusca=Basica'>
+                <form method="POST" action='ResultadosBusca.html#/?TipoBusca=Basica'>
                     <input type="text" id="txTermosBusca" class="form-control" placeholder="Insira termos de busca aqui..." style="width: 100%;">
                     <input type="submit" id="btnBuscaSimples" class="btn btn-primary pull-right" style="margin-top: 5px" value="Buscar" />
                 </form>
@@ -70,24 +72,23 @@
                     <span>A pesquisa avançada permite especificar separadamente palavras-chave para várias características das músicas, 
                     assim como o <strong>peso</strong> que cada um desses fatores deve ter no resultado da pesquisa.</span>
                 </div>
-                <form>
-                    <div ng-app="busca" ng-controller="BuscaController as busca">
-                        <div ng-repeat="campo in busca.campos" class="form-group row">
+                <div ng-app="busca" ng-controller="BuscaController as busca" ng-init="inicializarComponentes()">
+                    <form method="POST" action="ResultadosBusca.html#/?TipoBusca=Avancada">
+                        <div ng-repeat="campo in campos" class="form-group row">
                             <div class="col-xs-2">
                                 <label for="{{campo.id}}" class="control-label">{{ campo.nome }}</label>
                             </div>
                             <div class="col-xs-8">
-                                <input type="text" class="form-control" placeholder="Insira {{ campo.nome }} aqui..." id="{{ campo.id }}">
+                                <input type="text" class="form-control" placeholder="Insira {{ campo.nome }} aqui..." 
+                                    id="{{ campo.id }}" ng-model="container[campo.model]" />
                             </div>
                             <div class="col-xs-2">
-                                <input type="number" class="numerico-maximo-100 form-control" value="0" max="100">
+                                <input type="number" class="form-control numerico-maximo-100" value="0" max="100" ng-model="container[campo.modelPrioridade]">
                             </div>
                         </div>
-                    </div>
-                    <form action="ResultadosBusca.html&TipoBusca=Avancada">
-                        <input type="submit" class="btn btn-primary pull-right" id="btnBuscaAvancada" value="Buscar">    
+                        <input type="submit" class="btn btn-primary pull-right" id="btnBuscaAvancada" value="Buscar">
                     </form>
-                </form>
+                </div>
             </div>
         </div>
     </div>

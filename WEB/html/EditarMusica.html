@@ -1,0 +1,190 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/padrao.css">
+    <script type="text/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="../js/controllers.js"></script>
+    <meta charset="utf-8" />
+</head>
+
+<body>
+    <div class="container">
+        <nav class="navbar navbar-default" style="margin-top: 10px">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                        aria-controls="navbar">
+                        <span class="sr-only">Toggle</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Nome do Site</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-left">
+                        <li>
+                            <a href="Busca.html"><strong>Realizar uma busca</strong></a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="Login.html">Login</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div ng-app="edicao" ng-controller="EdicaoController as controller">
+            <div class="panel panel-primary">
+                <div class="panel-heading clearfix">
+                    <h3 class="panel-title pull-left">
+                        Editando {{ musica.nome }}
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <form action="Musica.html">
+                        <div class="form-group row">
+                            <div class="col-xs-2">
+                                <label for="txNomeMusica" class="control-label">Nome </label>
+                            </div>
+                            <div class="col-xs-8">
+                                <input type="text" class="form-control" id="txNomeMusica" ng-model="musica.nome" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-xs-2">
+                                <label for="txGeneroMusica" class="control-label">Gênero </label>
+                            </div>
+                            <div class="col-xs-8">
+                                <input type="text" class="form-control" id="txGeneroMusica" ng-model="musica.genero" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-xs-2">
+                                <label for="txaInformacoes" class="control-label">Informações </label>
+                            </div>
+                            <div class="col-xs-8">
+                                <textarea class="form-control" rows="4" id="txaInformacoes" ng-model="musica.informacoes"> </textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <div class="col-xs-2">
+                                <label for="cmbTags" class="control-label">Tags </label>
+                            </div>
+                            <div class="col-xs-6">
+                                <select id="cmbTags" class="form-control" ng-model="tagSelecionada" 
+                                    ng-options="tag for tag in musica.tags">
+                                </select>
+                            </div>
+                            <div class="col-xs-2">
+                                <button type="button" class="btn" ng-click="removerTagSelecionada()">
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-xs-offset-2 col-xs-6">
+                                <input type="text" class="form-control" id="txTag" ng-model="tagNova" />
+                            </div>
+                            <div class="col-xs-2">
+                                <button type="button" class="btn" ng-click="adicionarNovaTag()">
+                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <h3>Álbum</h3>
+                        <br>
+                        <div class="form-group row">
+                            <div class="col-xs-2">
+                                <label for="txNomeAlbum" class="control-label">Gênero </label>
+                            </div>
+                            <div class="col-xs-8">
+                                <input type="text" class="form-control" id="txNomeAlbum" ng-model="musica.album.nome" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-xs-2">
+                                <label for="txAnoAlbum" class="control-label">Ano </label>
+                            </div>
+                            <div class="col-xs-8">
+                                <input type="text" class="form-control" id="txAnoAlbum" ng-model="musica.album.ano" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-xs-2">
+                                <label for="txCapaAlbum" class="control-label">Capa </label>
+                            </div>
+                            <div class="col-xs-8">
+                                <input type="file" class="form-control" id="txNomeAlbum" />
+                            </div>
+                        </div>
+
+                        <hr>
+                        <h3>Artistas</h3>
+                        <br>
+                        <div class="form-group row">
+                            <div class="col-xs-2">
+                                <label for="txBanda" class="control-label">Banda </label>
+                            </div>
+                            <div class="col-xs-8">
+                                <input type="text" class="form-control" id="txBanda" ng-model="musica.banda" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-xs-2">
+                                <label for="cmbArtistas" class="control-label">Artistas </label>
+                            </div>
+                            <div class="col-xs-6">
+                                <select id="cmbArtistas" class="form-control" ng-model="artistaSelecionado" 
+                                    ng-options="montarDescricaoTipoArtista(artista) for artista in musica.artistas">
+                                </select>
+                            </div>
+                            <div class="col-xs-2">
+                                <button type="button" class="btn" ng-click="removerArtistaSelecionado()">
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-xs-offset-2 col-xs-3">
+                                <input type="text" class="form-control" id="txArtista" ng-model="artistaNovo" />
+                            </div>
+                            <div class="col-xs-3">
+                                <select id="cmbTipoArtista" class="form-control" ng-model="tipoNovoArtista" 
+                                    ng-options="tipoArtista.descricao for tipoArtista in tiposArtista">
+                                </select>
+                            </div>
+                            <div class="col-xs-2">
+                                <button type="button" class="btn" ng-click="adicionarNovoArtista()">
+                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <h3>Letra</h3>
+                        <br>
+                        <div class="form-group row">
+                            <div class="col-xs-10">
+                                <textarea class="form-control" rows="15" id="txaLetra" ng-model="musica.letra"> </textarea>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <input type="Submit" class="btn btn-primary pull-right" value="Salvar" />
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

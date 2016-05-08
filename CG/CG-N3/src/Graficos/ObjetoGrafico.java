@@ -35,7 +35,7 @@ public class ObjetoGrafico {
     }
     
 
-    public void display(GL gl, boolean selecionado) {
+    public void display(GL gl) {
         gl.glColor3f(getCor().getRed(), getCor().getGreen(), getCor().getBlue());
         gl.glLineWidth(selecionado ? 4 : 2);
         
@@ -69,11 +69,10 @@ public class ObjetoGrafico {
         
         // Desenhar filhos
         for (ObjetoGrafico obj : filhos) {
-            obj.displayChild(gl, selecionado, this);
+            obj.displayChild(gl, this);
         }
         
-        // Desenhar BoundingBox apenas em debug
-        if (Main.modoDebug || selecionado) {
+        if (selecionado) {
             bound.display(gl);
         }
         if (selecionado && pontoSelecionado != null) {
@@ -81,7 +80,7 @@ public class ObjetoGrafico {
         }
     }
     
-    private void displayChild(GL gl, boolean selecionado, ObjetoGrafico pai) {
+    private void displayChild(GL gl, ObjetoGrafico pai) {
         gl.glColor3f(pai.getCor().getRed(), pai.getCor().getGreen(), pai.getCor().getBlue());
         gl.glLineWidth(selecionado ? 4 : 2);
         
@@ -111,6 +110,17 @@ public class ObjetoGrafico {
             
                 gl.glEnd();
             }
+        }
+        
+        for (ObjetoGrafico obj : filhos) {
+            obj.displayChild(gl, this);
+        }
+        
+        if (selecionado) {
+            bound.display(gl);
+        }
+        if (selecionado && pontoSelecionado != null) {
+            pontoSelecionado.getAreaSelecao().display(gl);
         }
     }
     
@@ -209,6 +219,9 @@ public class ObjetoGrafico {
     
     public void removeSelecaoPonto() {
         pontoSelecionado = null;
+        for (ObjetoGrafico obj : filhos) {
+            obj.removeSelecaoPonto();
+        }
     }
     
     public void encerraObjeto(int index) {
@@ -249,8 +262,28 @@ public class ObjetoGrafico {
         bound.atribuirBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
     }
     
-    public boolean podeSelecionar(Ponto4D ponto) {
-        return bound.calcula(ponto) && pontoNoPoligono(ponto);
+    public ObjetoGrafico testaSelecao(Ponto4D ponto) {
+        if (bound.calcula(ponto) && pontoNoPoligono(ponto)) {
+            return this;
+        }
+        
+        ObjetoGrafico sel = null;
+        for (ObjetoGrafico obj : filhos) {
+            sel = obj.testaSelecao(ponto);
+            if (sel != null) {
+                break;
+            }
+        }
+        
+        return sel;
+    }
+    
+    public void setSelecao(boolean selecao) {
+        selecionado = selecao;
+        
+        for (ObjetoGrafico obj : filhos) {
+            obj.setSelecao(selecao);
+        }
     }
     
     private boolean pontoNoPoligono(Ponto4D ponto) {
@@ -355,6 +388,7 @@ public class ObjetoGrafico {
     private Ponto4D pontoConstrucao;
     private int indiceCor;
     private int primitiva;
+    private boolean selecionado;
     
     // ATRIBUTOS - OUTROS
     private final List<ObjetoGrafico> filhos;

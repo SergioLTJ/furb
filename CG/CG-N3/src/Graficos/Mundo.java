@@ -26,11 +26,8 @@ public class Mundo {
 
     public void display(GL gl) {
         for (ObjetoGrafico obj : listaObjetos) {
-            obj.display(gl, false);
-        }
-        if (objetoSelecionado != null) {
-            objetoSelecionado.display(gl, true);
-        }
+            obj.display(gl);
+        }   
     }
     
     
@@ -56,6 +53,8 @@ public class Mundo {
             listaObjetos.add(novoObjeto);
             objetoSelecionado = novoObjeto;
         }
+        
+        objetoSelecionado.setSelecao(true);
     }
     
     public void atualizaConstrucaoObjeto(Ponto4D ponto) {
@@ -121,14 +120,19 @@ public class Mundo {
         ObjetoGrafico novaSelecao = null;
         
         for (ObjetoGrafico obj : listaObjetos) {
-            if (obj.podeSelecionar(ponto)) {
-                novaSelecao = obj;
+            novaSelecao = obj.testaSelecao(ponto);
+            if (novaSelecao != null) {
                 break;
             }
         }
         
+        if (objetoSelecionado != null)
+            objetoSelecionado.setSelecao(false);
+        
         if (novaSelecao == null)
             return false;
+        
+        novaSelecao.setSelecao(true);
         
         if (objetoSelecionado == novaSelecao) {
             novaSelecao.selecionaPonto(ponto);
@@ -146,6 +150,8 @@ public class Mundo {
     }
     
     public void removeSelecao() {
+        if (objetoSelecionado != null)
+            objetoSelecionado.setSelecao(false);
         objetoSelecionado = null;
     }
     

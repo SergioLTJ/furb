@@ -13,7 +13,9 @@ import Logica.BoundingBox;
  */
 public class Ponto4D {
 
-    // CONSTRUTORES
+    /**
+     * Constroi um Ponto4D na origem
+     */
     public Ponto4D() {
         this.x = 0;
         this.y = 0;
@@ -21,6 +23,10 @@ public class Ponto4D {
         this.w = 1;
     }
     
+    /**
+     * Constroi um Ponto4D com base num ponto existente
+     * @param ponto Ponto existente
+     */
     public Ponto4D(Ponto4D ponto) {
         this.x = ponto.x;
         this.y = ponto.y;
@@ -28,6 +34,11 @@ public class Ponto4D {
         this.w = ponto.w;
     }
     
+    /**
+     * Constroi um Ponto4D nas coordenadas (x,y,0,1)
+     * @param x Coordenada X
+     * @param y Coordenada Y
+     */
     public Ponto4D(double x, double y) {
         this.x = x;
         this.y = y;
@@ -35,6 +46,13 @@ public class Ponto4D {
         this.w = 1;
     }
     
+    /**
+     * Constroi um Ponto4D nas coordenadas (x,y,z,w)
+     * @param x Coordenada X
+     * @param y Coordenada Y
+     * @param z Coordenada Z
+     * @param w Coordenada W
+     */
     public Ponto4D(double x, double y, double z, double w) {
         this.x = x;
         this.y = y;
@@ -42,6 +60,11 @@ public class Ponto4D {
         this.w = w;
     }
     
+    /**
+     * Inverte as coordenadas do Ponto4D
+     * @param pto Ponto cujas coordenadas serao invertidas
+     * @return Ponto com as coordenadas invertidas
+     */
     public Ponto4D inverterSinal(Ponto4D pto) {
         pto.setX(pto.getX() * -1);
         pto.setY(pto.getY() * -1);
@@ -49,6 +72,12 @@ public class Ponto4D {
         return pto;
     }
 
+    /**
+     * Faz a translacao do Ponto4D
+     * @param x Translacao eixo X
+     * @param y Translacao eixo Y
+     * @param z Translacao eixo Z
+     */
     public void translacaoPonto(double x, double y, double z) {
         this.x += x;
         this.y += y;
@@ -89,7 +118,10 @@ public class Ponto4D {
         this.w = w;
     }
 
-    // BOUNDING
+    /**
+     * Retorna um BoundingBox para selecionar o Ponto4D
+     * @return BoundingBox para selecao
+     */
     public BoundingBox getAreaSelecao() {
         Ponto4D top = new Ponto4D(x + 8, y + 8, z + 8, w);
         Ponto4D bot = new Ponto4D(x - 8, y - 8, z + 8, w);
@@ -97,6 +129,12 @@ public class Ponto4D {
         return new BoundingBox(bot.x, bot.y, bot.z, top.x, top.y, top.z);
     }
     
+    /**
+     * Retorna um Ponto4D correspondente a interseccao horizontal do Ponto4D atual com uma reta definida pelos objetos Ponto4D ptA e ptB
+     * @param ptA Ponto A para definicao da reta
+     * @param ptB Ponto B para definicao da reta
+     * @return Ponto de interseccao horizontal com a reta
+     */
     public Ponto4D intersecHorizontal(Ponto4D ptA, Ponto4D ptB) {
         double a = (ptB.getY() - ptA.getY()) / (ptB.getX() - ptA.getX());
         double b = ptA.getY() - (a * ptA.getX());

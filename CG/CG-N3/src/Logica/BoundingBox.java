@@ -29,7 +29,7 @@ public class BoundingBox {
 
 	public BoundingBox() {
 		this(0, 0, 0, 0, 0, 0);
-                processarCentroBBox();
+        processarCentroBBox();
                 
 		this.cor = Color.MAGENTA;
 	}
@@ -41,12 +41,12 @@ public class BoundingBox {
 		this.maiorX = greaterX;
 		this.maiorY = greaterY;
 		this.maiorZ = greaterZ;
-                processarCentroBBox();
+        processarCentroBBox();
                 
 		this.cor = Color.MAGENTA;
 	}
 	
-	public void atribuirBoundingBox(double smallerX, double smallerY, double smallerZ, double greaterX, double greaterY, double greaterZ) {
+    public void atribuirBoundingBox(double smallerX, double smallerY, double smallerZ, double greaterX, double greaterY, double greaterZ) {
 		this.menorX = smallerX;
 		this.menorY = smallerY;
 		this.menorZ = smallerZ;
@@ -55,14 +55,14 @@ public class BoundingBox {
 		this.maiorZ = greaterZ;
 		processarCentroBBox();
                 
-                Main.trace("Atualiza BBox");
+        Main.trace("Atualiza BBox");
 	}
 		
 	public void atualizarBBox(Ponto4D point) {
 	    atualizarBBox(point.getX(), point.getY(), point.getZ());
 	}
 
-	public void atualizarBBox(double x, double y, double z) {
+    public void atualizarBBox(double x, double y, double z) {
 	    if (x < menorX)
 	        menorX = x;
 	    else {
@@ -80,7 +80,10 @@ public class BoundingBox {
 	    }
 	}
 	
-	public void processarCentroBBox() {
+    /**
+     * Calcula o centro da BBox
+     */
+    public void processarCentroBBox() {
 	    centro.setX((maiorX + menorX)/2);
 	    centro.setY((maiorY + menorY)/2);
 	    centro.setZ((maiorZ + menorZ)/2);
@@ -91,28 +94,31 @@ public class BoundingBox {
 		gl.glLineWidth(this.larguraLinha);
 		
 		gl.glBegin (GL.GL_LINE_LOOP);
-			gl.glVertex3d (menorX, maiorY, menorZ);
-			gl.glVertex3d (maiorX, maiorY, menorZ);
-			gl.glVertex3d (maiorX, menorY, menorZ);
-			gl.glVertex3d (menorX, menorY, menorZ);
+		gl.glVertex3d (menorX, maiorY, menorZ);
+		gl.glVertex3d (maiorX, maiorY, menorZ);
+		gl.glVertex3d (maiorX, menorY, menorZ);
+		gl.glVertex3d (menorX, menorY, menorZ);
 	    gl.glEnd();
+		
 	    gl.glBegin(GL.GL_LINE_LOOP);
-	    	gl.glVertex3d (menorX, menorY, menorZ);
-	    	gl.glVertex3d (menorX, menorY, maiorZ);
-	    	gl.glVertex3d (menorX, maiorY, maiorZ);
-	    	gl.glVertex3d (menorX, maiorY, menorZ);
+	    gl.glVertex3d (menorX, menorY, menorZ);
+	    gl.glVertex3d (menorX, menorY, maiorZ);
+	    gl.glVertex3d (menorX, maiorY, maiorZ);
+	    gl.glVertex3d (menorX, maiorY, menorZ);
 	    gl.glEnd();
+		
 	    gl.glBegin(GL.GL_LINE_LOOP);
-	    	gl.glVertex3d (maiorX, maiorY, maiorZ);
-	    	gl.glVertex3d (menorX, maiorY, maiorZ);
-	    	gl.glVertex3d (menorX, menorY, maiorZ);
-	    	gl.glVertex3d (maiorX, menorY, maiorZ);
+	    gl.glVertex3d (maiorX, maiorY, maiorZ);
+	    gl.glVertex3d (menorX, maiorY, maiorZ);
+	    gl.glVertex3d (menorX, menorY, maiorZ);
+	    gl.glVertex3d (maiorX, menorY, maiorZ);
 	    gl.glEnd();
+		
 	    gl.glBegin(GL.GL_LINE_LOOP);
-	    	gl.glVertex3d (maiorX, menorY, menorZ);
-	    	gl.glVertex3d (maiorX, maiorY, menorZ);
-	    	gl.glVertex3d (maiorX, maiorY, maiorZ);
-	    	gl.glVertex3d (maiorX, menorY, maiorZ);
+	    gl.glVertex3d (maiorX, menorY, menorZ);
+	    gl.glVertex3d (maiorX, maiorY, menorZ);
+	    gl.glVertex3d (maiorX, maiorY, maiorZ);
+	    gl.glVertex3d (maiorX, menorY, maiorZ);
     	gl.glEnd();
 	}
 
@@ -159,27 +165,35 @@ public class BoundingBox {
 		this.larguraLinha = largura;
 	}
         
-        // FUNCOES
-        public boolean calcula(Ponto4D ponto) {
-            if (ponto.getX() < obterMenorX()) return false;
-            if (ponto.getX() > obterMaiorX()) return false;
-            if (ponto.getY() < obterMenorY()) return false;
-            if (ponto.getY() > obterMaiorY()) return false;
-		
-            return true;
-        }
+    /**
+     * Testa se o Ponto4D esta dentro do BBox
+     * @param ponto Ponto de selecao
+     * @return true caso esteja dentro do BBox
+     */
+    public boolean calcula(Ponto4D ponto) {
+        if (ponto.getX() < obterMenorX()) return false;
+        if (ponto.getX() > obterMaiorX()) return false;
+        if (ponto.getY() < obterMenorY()) return false;
+        if (ponto.getY() > obterMaiorY()) return false;
+
+        return true;
+    }
         
-        public void display(GL gl) {
-            gl.glColor3f(cor.getRed(), cor.getGreen(), cor.getBlue());
-            gl.glLineWidth(1);
-            gl.glBegin(GL.GL_LINE_LOOP);
-            
-            gl.glVertex2d(menorX, menorY);
-            gl.glVertex2d(menorX, maiorY);
-            gl.glVertex2d(maiorX, maiorY);
-            gl.glVertex2d(maiorX, menorY);
-            
-            gl.glEnd();
-        }
+    /**
+     * Desenhar o BoundingBox
+     * @param gl Objeto de desenho
+     */
+    public void display(GL gl) {
+        gl.glColor3f(cor.getRed(), cor.getGreen(), cor.getBlue());
+        gl.glLineWidth(1);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        
+        gl.glVertex2d(menorX, menorY);
+        gl.glVertex2d(menorX, maiorY);
+        gl.glVertex2d(maiorX, maiorY);
+        gl.glVertex2d(maiorX, menorY);
+        
+        gl.glEnd();
+    }
 }
 

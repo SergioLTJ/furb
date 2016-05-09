@@ -89,10 +89,10 @@ public class Transform {
 
     public Ponto4D transformPoint(Ponto4D point) {
         Ponto4D pointResult = new Ponto4D(
-                matriz[0] * point.getX() + matriz[4] * point.getY() + matriz[8] * point.getZ() + matriz[12] * point.getW(),
-                matriz[1] * point.getX() + matriz[5] * point.getY() + matriz[9] * point.getZ() + matriz[13] * point.getW(),
-                matriz[2] * point.getX() + matriz[6] * point.getY() + matriz[10] * point.getZ() + matriz[14] * point.getW(),
-                matriz[3] * point.getX() + matriz[7] * point.getY() + matriz[11] * point.getZ() + matriz[15] * point.getW());
+        matriz[0] * point.getX() + matriz[4] * point.getY() + matriz[8] * point.getZ() + matriz[12] * point.getW(),
+        matriz[1] * point.getX() + matriz[5] * point.getY() + matriz[9] * point.getZ() + matriz[13] * point.getW(),
+        matriz[2] * point.getX() + matriz[6] * point.getY() + matriz[10] * point.getZ() + matriz[14] * point.getW(),
+        matriz[3] * point.getX() + matriz[7] * point.getY() + matriz[11] * point.getZ() + matriz[15] * point.getW());
         return pointResult;
     }
 
@@ -100,8 +100,8 @@ public class Transform {
         Transform result = new Transform();
         for (int i = 0; i < 16; ++i) {
             result.matriz[i]
-                    = matriz[i % 4] * t.matriz[i / 4 * 4] + matriz[(i % 4) + 4] * t.matriz[i / 4 * 4 + 1]
-                    + matriz[(i % 4) + 8] * t.matriz[i / 4 * 4 + 2] + matriz[(i % 4) + 12] * t.matriz[i / 4 * 4 + 3];
+                = matriz[i % 4] * t.matriz[i / 4 * 4] + matriz[(i % 4) + 4] * t.matriz[i / 4 * 4 + 1]
+                + matriz[(i % 4) + 8] * t.matriz[i / 4 * 4 + 2] + matriz[(i % 4) + 12] * t.matriz[i / 4 * 4 + 3];
         }
         return result;
     }

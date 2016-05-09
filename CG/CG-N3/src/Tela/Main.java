@@ -24,12 +24,12 @@ import javax.media.opengl.glu.GLU;
 
 public class Main implements GLEventListener, KeyListener, MouseListener, MouseMotionListener {
 
-        // DEBUG
-        public static final boolean modoDebug = false;
+    // DEBUG
+    public static final boolean modoDebug = false;
     
 	public static void trace(String str) {
-            if (modoDebug)
-		System.out.println(str);
+        if (modoDebug)
+			System.out.println(str);
 	}
 
 	// CLASSES GL
@@ -59,17 +59,17 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 		trace("Espaco de desenho com tamanho: " + drawable.getWidth() + " x " + drawable.getHeight());
 		gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-                cursor = new Ponto4D();
+        cursor = new Ponto4D();
 		mundo = new Mundo();
 	}
 
 	
-        public void translacaoCamera(double vertical, double horizontal) {
-            limiteCima += vertical;
-            limiteBaixo += vertical;
-            limiteEsquerda += horizontal;
-            limiteDireita += horizontal;
-        }
+    public void translacaoCamera(double vertical, double horizontal) {
+        limiteCima += vertical;
+        limiteBaixo += vertical;
+        limiteEsquerda += horizontal;
+        limiteDireita += horizontal;
+    }
         
 	@Override
 	public void display(GLAutoDrawable arg0) {
@@ -81,11 +81,11 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 
 		SRU();
 
-                gl.glColor3d(0, 0, 0);
-                gl.glPointSize(5);
-                gl.glBegin(GL.GL_POINTS);
-                gl.glVertex2d(cursor.getX(), cursor.getY());
-                gl.glEnd();
+        gl.glColor3d(0, 0, 0);
+        gl.glPointSize(5);
+        gl.glBegin(GL.GL_POINTS);
+        gl.glVertex2d(cursor.getX(), cursor.getY());
+        gl.glEnd();
                 
 		mundo.display(gl);
 
@@ -95,7 +95,7 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 	@Override
 	public void keyPressed(KeyEvent e) {
             
-                trace(" --- keyPressed ---");
+        trace(" --- keyPressed ---");
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_EQUALS:
 			incrementarZoom();
@@ -107,61 +107,61 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 			limiteCima += locomocao;
 			break;
                         
-                // Translacao camera        
+            // Translacao camera        
 		case KeyEvent.VK_D:
-                    translacaoCamera(0, -10);
-                    break;
+            translacaoCamera(0, -10);
+            break;
 		case KeyEvent.VK_A:
-                    translacaoCamera(0, 10);
-                    break;
+            translacaoCamera(0, 10);
+            break;
 		case KeyEvent.VK_W:
-                    translacaoCamera(-10, 0);
-                    break;
+            translacaoCamera(-10, 0);
+            break;
 		case KeyEvent.VK_S:
-                    translacaoCamera(10, 0);
-                    break;
+            translacaoCamera(10, 0);
+            break;
                         
-                // Translacao objeto
-                case KeyEvent.VK_RIGHT:
-                    mundo.translacaoObjetoSelecionado(10, 0, 0);
-                    break;
-                case KeyEvent.VK_LEFT:
-                    mundo.translacaoObjetoSelecionado(-10, 0, 0);
-                    break;
-                case KeyEvent.VK_UP:
-                    mundo.translacaoObjetoSelecionado(0, 10, 0);
-                    break;
-                case KeyEvent.VK_DOWN:
-                    mundo.translacaoObjetoSelecionado(0, -10, 0);
-                    break;
-                    
-                // Escala objeto
-                case KeyEvent.VK_PAGE_UP: 
-                    mundo.escalaObjetoSelecionado(1.5);
-                    break;
-                case KeyEvent.VK_PAGE_DOWN: 
-                    mundo.escalaObjetoSelecionado(0.5);
-                    break;
-                    
-                // Rotação objeto
-                case KeyEvent.VK_COMMA: 
-                    mundo.rotacaoObjetoSelecionado(15);
-                    break;
-                case KeyEvent.VK_PERIOD: 
-                    mundo.rotacaoObjetoSelecionado(-15);
-                    break;
-                    
-                // Outras funções objeto
-                case KeyEvent.VK_C:
-                    mundo.alteraCorObjetoSelecionado();
-                    break;
+        // Translacao objeto
+        case KeyEvent.VK_RIGHT:
+            mundo.translacaoObjetoSelecionado(10, 0, 0);
+            break;
+        case KeyEvent.VK_LEFT:
+            mundo.translacaoObjetoSelecionado(-10, 0, 0);
+            break;
+        case KeyEvent.VK_UP:
+            mundo.translacaoObjetoSelecionado(0, 10, 0);
+            break;
+        case KeyEvent.VK_DOWN:
+            mundo.translacaoObjetoSelecionado(0, -10, 0);
+            break;
+            
+        // Escala objeto
+        case KeyEvent.VK_PAGE_UP: 
+            mundo.escalaObjetoSelecionado(1.5);
+            break;
+        case KeyEvent.VK_PAGE_DOWN: 
+            mundo.escalaObjetoSelecionado(0.5);
+            break;
+            
+        // Rotação objeto
+        case KeyEvent.VK_COMMA: 
+            mundo.rotacaoObjetoSelecionado(15);
+            break;
+        case KeyEvent.VK_PERIOD: 
+            mundo.rotacaoObjetoSelecionado(-15);
+            break;
+            
+        // Outras funções objeto
+        case KeyEvent.VK_C:
+            mundo.alteraCorObjetoSelecionado();
+            break;
 		
-                case KeyEvent.VK_DELETE:
-                    mundo.deletaSelecao();
-                    break;
+        case KeyEvent.VK_DELETE:
+            mundo.deletaSelecao();
+            break;
 		}
                 
-                glDrawable.display();
+        glDrawable.display();
 	}
 
 	private void incrementarZoom() {
@@ -226,22 +226,22 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 		ponto.setX(ponto.getX() + 200);
 		ponto.setY((-ponto.getY()) + 200);
 		
-                boolean rightClick = e.getButton() == MouseEvent.BUTTON3;
+        boolean rightClick = e.getButton() == MouseEvent.BUTTON3;
                 
 		if (mundo.possuiConstrucao()) {
-                    if (rightClick) {
-                        mundo.regressaConstrucaoObjeto();
-                    } else {
-			mundo.avancaConstrucaoObjeto(ponto);
-                    }
+            if (rightClick) {
+                mundo.regressaConstrucaoObjeto();
+            } else {
+				mundo.avancaConstrucaoObjeto(ponto);
+            }
 		} else {
-                    if (rightClick) {
-                        mundo.removeSelecao();
-                    } else {
-			if (!mundo.selecionaObjeto(ponto)) {
-                            mundo.iniciaConstrucaoObjeto(ponto);
-                        }
-                    }
+            if (rightClick) {
+                mundo.removeSelecao();
+            } else {
+				if (!mundo.selecionaObjeto(ponto)) {
+                    mundo.iniciaConstrucaoObjeto(ponto);
+                }
+            }
 		}
 
 		glDrawable.display();
@@ -269,16 +269,16 @@ public class Main implements GLEventListener, KeyListener, MouseListener, MouseM
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-            if (cursor != null) {
-                cursor.setX(e.getX() + 200);
-                cursor.setY((-e.getY()) + 200);
-            }
-                
-            if (mundo != null)
-                mundo.atualizaConstrucaoObjeto(cursor);
-                
-            if (glDrawable != null)
-                glDrawable.display();
+        if (cursor != null) {
+            cursor.setX(e.getX() + 200);
+            cursor.setY((-e.getY()) + 200);
+        }
+            
+        if (mundo != null)
+            mundo.atualizaConstrucaoObjeto(cursor);
+            
+        if (glDrawable != null)
+            glDrawable.display();
 	}
         
 }

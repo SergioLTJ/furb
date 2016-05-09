@@ -7,7 +7,6 @@ package Graficos;
 
 import Logica.BoundingBox;
 import Logica.Transform;
-import Tela.Main;
 import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,7 +21,9 @@ public class ObjetoGrafico {
     // CORES
     private static final Color cores[] = { Color.BLACK, Color.YELLOW, Color.ORANGE, Color.RED, Color.GREEN, Color.CYAN, Color.BLUE, Color.MAGENTA };
     
-
+    /**
+     * Constroi um ObjetoGrafico
+     */
     public ObjetoGrafico() {
         indiceCor = 0; 
         bound = new BoundingBox();
@@ -34,7 +35,10 @@ public class ObjetoGrafico {
         filhos = new LinkedList<>();
     }
     
-
+    /**
+     * Desenhar o ObjetoGrafico e seus componentes
+     * @param gl Objeto de desenho
+     */
     public void display(GL gl) {
         gl.glColor3f(getCor().getRed(), getCor().getGreen(), getCor().getBlue());
         gl.glLineWidth(selecionado ? 4 : 2);
@@ -80,6 +84,11 @@ public class ObjetoGrafico {
         }
     }
     
+    /**
+     * Desenhar o ObjetoGrafico e seus componentes utilizando uma matriz de transformacao base
+     * @param gl Objeto de desenho
+     * @param matrizBase Matriz de transformacao a utilizar
+     */
     private void displayChild(GL gl, Transform matrizBase) {
         gl.glColor3f(getCor().getRed(), getCor().getGreen(), getCor().getBlue());
         gl.glLineWidth(selecionado ? 4 : 2);
@@ -128,48 +137,85 @@ public class ObjetoGrafico {
         }
     }
     
-
+    /**
+     * Retorna o objeto Color correspondente ao ObjetoGrafico
+     * @return Objeto Color
+     */
     public Color getCor() {
         return cores[indiceCor];
     }
 
+    /**
+     * Retorna a matriz de transformacao do ObjetoGrafico
+     * @return Objeto Transform
+     */
     public Transform getMatriz() {
         return transform;
     }
     
-
+    /**
+     * Retorna vertice correspondente ao indice
+     * @param index Indice do vertice
+     * @return Vertice correspondente
+     */
     public Ponto4D getPonto(int index) {
         return pontos.get(index);
     }
     
+    /**
+     * Retorna o ultimo vertice do ObjetoGrafico
+     * @return Ultimo vertice
+     */
     public Ponto4D getUltimoPonto() {
         if (pontos.isEmpty())
             return null;
         return pontos.get(pontos.size() - 1);
     }
     
+    /**
+     * Retorna a quantidade de vertices no ObjetoGrafico
+     * @return Quantidade de vertices
+     */
     public int getQuantPontos() {
         return pontos.size();
     }
     
+    /**
+     * Testa a existencia de vertice selecionado
+     * @return true caso haja vertice selecionado
+     */
     public boolean possuiPontoSelecionado() {
         return pontoSelecionado != null;
     }
     
+    /**
+     * Retorna o vertice selecionado
+     * @return Vertice selecionado
+     */
     public Ponto4D getPontoSelecionado() {
         return pontoSelecionado;
     }
     
-
+    /**
+     * Retorna o ObjetoGrafico filho para o indice
+     * @param index Indice do filho
+     * @return ObjetoGrafico filho
+     */
     public ObjetoGrafico getFilho(int index) {
         return filhos.get(index);
     }
     
+    /**
+     * Retorna a quantidade de filhos para o ObjetoGrafico
+     * @return Quantidade de filhos
+     */
     public int getQuantFilhos() {
         return filhos.size();
     }
     
-
+    /**
+     * Altera a cor do ObjetoGrafico para a proxima na lista de cores, e define esta cor para todos os filhos
+     */
     public void proximaCor() {
         indiceCor++;
         if (indiceCor >= cores.length)
@@ -180,6 +226,10 @@ public class ObjetoGrafico {
         }
     }
 
+    /**
+     * Define a cor para o ObjetoGrafico e todos os filhos
+     * @param indice Indice da lista de cores
+     */
     public void setCor(int indice) {
         indiceCor = indice;
         
@@ -188,33 +238,60 @@ public class ObjetoGrafico {
         }
     }
     
+    /**
+     * Define a primitiva de desenho do ObjetoGrafico
+     * @param primitiva Primitiva de desenho
+     */
     public void setPrimitiva(int primitiva) {
         this.primitiva = primitiva;
     }
     
+    /**
+     * Define o ponto de exibicao do preview de construcao do ObjetoGrafico
+     * @param ponto Ponto de atualizacao
+     */
     public void setPontoConstrucao(Ponto4D ponto) {
         pontoConstrucao = ponto;
     }
     
-
+    /**
+     * Adiciona um ObjetoGrafico filho
+     * @param filho Novo filho
+     */
     public void addFilho(ObjetoGrafico filho) {
         filhos.add(filho);
     }
     
+    /**
+     * Remove o filho correspondente ao ObjetoGrafico, se houver
+     * @param obj ObjetoGrafico a remover
+     * @return true caso tenha removido um filho
+     */
     public boolean removeFilho(ObjetoGrafico obj) {
         return filhos.remove(obj);
     }
     
-
+    /**
+     * Adiciona vertice ao ObjetoGrafico
+     * @param ponto Novo vertice
+     */
     public void addPonto(Ponto4D ponto) {
         pontos.add(ponto);
     }
     
+    /**
+     * Remove o ultimo vertice adicionado
+     * @return O vertice removido
+     */
     public Ponto4D removeUltimoPonto() {
         return pontos.remove(pontos.size() - 1);
     }
     
-    // FUNCOES
+    /**
+     * Testa a selecao dos vertices existentes e retorna o indice do vertice selecionado, se houver
+     * @param clique Ponto de selecao
+     * @return Indice do vertice selecionado, ou -1 se nao houver selecao
+     */
     public int indexPonto(Ponto4D clique) {
         for (int i = 0; i < pontos.size(); ++i) {
             if (pontos.get(i).getAreaSelecao().calcula(clique))
@@ -224,6 +301,10 @@ public class ObjetoGrafico {
         return -1;
     }
     
+    /**
+     * Seleciona ou remove a selecao de um vertice existente
+     * @param clique Ponto de selecao
+     */
     public void selecionaPonto(Ponto4D clique) {
         int index = indexPonto(clique);
         if (index < 0) {
@@ -233,6 +314,9 @@ public class ObjetoGrafico {
         }
     }
     
+    /**
+     * Remove a selecao de vertices para o ObjetoGrafico e seus filhos
+     */
     public void removeSelecaoPonto() {
         pontoSelecionado = null;
         for (ObjetoGrafico obj : filhos) {
@@ -240,6 +324,10 @@ public class ObjetoGrafico {
         }
     }
     
+    /**
+     * Finaliza a construcao do ObjetoGrafico, criando um poligono fechado caso o indice do vertice selecionado seja igual ao primeiro vertice adicionado, ou aberto caso contrario
+     * @param index Indice do vertice selecionado para finalizar o ObjetoGrafico
+     */
     public void encerraObjeto(int index) {
         // Se clicar no primeiro vertice, o poligono sera fechado
         if (index == 0) {
@@ -252,6 +340,9 @@ public class ObjetoGrafico {
         pontoConstrucao = null;
     }
     
+    /**
+     * Refaz o calculo da BoundingBox
+     */
     private void atualizaBoundingBox() {
         Ponto4D primeiroPonto = pontos.get(0);
         
@@ -278,6 +369,11 @@ public class ObjetoGrafico {
         bound.atribuirBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
     }
     
+    /**
+     * Testa a selecao do ObjetoGrafico e seus filhos
+     * @param ponto Ponto de selecao
+     * @return O ObjetoGrafico selecionao, podendo ser o mesmo ou qualquer um dos filhos
+     */
     public ObjetoGrafico testaSelecao(Ponto4D ponto) {
         if (bound.calcula(ponto) && pontoNoPoligono(ponto)) {
             return this;
@@ -294,6 +390,10 @@ public class ObjetoGrafico {
         return sel;
     }
     
+    /**
+     * Define o estado de selecao do ObjetoGrafico e seus filhos
+     * @param selecao Estado de selecao
+     */
     public void setSelecao(boolean selecao) {
         selecionado = selecao;
         
@@ -302,6 +402,11 @@ public class ObjetoGrafico {
         }
     }
     
+    /**
+     * Deleta o ObjetoGrafico selecionado, caso esteja entre os filhos do ObjetoGrafico atual
+     * @param selecao ObjetoGrafico selecionado
+     * @return true caso tenha encontrado e deletado um filho
+     */
     public boolean deletaSelecao(ObjetoGrafico selecao) {
         for (int i = 0; i < filhos.size(); ++i) {
             ObjetoGrafico obj = filhos.get(i);
@@ -318,6 +423,9 @@ public class ObjetoGrafico {
         return false;
     }
     
+    /**
+     * Verifica se o ponto esta no ObjetoGrafico utilizando o metodo scanline
+     */
     private boolean pontoNoPoligono(Ponto4D ponto) {
         int interseccoes = 0;
         for (int i = 0; i < pontos.size(); ++i) {
@@ -346,7 +454,12 @@ public class ObjetoGrafico {
         return interseccoes % 2 == 1;
     }
     
-
+    /**
+     * Faz a translacao do ObjetoGrafico ou do vertice selecionado, caso exista
+     * @param x Translacao eixo X
+     * @param y Translacao eixo Y
+     * @param z Translacao eixo Z
+     */
     public void translacaoSelecao(double x, double y, double z) {
         if (pontoSelecionado != null) {
             translacaoPonto(x, y, z);
@@ -357,6 +470,10 @@ public class ObjetoGrafico {
         }
     }
     
+    /**
+     * Altera a escala do ObjetoGrafico
+     * @param escala Multiplicador da escala
+     */
     public void escalaSelecao(double escala) {
         Transform local = new Transform();
         
@@ -369,18 +486,22 @@ public class ObjetoGrafico {
 
         Transform scale = new Transform();
         
-	scale.atribuirEscala(escala, escala, 1.0);
-	local = scale.transformMatrix(local);
+		scale.atribuirEscala(escala, escala, 1.0);
+		local = scale.transformMatrix(local);
 
-	translate.atribuirIdentidade();
+		translate.atribuirIdentidade();
         pontoCentral.inverterSinal(pontoCentral);
         
-	translate.atribuirTranslacao(pontoCentral.getX(), pontoCentral.getY(), pontoCentral.getZ());
-	local = translate.transformMatrix(local);
+		translate.atribuirTranslacao(pontoCentral.getX(), pontoCentral.getY(), pontoCentral.getZ());
+		local = translate.transformMatrix(local);
 
-	transform = transform.transformMatrix(local);
+		transform = transform.transformMatrix(local);
     }
     
+    /**
+     * Efetua a rotacao do ObjetoGrafico
+     * @param rotacao Angulo da rotacao
+     */
     public void rotacaoSelecao(double rotacao) {
         Transform local = new Transform();
 
@@ -388,23 +509,26 @@ public class ObjetoGrafico {
         pontoCentral.inverterSinal(pontoCentral);
         Transform translate = new Transform();
         
-	translate.atribuirTranslacao(pontoCentral.getX(),pontoCentral.getY(),pontoCentral.getZ());
-	local = translate.transformMatrix(local);
+		translate.atribuirTranslacao(pontoCentral.getX(),pontoCentral.getY(),pontoCentral.getZ());
+		local = translate.transformMatrix(local);
 
         Transform rotate = new Transform();
         
-	rotate.atribuirRotacaoZ(Transform.DEG_TO_RAD * rotacao);
-	local = rotate.transformMatrix(local);
+		rotate.atribuirRotacaoZ(Transform.DEG_TO_RAD * rotacao);
+		local = rotate.transformMatrix(local);
 
-	pontoCentral.inverterSinal(pontoCentral);
+		pontoCentral.inverterSinal(pontoCentral);
         translate.atribuirIdentidade();
         
-	translate.atribuirTranslacao(pontoCentral.getX(),pontoCentral.getY(),pontoCentral.getZ());
-	local = translate.transformMatrix(local);
+		translate.atribuirTranslacao(pontoCentral.getX(),pontoCentral.getY(),pontoCentral.getZ());
+		local = translate.transformMatrix(local);
 
-	transform = transform.transformMatrix(local);
+		transform = transform.transformMatrix(local);
     }
     
+    /**
+     * Faz a translacao do vertice selecionado
+     */
     private void translacaoPonto(double x, double y, double z) {
         pontoSelecionado.translacaoPonto(x, y, z);
         atualizaBoundingBox();

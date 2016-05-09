@@ -69,7 +69,7 @@ public class ObjetoGrafico {
         
         // Desenhar filhos
         for (ObjetoGrafico obj : filhos) {
-            obj.displayChild(gl, transform, getCor());
+            obj.displayChild(gl, transform);
         }
         
         if (selecionado) {
@@ -80,8 +80,8 @@ public class ObjetoGrafico {
         }
     }
     
-    private void displayChild(GL gl, Transform matrizBase, Color corBase) {
-        gl.glColor3f(corBase.getRed(), corBase.getGreen(), corBase.getBlue());
+    private void displayChild(GL gl, Transform matrizBase) {
+        gl.glColor3f(getCor().getRed(), getCor().getGreen(), getCor().getBlue());
         gl.glLineWidth(selecionado ? 4 : 2);
         
         Transform matrizCombinada = new Transform();
@@ -117,7 +117,7 @@ public class ObjetoGrafico {
         }
         
         for (ObjetoGrafico obj : filhos) {
-            obj.displayChild(gl, matrizCombinada, getCor());
+            obj.displayChild(gl, matrizCombinada);
         }
         
         if (selecionado) {
@@ -174,8 +174,20 @@ public class ObjetoGrafico {
         indiceCor++;
         if (indiceCor >= cores.length)
             indiceCor = 0;
+        
+        for (ObjetoGrafico obj : filhos) {
+            obj.setCor(indiceCor);
+        }
     }
 
+    public void setCor(int indice) {
+        indiceCor = indice;
+        
+        for (ObjetoGrafico obj : filhos) {
+            obj.setCor(indice);
+        }
+    }
+    
     public void setPrimitiva(int primitiva) {
         this.primitiva = primitiva;
     }
@@ -288,6 +300,22 @@ public class ObjetoGrafico {
         for (ObjetoGrafico obj : filhos) {
             obj.setSelecao(selecao);
         }
+    }
+    
+    public boolean deletaSelecao(ObjetoGrafico selecao) {
+        for (int i = 0; i < filhos.size(); ++i) {
+            ObjetoGrafico obj = filhos.get(i);
+            if (obj == selecao) {
+                filhos.remove(i);
+                return true;
+            }
+            
+            if (obj.deletaSelecao(selecao)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
     
     private boolean pontoNoPoligono(Ponto4D ponto) {

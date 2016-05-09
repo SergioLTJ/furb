@@ -126,8 +126,10 @@ public class Mundo {
             }
         }
         
-        if (objetoSelecionado != null)
+        if (objetoSelecionado != null) {
             objetoSelecionado.setSelecao(false);
+            objetoSelecionado.removeSelecaoPonto();
+        }
         
         if (novaSelecao == null)
             return false;
@@ -143,8 +145,19 @@ public class Mundo {
     }
     
     public void deletaSelecao() {
-        if (possuiSelecao())
-            listaObjetos.remove(objetoSelecionado);
+        if (possuiSelecao()) {
+            for (int i = 0; i < listaObjetos.size(); ++i) {
+                ObjetoGrafico obj = listaObjetos.get(i);
+                if (obj == objetoSelecionado) {
+                    listaObjetos.remove(i);
+                    break;
+                }
+            
+                if (obj.deletaSelecao(objetoSelecionado)) {
+                    break;
+                }
+            }
+        }
         
         removeSelecao();
     }

@@ -7,6 +7,9 @@ import java.awt.image.WritableRaster;
 import java.awt.image.renderable.ParameterBlock;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.media.jai.JAI;
@@ -16,8 +19,15 @@ import javax.media.jai.iterator.RandomIter;
 import javax.media.jai.iterator.RandomIterFactory;
 import javax.swing.JFrame;
 
+import lejos.nxt.Motor;
+import lejos.nxt.NXTRegulatedMotor;
+
 public class Main {
 
+	private static Direcao orientacao = Direcao.Oeste;
+	private static NXTRegulatedMotor motor1 = Motor.A;
+	private static NXTRegulatedMotor motor2 = Motor.B;
+	
 	public static void main(String[] args) {
 		System.setProperty("com.sun.media.jai.disableMediaLib", "true");
 		
@@ -60,12 +70,13 @@ public class Main {
 		RandomIter iterator = RandomIterFactory.create(imagemJava, null);
 		int[] pixel = new int[3];
 		
+		int quantidadePontoCelula = tamanhoLinha * tamanhoColuna;
+		
 		for (int i = 0; i < matriz.length; i++) {
 			for (int j = 0; j < matriz[i].length; j++) {
 				
 				int inicialLinha = tamanhoLinha * i;
 				int inicialColuna = tamanhoColuna * j;
-				int quantidadePontoCelula = tamanhoLinha * tamanhoColuna;
 				int quantidadePontosPretos = 0;
 				
 				for (int k = inicialLinha; k < inicialLinha + tamanhoLinha; k++) {
@@ -85,16 +96,87 @@ public class Main {
 			}
 		}
 
-		int posicaoXRoboto = posicaoRobo.x / tamanhoColuna;
-		int posicaoYRoboto = posicaoRobo.y / tamanhoLinha;
+		int posicaoXRoboto = posicaoRobo.x / tamanhoLinha;
+		int posicaoYRoboto = posicaoRobo.y / tamanhoColuna;
+
+		Point posicaoRoboMatriz = new Point(posicaoXRoboto, posicaoYRoboto);
+		
+		matriz[posicaoXRoboto][posicaoYRoboto] = 255;
+		
+		Point objetivo = new Point(1, 0);
+		
+		matriz[objetivo.x][objetivo.y] = 2; // Objetivo
+		
+		LinkedList<Point> pontos = new LinkedList<>();
+		pontos.add(objetivo);
+		
+		while(!pontos.isEmpty()) {
+			Point ponto = pontos.pollFirst();
+			processarPonto(matriz, pontos, ponto, ponto.x, ponto.y + 1);
+			processarPonto(matriz, pontos, ponto, ponto.x + 1, ponto.y);
+			processarPonto(matriz, pontos, ponto, ponto.x, ponto.y - 1);
+			processarPonto(matriz, pontos, ponto, ponto.x - 1, ponto.y);
+		}
+		
+		List<Movimento> movimentos = gerarMovimentos(matriz, posicaoRoboMatriz, objetivo); 
+		
+		System.out.println(movimentos);
 		
 		JFrame frame = new JFrame("teste");
 		frame.getContentPane().add(new DisplayTwoSynchronizedImages(imagem, novaImagem));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
-		
+	}
 
+	private static List<Movimento> gerarMovimentos(int[][] matriz, Point posicaoInicial, Point objetivo) {
+		List<Point> pontos = new ArrayList<>();
+		
+		Point posicaoAtual = posicaoInicial;
+		pontos.add(posicaoInicial);
+		
+		while(posicaoAtual.x != objetivo.x ||
+			  posicaoAtual.y != objetivo.y) {
+			// Cria um ponto inexistente para facilitar o processamento.
+			Point posicaoProcessada = new Point(-1, -1);
+
+			posicaoProcessada = processarPosicao(matriz, posicaoProcessada, posicaoAtual.x, posicaoAtual.y + 1);
+			posicaoProcessada = processarPosicao(matriz, posicaoProcessada, posicaoAtual.x + 1, posicaoAtual.y);
+			posicaoProcessada = processarPosicao(matriz, posicaoProcessada, posicaoAtual.x, posicaoAtual.y - 1);
+			posicaoProcessada = processarPosicao(matriz, posicaoProcessada, posicaoAtual.x - 1, posicaoAtual.y);
+			
+			pontos.add(posicaoProcessada);
+			posicaoAtual = posicaoProcessada;
+		}
+		
+		List<Movimento> movimentos = new ArrayList<>();
+
+		for (int i = 0; i < pontos.size() - 1; i++) {
+			Direcao direcao = definirDirecaoEntrePontos(pontos.get(i), pontos.get(i + 1));
+			Movimento movimento = definirMovimento(direcao);
+			movimentos.add(movimento);
+		}
+		
+		return movimentos;
+	}
+
+	private static Point processarPosicao(int[][] matriz, Point posicaoProcessada, int novoX, int novoY) {
+		if (novoX > -1 && novoX < matriz.length && 
+			novoY > -1 && novoY < matriz[novoX].length && 
+			matriz[novoX][novoY] > 1 && 
+			(posicaoProcessada.x == -1 || matriz[novoX][novoY] < matriz[posicaoProcessada.x][posicaoProcessada.y])) {
+			return new Point(novoX, novoY);
+		}
+		return posicaoProcessada;
+	}
+
+	private static void processarPonto(int[][] matriz, LinkedList<Point> pontos, Point pontoAtual, int novoX, int novoY) {
+		if (novoX > -1 && novoX < matriz.length &&
+			novoY > -1 && novoY < matriz[novoX].length &&
+			matriz[novoX][novoY] == 0) {
+			matriz[novoX][novoY] = matriz[pontoAtual.x][pontoAtual.y] + 1;
+			pontos.add(new Point(novoX, novoY));
+		}
 	}
 
 	private static Point encontrarPosicaoRobo(PlanarImage imagem) {
@@ -120,7 +202,7 @@ public class Main {
 						}
 					}
 					if (encontrou) {
-						return new Point(i, j);
+						return new Point(j, i);
 					}
 				}
 			}
@@ -129,29 +211,61 @@ public class Main {
 		return null;
 	}
 
-	private static void desenharMatriz(BufferedImage imagemB) {
-		int[] vermelho = new int[] { 255, 0, 0 };
+	public static void executarMovimento(Movimento movimento) {
+		switch(movimento.getTipoMovimento()) {
 		
-		int tamanhoColuna = imagemB.getWidth() / 7;
-		int tamanhoLinha = imagemB.getHeight() / 7;
-
-		WritableRaster raster = imagemB.getRaster();
+		case DESLOCAMENTO:
+			executarDeslocamento();
+			break;
+			
+		case CURVA:
+			executarRotacao(movimento.getDirecao());
+			// Executa um deslocamento depois de cada rotação, para evitar que o
+			// robô analise duas vezes os mesmos nodos sempre que executar uma
+			// rotação.
+			Movimento movimentoDeslocamento = new Movimento(TipoMovimento.DESLOCAMENTO, Direcao.Norte);
+			executarMovimento(movimentoDeslocamento);				
+			break;
 		
-		for(int k = 0; k < imagemB.getHeight(); k++) {
-			for(int i = 0; i < imagemB.getWidth() - tamanhoColuna; i += tamanhoColuna) {
-				for(int j = i > 0 ? i - 3 : i; j < i + 3; j++) {
-					raster.setPixel(j, k, vermelho);
-				}
-			}	
+		}
+	}
+	
+	public static void executarRotacao(Direcao direcaoRotacao) {
+		if (direcaoRotacao == Direcao.Leste) {
+			motor1.rotate(-ConstantesRobo.ROTACAO, true);
+			motor2.rotate(ConstantesRobo.ROTACAO);
+		} else {
+			motor1.rotate(ConstantesRobo.ROTACAO, true);
+			motor2.rotate(-ConstantesRobo.ROTACAO);
+		}
+	}
+	
+	public static void executarDeslocamento() {
+		motor1.rotate(ConstantesRobo.DESLOCAMENTO, true);
+		motor2.rotate(ConstantesRobo.DESLOCAMENTO);	
+	}
+	
+	public static Movimento definirMovimento(Direcao direcaoNovoNodo) {
+		if (orientacao == direcaoNovoNodo) {
+			return new Movimento(TipoMovimento.DESLOCAMENTO, Direcao.Norte);
+		} else {
+			Direcao direcaoRotacao = MapeamentoDirecoes.definirDirecaoRotacao(orientacao, direcaoNovoNodo);
+			orientacao = MapeamentoDirecoes.obterNovaDirecao(orientacao, direcaoRotacao);
+			return new Movimento(TipoMovimento.CURVA, direcaoRotacao);
+		}
+	}
+	
+	public static Direcao definirDirecaoEntrePontos(Point ponto1, Point ponto2) {
+		if (ponto1.getX() < ponto2.getX()) {
+			return Direcao.Sul;
+		} else if (ponto1.getX() > ponto2.getX()) {
+			return Direcao.Norte;
+		} else if (ponto1.getY() < ponto2.getY()) {
+			return Direcao.Leste;
+		} else {
+			return Direcao.Oeste;
 		}
 		
-		try {
-			File arq = new File("C:\\Teste\\Teste.gif");
-			if(arq.exists()) arq.createNewFile();
-			ImageIO.write(imagemB, "GIF", arq);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 	
 }

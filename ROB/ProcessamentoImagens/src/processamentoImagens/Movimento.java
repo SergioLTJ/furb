@@ -1,7 +1,4 @@
-package labirinto.dados;
-
-import labirinto.mapeamentos.MapeamentoDirecoes;
-import labirinto.dados.Direcao;
+package processamentoImagens;
 
 public class Movimento {
 

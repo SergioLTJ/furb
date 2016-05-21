@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Stack;
 
 import labirinto.constantes.ConstantesRobo;
-import labirinto.dados.Direcao;
 import labirinto.dados.EstadoNodo;
 import labirinto.dados.Grafo;
 import labirinto.dados.Movimento;
@@ -17,6 +16,7 @@ import labirinto.mapeamentos.MapeamentoDirecoes;
 import lejos.nxt.ColorSensor;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.UltrasonicSensor;
+import labirinto.dados.Direcao;
 
 public class Robo {
 

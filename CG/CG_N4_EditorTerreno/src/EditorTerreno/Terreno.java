@@ -5,6 +5,7 @@
  */
 package EditorTerreno;
 
+import java.awt.Color;
 import javax.media.opengl.GL;
 
 /**
@@ -15,7 +16,7 @@ import javax.media.opengl.GL;
  */
 public class Terreno {
     
-    private static final double TAMANHO_CELULA = 10.0;
+    private static final double TAMANHO_CELULA = 100.0;
     
     /**
      * Cria um terreno com malha de tamanho comprimento * largura e elevacao 0 em todos os pontos
@@ -26,13 +27,23 @@ public class Terreno {
         this.comprimento = comprimento;
         this.largura = largura;
         
-        malhaTerreno = new Ponto4D[comprimento][largura];
+        malhaTerreno = new Ponto4D[this.comprimento][this.largura];
 
         criaMalhaTerreno();
     }
     
     public void display(GL gl) {
         // TODO: Desenhar malha
+        
+        
+        gl.glColor3f(Color.GREEN.getRed(), Color.GREEN.getGreen(), Color.GREEN.getBlue());
+        gl.glLineWidth(2);
+        
+        for (int x = 0; x < comprimento - 1; ++x) {
+            for (int z = 0; z < largura - 1; ++z) {
+                desenhaCelula(gl, x, z);
+            }
+        }
     }
     
     public void aplicaAlteracao(int x, int z) {
@@ -58,11 +69,29 @@ public class Terreno {
         for (int x = 0; x < comprimento; ++x) {
             double tempZ = contZ;
             for (int z = 0; z < largura; ++z) {
-                malhaTerreno[x][z] = new Ponto4D(contX, 0, contZ, 1);
+                malhaTerreno[x][z] = new Ponto4D(contX, 0, tempZ, 1);
                 tempZ += TAMANHO_CELULA;
             }
             contX += TAMANHO_CELULA;
         }
+    }
+    
+    private void desenhaCelula(GL gl, int x, int z) {
+        gl.glBegin(GL.GL_LINE_LOOP);
+        
+        Ponto4D ponto = malhaTerreno[x][z];
+        gl.glVertex3d(ponto.getX(), ponto.getY(), ponto.getZ());
+        
+        ponto = malhaTerreno[x+1][z];
+        gl.glVertex3d(ponto.getX(), ponto.getY(), ponto.getZ());
+        
+        ponto = malhaTerreno[x+1][z+1];
+        gl.glVertex3d(ponto.getX(), ponto.getY(), ponto.getZ());
+        
+        ponto = malhaTerreno[x][z+1];
+        gl.glVertex3d(ponto.getX(), ponto.getY(), ponto.getZ());
+        
+        gl.glEnd();
     }
     
     

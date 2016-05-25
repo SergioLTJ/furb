@@ -23,6 +23,8 @@ public class Main implements GLEventListener, KeyListener {
 	private Ponto4D pto1 = new Ponto4D(  0.0,   0.0, 0.0, 1.0);
 	private Ponto4D pto2 = new Ponto4D(200.0, 200.0, 0.0, 1.0);
 
+        private Terreno terreno;
+        
 	public void init(GLAutoDrawable drawable) {
 		System.out.println(" --- init ---");
 		glDrawable = drawable;
@@ -30,7 +32,11 @@ public class Main implements GLEventListener, KeyListener {
 		glu = new GLU();
 		glDrawable.setGL(new DebugGL(gl));
 		System.out.println("Espaco de desenho com tamanho: " + drawable.getWidth() + " x " + drawable.getHeight());
-		gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);		
+		gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+                
+                // -----
+                
+                terreno = new Terreno(5, 5);
 	}
 	
 	//exibicaoPrincipal
@@ -43,6 +49,12 @@ public class Main implements GLEventListener, KeyListener {
 
 		SRU();
 		
+                // -----
+                
+                terreno.display(gl);
+                
+                // -----
+                
                 gl.glFlush();
 	}	
 

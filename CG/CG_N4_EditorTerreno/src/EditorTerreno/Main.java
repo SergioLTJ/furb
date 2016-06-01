@@ -17,14 +17,16 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
 
 public class Main implements GLEventListener, KeyListener {
-	private GL gl;
+        private GL gl;
 	private GLU glu;
 	private GLAutoDrawable glDrawable;
 	private Ponto4D pto1 = new Ponto4D(  0.0,   0.0, 0.0, 1.0);
 	private Ponto4D pto2 = new Ponto4D(200.0, 200.0, 0.0, 1.0);
 
+        private Camera camera;
         private Terreno terreno;
         
+        @Override
 	public void init(GLAutoDrawable drawable) {
 		System.out.println(" --- init ---");
 		glDrawable = drawable;
@@ -36,17 +38,21 @@ public class Main implements GLEventListener, KeyListener {
                 
                 // -----
                 
-                terreno = new Terreno(5, 5);
+                terreno = new Terreno(50, 50);
+                camera = new Camera();
 	}
 	
 	//exibicaoPrincipal
+        @Override
 	public void display(GLAutoDrawable arg0) {
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glLoadIdentity();
-		glu.gluOrtho2D(-400.0f, 400.0f, -400.0f, 400.0f);
-
+                
+                camera.perspective(glu);
+                camera.lookAt(glu);
+                
 		SRU();
 		
                 // -----
@@ -58,12 +64,29 @@ public class Main implements GLEventListener, KeyListener {
                 gl.glFlush();
 	}	
 
+        @Override
 	public void keyPressed(KeyEvent e) {
 		System.out.println(" --- keyPressed ---");
 		switch (e.getKeyCode()) {
+                    // WASD: Translacao camera
+                    case KeyEvent.VK_W:
+                        camera.pan(new Ponto4D(0,0,10,1));
+                        break;
+                    case KeyEvent.VK_A:
+                        camera.pan(new Ponto4D(-10,0,0,1));
+                        break;
+                    case KeyEvent.VK_S:
+                        camera.pan(new Ponto4D(0,0,-10,1));
+                        break;
+                    case KeyEvent.VK_D:
+                        camera.pan(new Ponto4D(10,0,0,1));
+                        break;    
 		}
+                
+                glDrawable.display();
 	}
 
+        @Override
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
 		System.out.println(" --- reshape ---");
 	    gl.glMatrixMode(GL.GL_PROJECTION);
@@ -71,14 +94,17 @@ public class Main implements GLEventListener, KeyListener {
 		gl.glViewport(0, 0, width, height);
 	}
 
+        @Override
 	public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
 		System.out.println(" --- displayChanged ---");
 	}
 
+        @Override
 	public void keyReleased(KeyEvent arg0) {
 		System.out.println(" --- keyReleased ---");
 	}
 
+        @Override
 	public void keyTyped(KeyEvent arg0) {
 		System.out.println(" --- keyTyped ---");
 	}

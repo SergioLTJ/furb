@@ -16,7 +16,10 @@ import javax.media.opengl.GL;
  */
 public class Terreno {
     
-    private static final double TAMANHO_CELULA = 100.0;
+    private static final double TAMANHO_CELULA = 10.0;
+    
+    private static final Color COR_GRID = new Color(97, 133, 20);
+    private static final Color COR_CELULA = new Color(87, 150, 23);
     
     /**
      * Cria um terreno com malha de tamanho comprimento * largura e elevacao 0 em todos os pontos
@@ -36,7 +39,7 @@ public class Terreno {
         // TODO: Desenhar malha
         
         
-        gl.glColor3f(Color.GREEN.getRed(), Color.GREEN.getGreen(), Color.GREEN.getBlue());
+        gl.glColor3ub((byte)COR_GRID.getRed(), (byte)COR_GRID.getGreen(), (byte)COR_GRID.getBlue());
         gl.glLineWidth(2);
         
         for (int x = 0; x < comprimento - 1; ++x) {
@@ -77,7 +80,8 @@ public class Terreno {
     }
     
     private void desenhaCelula(GL gl, int x, int z) {
-        gl.glBegin(GL.GL_LINE_LOOP);
+        //gl.glBegin(GL.GL_POLYGON);
+        gl.glBegin(GL.GL_LINE_STRIP);
         
         Ponto4D ponto = malhaTerreno[x][z];
         gl.glVertex3d(ponto.getX(), ponto.getY(), ponto.getZ());

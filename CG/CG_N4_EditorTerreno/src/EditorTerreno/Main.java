@@ -73,14 +73,27 @@ public class Main implements GLEventListener, KeyListener {
                         camera.pan(new Ponto4D(0,0,10,1));
                         break;
                     case KeyEvent.VK_A:
-                        camera.pan(new Ponto4D(-10,0,0,1));
+                        camera.pan(new Ponto4D(10,0,0,1));
                         break;
                     case KeyEvent.VK_S:
                         camera.pan(new Ponto4D(0,0,-10,1));
                         break;
                     case KeyEvent.VK_D:
-                        camera.pan(new Ponto4D(10,0,0,1));
+                        camera.pan(new Ponto4D(-10,0,0,1));
                         break;    
+                        
+                    // Setas direita/esquerda: Rotacao camera  
+                    case KeyEvent.VK_LEFT:
+                        camera.rotate(-10.0);
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                        camera.rotate(10.0);
+                        break;
+                        
+                    // G: Exibir grid/terreno
+                    case KeyEvent.VK_G:
+                        terreno.toggleExibirGrid();
+                        break;
 		}
                 
                 glDrawable.display();

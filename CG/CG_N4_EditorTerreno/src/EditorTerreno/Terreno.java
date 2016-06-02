@@ -21,6 +21,8 @@ public class Terreno {
     private static final Color COR_GRID = new Color(97, 133, 20);
     private static final Color COR_CELULA = new Color(87, 150, 23);
     
+    private static boolean exibirGrid;
+    
     /**
      * Cria um terreno com malha de tamanho comprimento * largura e elevacao 0 em todos os pontos
      * @param comprimento Comprimento da malha, analogo ao eixo X
@@ -32,6 +34,8 @@ public class Terreno {
         
         malhaTerreno = new Ponto4D[this.comprimento][this.largura];
 
+        exibirGrid = false;
+        
         criaMalhaTerreno();
     }
     
@@ -58,6 +62,10 @@ public class Terreno {
         return malhaTerreno[x][z].getY();
     }
     
+    public void toggleExibirGrid() {
+        exibirGrid = !exibirGrid;
+    }
+    
     
     /**
      * Inicializa a malha do terreno.
@@ -80,8 +88,7 @@ public class Terreno {
     }
     
     private void desenhaCelula(GL gl, int x, int z) {
-        //gl.glBegin(GL.GL_POLYGON);
-        gl.glBegin(GL.GL_LINE_STRIP);
+        gl.glBegin(exibirGrid ? GL.GL_LINE_STRIP : GL.GL_POLYGON);
         
         Ponto4D ponto = malhaTerreno[x][z];
         gl.glVertex3d(ponto.getX(), ponto.getY(), ponto.getZ());

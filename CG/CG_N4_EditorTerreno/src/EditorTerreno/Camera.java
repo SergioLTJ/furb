@@ -22,12 +22,17 @@ public class Camera {
     private double LIMITE_FAR = 1000.0;
     
     public Camera() {
-        pontoCamera = new Ponto4D();
-        pontoVisao = new Ponto4D();
+        pontoOlho = new Ponto4D();
+        pontoFoco = new Ponto4D();
         
-        pontoCamera.setX(250.0);
-        pontoCamera.setY(100.0);
-        pontoCamera.setZ(250.0);
+        pontoOlho.setX(0.0);
+        pontoOlho.setY(100.0);
+        pontoOlho.setZ(-250.0);
+        
+        raioRotacao = Geometria.distancia2D(pontoOlho.getX(), pontoOlho.getZ(), pontoFoco.getX(), pontoFoco.getZ());
+        anguloRotacao = 90.0;
+        
+        atualizaPontoFoco();
     }
     
     public void perspective(GLU glu) {
@@ -35,18 +40,34 @@ public class Camera {
     }
     
     public void lookAt(GLU glu) {
-        glu.gluLookAt(pontoCamera.getX(), pontoCamera.getY(), pontoCamera.getZ(), pontoVisao.getX(), pontoVisao.getY(), pontoVisao.getZ(), 0.0, 1.0, 0.0);
+        glu.gluLookAt(pontoOlho.getX(), pontoOlho.getY(), pontoOlho.getZ(), pontoFoco.getX(), pontoFoco.getY(), pontoFoco.getZ(), 0.0, 1.0, 0.0);
     }
     
     public void pan(Ponto4D deslocamento) {
-        pontoCamera.translacaoPonto(deslocamento.getX(), 0, deslocamento.getZ());
-        pontoVisao.translacaoPonto(deslocamento.getX(), 0, deslocamento.getZ());
+        pontoOlho.translacaoPonto(deslocamento.getX(), 0, deslocamento.getZ());
+        atualizaPontoFoco();
     }
     
     public void zoom(int valorZoom) {
         
     }
     
-    private Ponto4D pontoCamera;
-    private Ponto4D pontoVisao;
+    public void rotate(double angulo) {
+        anguloRotacao += angulo;
+        atualizaPontoFoco();
+    }
+    
+    private void atualizaPontoFoco() {
+        double novoX = Geometria.rotacaoX(anguloRotacao, raioRotacao);
+        double novoZ = Geometria.rotacaoZ(anguloRotacao, raioRotacao);
+        
+        pontoFoco.setX(pontoOlho.getX() + novoX);
+        pontoFoco.setZ(pontoOlho.getZ() + novoZ);
+    }
+    
+    private Ponto4D pontoOlho;
+    private Ponto4D pontoFoco;
+    
+    private double raioRotacao;
+    private double anguloRotacao;
 }

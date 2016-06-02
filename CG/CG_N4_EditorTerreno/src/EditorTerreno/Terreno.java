@@ -18,8 +18,8 @@ public class Terreno {
     
     private static final double TAMANHO_CELULA = 10.0;
     
-    private static final Color COR_GRID = new Color(97, 133, 20);
-    private static final Color COR_CELULA = new Color(87, 150, 23);
+    private static final Color COR_TERRENO = new Color(97, 133, 20);
+    private static final Color COR_SELECAO = new Color(255, 0, 0);
     
     private static boolean exibirGrid;
     
@@ -32,6 +32,8 @@ public class Terreno {
         this.comprimento = comprimento;
         this.largura = largura;
         
+        pontoSelecionado = null;
+        
         malhaTerreno = new Ponto4D[this.comprimento][this.largura];
 
         exibirGrid = false;
@@ -40,16 +42,22 @@ public class Terreno {
     }
     
     public void display(GL gl) {
-        // TODO: Desenhar malha
-        
-        
-        gl.glColor3ub((byte)COR_GRID.getRed(), (byte)COR_GRID.getGreen(), (byte)COR_GRID.getBlue());
+        gl.glColor3ub((byte)COR_TERRENO.getRed(), (byte)COR_TERRENO.getGreen(), (byte)COR_TERRENO.getBlue());
         gl.glLineWidth(2);
         
         for (int x = 0; x < comprimento - 1; ++x) {
             for (int z = 0; z < largura - 1; ++z) {
                 desenhaCelula(gl, x, z);
             }
+        }
+        
+        if (pontoSelecionado != null) {
+            gl.glColor3ub((byte)COR_SELECAO.getRed(), (byte)COR_SELECAO.getGreen(), (byte)COR_SELECAO.getBlue());
+            gl.glPointSize(5.0f);
+            
+            gl.glBegin(GL.GL_POINTS);
+            gl.glVertex3d(pontoSelecionado.getX(), pontoSelecionado.getY(), pontoSelecionado.getZ());
+            gl.glEnd();
         }
     }
     
@@ -64,6 +72,29 @@ public class Terreno {
     
     public void toggleExibirGrid() {
         exibirGrid = !exibirGrid;
+    }
+    
+    
+    public boolean selecionaPontoProximo(Ponto4D ponto) {
+        Ponto4D pontoDeslocado = new Ponto4D(ponto);
+        
+        pontoDeslocado.translacaoPonto((TAMANHO_CELULA * comprimento / 2), 0.0, (TAMANHO_CELULA * largura / 2));
+        
+        int hitX = (int)(Math.round(pontoDeslocado.getX()) / Math.round(TAMANHO_CELULA));
+        int hitZ = (int)(Math.round(pontoDeslocado.getZ()) / Math.round(TAMANHO_CELULA));
+        
+        if (hitX >= 0 && hitX < comprimento && hitZ >= 0 && hitZ < largura) {
+            pontoSelecionado = malhaTerreno[hitX][hitZ];
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public void alteraElevacaoPontoSelecionado(double alteracao) {
+        if (pontoSelecionado != null) {
+            pontoSelecionado.translacaoPonto(0.0, alteracao, 0.0);
+        }
     }
     
     
@@ -105,6 +136,8 @@ public class Terreno {
         gl.glEnd();
     }
     
+    
+    private Ponto4D pontoSelecionado;
     
     private final int comprimento;
     private final int largura;

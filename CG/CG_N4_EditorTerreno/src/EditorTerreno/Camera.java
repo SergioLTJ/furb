@@ -35,6 +35,10 @@ public class Camera {
         atualizaPontoFoco();
     }
     
+    public Ponto4D getPontoFoco() {
+        return pontoFoco;
+    }
+    
     public void perspective(GLU glu) {
         glu.gluPerspective(CAMPO_VISAO, LARGURA_TELA / ALTURA_TELA, LIMITE_NEAR, LIMITE_FAR);
     }

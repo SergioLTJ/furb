@@ -38,7 +38,7 @@ public class Main implements GLEventListener, KeyListener {
                 
                 // -----
                 
-                terreno = new Terreno(50, 50);
+                terreno = new Terreno(10, 50);
                 camera = new Camera();
 	}
 	
@@ -94,8 +94,17 @@ public class Main implements GLEventListener, KeyListener {
                     case KeyEvent.VK_G:
                         terreno.toggleExibirGrid();
                         break;
+                        
+                    // +/-: Alterar elevacao do terreno    
+                    case KeyEvent.VK_EQUALS:
+                        terreno.alteraElevacaoPontoSelecionado(5.0);
+                        break;
+                    case KeyEvent.VK_MINUS:
+                        terreno.alteraElevacaoPontoSelecionado(-5.0);
+                        break;
 		}
                 
+                terreno.selecionaPontoProximo(camera.getPontoFoco());
                 glDrawable.display();
 	}
 

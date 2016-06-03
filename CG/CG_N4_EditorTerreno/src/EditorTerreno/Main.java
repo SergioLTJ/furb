@@ -117,7 +117,7 @@ public class Main implements GLEventListener, KeyListener {
                         
                     // SPACE: Aplicar pincel
                     case KeyEvent.VK_SPACE:
-                        terreno.aplicaPincelPontoSelecionado(Pincel.PINCEL_DIAMANTE);
+                        terreno.aplicaPincelPontoSelecionado(Pincel.PINCEL_QUADRADO);
                         break;
 		}
                 

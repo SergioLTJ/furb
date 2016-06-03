@@ -38,10 +38,20 @@ public class Main implements GLEventListener, KeyListener {
                 
                 // -----
                 
-                terreno = new Terreno(10, 50);
+                //initLightning();
+                
+                terreno = new Terreno(50, 50);
                 camera = new Camera();
 	}
 	
+        private void initLightning() {
+            float posLight[] = { 5.0f, 50.0f, 10.0f, 0.0f };
+	    gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, posLight, 0);
+	    gl.glEnable(GL.GL_LIGHT0);
+            
+            gl.glColorMaterial(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE);
+        }
+        
 	//exibicaoPrincipal
         @Override
 	public void display(GLAutoDrawable arg0) {
@@ -52,6 +62,8 @@ public class Main implements GLEventListener, KeyListener {
                 
                 camera.perspective(glu);
                 camera.lookAt(glu);
+                
+                gl.glLightf(GL.GL_LIGHT0, GL.GL_SPOT_EXPONENT, 0);
                 
 		SRU();
 		
@@ -101,6 +113,11 @@ public class Main implements GLEventListener, KeyListener {
                         break;
                     case KeyEvent.VK_MINUS:
                         terreno.alteraElevacaoPontoSelecionado(-5.0);
+                        break;
+                        
+                    // SPACE: Aplicar pincel
+                    case KeyEvent.VK_SPACE:
+                        terreno.aplicaPincelPontoSelecionado(Pincel.PINCEL_DIAMANTE);
                         break;
 		}
                 

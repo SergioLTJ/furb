@@ -33,6 +33,8 @@ public class Terreno {
         this.largura = largura;
         
         pontoSelecionado = null;
+        selecaoX = -1;
+        selecaoZ = -1;
         
         malhaTerreno = new Ponto4D[this.comprimento][this.largura];
 
@@ -42,7 +44,14 @@ public class Terreno {
     }
     
     public void display(GL gl) {
+        //float cor[] = new float[3];
+        //COR_TERRENO.getColorComponents(cor);
+        
+        //gl.glMaterialfv(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE, cor, 0);
         gl.glColor3ub((byte)COR_TERRENO.getRed(), (byte)COR_TERRENO.getGreen(), (byte)COR_TERRENO.getBlue());
+        
+        //gl.glEnable(GL.GL_LIGHTING);
+        
         gl.glLineWidth(2);
         
         for (int x = 0; x < comprimento - 1; ++x) {
@@ -70,12 +79,17 @@ public class Terreno {
         return malhaTerreno[x][z].getY();
     }
     
+    public Ponto4D[][] getMalha() {
+        return malhaTerreno;
+    }
+    
     public void toggleExibirGrid() {
         exibirGrid = !exibirGrid;
     }
     
     
     public boolean selecionaPontoProximo(Ponto4D ponto) {
+        limpaSelecao();
         Ponto4D pontoDeslocado = new Ponto4D(ponto);
         
         pontoDeslocado.translacaoPonto((TAMANHO_CELULA * comprimento / 2), 0.0, (TAMANHO_CELULA * largura / 2));
@@ -85,6 +99,8 @@ public class Terreno {
         
         if (hitX >= 0 && hitX < comprimento && hitZ >= 0 && hitZ < largura) {
             pontoSelecionado = malhaTerreno[hitX][hitZ];
+            selecaoX = hitX;
+            selecaoZ = hitZ;
             return true;
         }
         
@@ -95,6 +111,18 @@ public class Terreno {
         if (pontoSelecionado != null) {
             pontoSelecionado.translacaoPonto(0.0, alteracao, 0.0);
         }
+    }
+    
+    public void aplicaPincelPontoSelecionado(Pincel pincel) {
+        if (pontoSelecionado != null) {
+            pincel.aplicaTransformacao(this, selecaoX, selecaoZ);
+        }
+    }
+    
+    public void limpaSelecao() {
+        pontoSelecionado = null;
+        selecaoX = -1;
+        selecaoZ = -1;
     }
     
     
@@ -138,6 +166,8 @@ public class Terreno {
     
     
     private Ponto4D pontoSelecionado;
+    private int selecaoX;
+    private int selecaoZ;
     
     private final int comprimento;
     private final int largura;

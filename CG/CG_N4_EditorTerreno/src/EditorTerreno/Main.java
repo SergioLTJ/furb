@@ -7,6 +7,7 @@ package EditorTerreno;
 /// \date 03/05/13.
 /// Obs.: variaveis globais foram usadas por questoes didaticas mas nao sao recomendas para aplicacoes reais.
 
+import com.sun.opengl.util.GLUT;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -19,6 +20,7 @@ import javax.media.opengl.glu.GLU;
 public class Main implements GLEventListener, KeyListener {
         private GL gl;
 	private GLU glu;
+        private GLUT glut;
 	private GLAutoDrawable glDrawable;
 	private Ponto4D pto1 = new Ponto4D(  0.0,   0.0, 0.0, 1.0);
 	private Ponto4D pto2 = new Ponto4D(200.0, 200.0, 0.0, 1.0);
@@ -28,17 +30,20 @@ public class Main implements GLEventListener, KeyListener {
         
         @Override
 	public void init(GLAutoDrawable drawable) {
-		System.out.println(" --- init ---");
 		glDrawable = drawable;
 		gl = drawable.getGL();
 		glu = new GLU();
+                glut = new GLUT();
 		glDrawable.setGL(new DebugGL(gl));
 		System.out.println("Espaco de desenho com tamanho: " + drawable.getWidth() + " x " + drawable.getHeight());
 		gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
                 
                 // -----
                 
-                //initLightning();
+                initLightning();
+                
+                gl.glEnable(GL.GL_CULL_FACE);
+                //gl.glEnable(GL.GL_DEPTH_TEST);
                 
                 terreno = new Terreno(50, 50);
                 camera = new Camera();
@@ -63,11 +68,15 @@ public class Main implements GLEventListener, KeyListener {
                 camera.perspective(glu);
                 camera.lookAt(glu);
                 
-                gl.glLightf(GL.GL_LIGHT0, GL.GL_SPOT_EXPONENT, 0);
+                //gl.glLightf(GL.GL_LIGHT0, GL.GL_SPOT_EXPONENT, 0);
                 
 		SRU();
 		
                 // -----
+                
+                gl.glColor3f(0, 0, 0);
+                gl.glTranslated(5, 50, 10);
+                glut.glutSolidCube(10.0f);
                 
                 terreno.display(gl);
                 
@@ -78,20 +87,19 @@ public class Main implements GLEventListener, KeyListener {
 
         @Override
 	public void keyPressed(KeyEvent e) {
-		System.out.println(" --- keyPressed ---");
 		switch (e.getKeyCode()) {
                     // WASD: Translacao camera
                     case KeyEvent.VK_W:
-                        camera.pan(new Ponto4D(0,0,10,1));
-                        break;
-                    case KeyEvent.VK_A:
-                        camera.pan(new Ponto4D(10,0,0,1));
-                        break;
-                    case KeyEvent.VK_S:
                         camera.pan(new Ponto4D(0,0,-10,1));
                         break;
-                    case KeyEvent.VK_D:
+                    case KeyEvent.VK_A:
                         camera.pan(new Ponto4D(-10,0,0,1));
+                        break;
+                    case KeyEvent.VK_S:
+                        camera.pan(new Ponto4D(0,0,10,1));
+                        break;
+                    case KeyEvent.VK_D:
+                        camera.pan(new Ponto4D(10,0,0,1));
                         break;    
                         
                     // Setas direita/esquerda: Rotacao camera  
@@ -127,39 +135,43 @@ public class Main implements GLEventListener, KeyListener {
 
         @Override
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-		System.out.println(" --- reshape ---");
-	    gl.glMatrixMode(GL.GL_PROJECTION);
+            gl.glMatrixMode(GL.GL_PROJECTION);
 	    gl.glLoadIdentity();
-		gl.glViewport(0, 0, width, height);
+            gl.glViewport(0, 0, width, height);
 	}
 
         @Override
 	public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
-		System.out.println(" --- displayChanged ---");
+		
 	}
 
         @Override
 	public void keyReleased(KeyEvent arg0) {
-		System.out.println(" --- keyReleased ---");
+		
 	}
 
         @Override
 	public void keyTyped(KeyEvent arg0) {
-		System.out.println(" --- keyTyped ---");
+		
 	}
 	
 	public void SRU() {
                 gl.glColor3f(1.0f, 0.0f, 0.0f);
 		gl.glLineWidth(1.0f);
 		gl.glBegin( GL.GL_LINES );
-		gl.glVertex2f( -200.0f, 0.0f );
-		gl.glVertex2f(  200.0f, 0.0f );
+		gl.glVertex3f( -200.0f, 0.0f , 0.0f );
+		gl.glVertex3f(  200.0f, 0.0f , 0.0f );
 		gl.glEnd();
 		// eixo y
 		gl.glColor3f(0.0f, 1.0f, 0.0f);
 		gl.glBegin( GL.GL_LINES);
-		gl.glVertex2f(  0.0f, -200.0f);
-		gl.glVertex2f(  0.0f, 200.0f );
+		gl.glVertex3f(  0.0f, -200.0f, 0.0f );
+		gl.glVertex3f(  0.0f, 200.0f , 0.0f );
+                gl.glEnd();
+                gl.glColor3f(0.0f, 0.0f, 1.0f);
+		gl.glBegin( GL.GL_LINES);
+		gl.glVertex3f(  0.0f, 0.0f , -200.0f);
+		gl.glVertex3f(  0.0f, 0.0f , 200.0f );
                 gl.glEnd();
 	}
 

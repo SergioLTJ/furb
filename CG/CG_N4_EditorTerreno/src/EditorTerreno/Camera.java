@@ -19,18 +19,18 @@ public class Camera {
     private double CAMPO_VISAO = 60.0;
     
     private double LIMITE_NEAR = 1.0;
-    private double LIMITE_FAR = 1000.0;
+    private double LIMITE_FAR = 1500.0;
     
     public Camera() {
         pontoOlho = new Ponto4D();
         pontoFoco = new Ponto4D();
         
         pontoOlho.setX(0.0);
-        pontoOlho.setY(100.0);
-        pontoOlho.setZ(-250.0);
+        pontoOlho.setY(200.0);
+        pontoOlho.setZ(500.0);
         
         raioRotacao = Geometria.distancia2D(pontoOlho.getX(), pontoOlho.getZ(), pontoFoco.getX(), pontoFoco.getZ());
-        anguloRotacao = 90.0;
+        anguloRotacao = 270.0;
         
         atualizaPontoFoco();
     }

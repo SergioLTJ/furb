@@ -44,10 +44,8 @@ public class Pincel {
     
     
     public void aplicaTransformacao(Terreno terreno, int posX, int posZ) {
-        Ponto4D malha[][] = terreno.getMalha();
-        
-        int compTerreno = malha.length;
-        int largTerreno = malha[0].length;
+        int compTerreno = terreno.getComprimento();
+        int largTerreno = terreno.getLargura();
         
         posX -= comprimento / 2;
         posZ -= largura / 2;
@@ -58,7 +56,7 @@ public class Pincel {
                 for (int z = 0; z < largura; ++z) {
                     int chZ = posZ + z;
                     if (chZ >= 0 && chZ < largTerreno) {
-                        malha[chX][chZ].translacaoPonto(0.0, transformacao[x][z], 0.0);
+                        terreno.alteraElevacao(chX, chZ, transformacao[x][z]);
                     }
                 }
             }

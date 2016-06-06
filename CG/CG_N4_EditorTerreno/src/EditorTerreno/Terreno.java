@@ -17,8 +17,12 @@ import javax.media.opengl.GL;
 public class Terreno {
     
     private static final double TAMANHO_CELULA = 10.0;
+    private static final double ALTURA_MINIMA = 0.0;
+    private static final double ALTURA_MAXIMA = 200.0;
     
-    private static final Color COR_TERRENO = new Color(97, 133, 20);
+    private static final Color COR_TERRENO_BAIXO = new Color(97, 133, 20);
+    private static final Color COR_TERRENO_ALTO = new Color(18, 94, 55);
+
     private static final Color COR_SELECAO = new Color(255, 0, 0);
     
     private static boolean exibirGrid;
@@ -44,13 +48,17 @@ public class Terreno {
     }
     
     public void display(GL gl) {
-        //float cor[] = new float[3];
-        //COR_TERRENO.getColorComponents(cor);
+        float cor[] = new float[3];
+        COR_TERRENO_BAIXO.getColorComponents(cor);
         
         //gl.glMaterialfv(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE, cor, 0);
-        gl.glColor3ub((byte)COR_TERRENO.getRed(), (byte)COR_TERRENO.getGreen(), (byte)COR_TERRENO.getBlue());
         
-        //gl.glEnable(GL.GL_LIGHTING);
+        gl.glEnable(GL.GL_COLOR_MATERIAL);
+	gl.glColor3f(cor[0],cor[1],cor[2]);
+        
+        gl.glEnable(GL.GL_LIGHTING);
+        
+        // ----
         
         gl.glLineWidth(2);
         
@@ -60,6 +68,8 @@ public class Terreno {
             }
         }
         
+        gl.glDisable(GL.GL_LIGHTING);
+
         if (pontoSelecionado != null) {
             gl.glColor3ub((byte)COR_SELECAO.getRed(), (byte)COR_SELECAO.getGreen(), (byte)COR_SELECAO.getBlue());
             gl.glPointSize(5.0f);
@@ -70,17 +80,24 @@ public class Terreno {
         }
     }
     
-    public void aplicaAlteracao(int x, int z) {
-        // TODO: Aplica um pincel sobre a area
+    public int getComprimento() {
+        return comprimento;
     }
     
+    public int getLargura() {
+        return largura;
+    }
     
     public double getElevacaoPonto(int x, int z) {
         return malhaTerreno[x][z].getY();
     }
     
-    public Ponto4D[][] getMalha() {
-        return malhaTerreno;
+    public void alteraElevacao(int x, int z, double alteracao) {
+        Ponto4D ponto = malhaTerreno[x][z];
+        
+        ponto.translacaoPonto(0.0, alteracao, 0.0);
+        if (ponto.getY() < ALTURA_MINIMA) ponto.setY(ALTURA_MINIMA);
+        if (ponto.getY() > ALTURA_MAXIMA) ponto.setY(ALTURA_MAXIMA);
     }
     
     public void toggleExibirGrid() {
@@ -101,6 +118,9 @@ public class Terreno {
             pontoSelecionado = malhaTerreno[hitX][hitZ];
             selecaoX = hitX;
             selecaoZ = hitZ;
+            
+            System.out.println("(" + pontoSelecionado.getX() + ", " + pontoSelecionado.getZ() + ")");
+            
             return true;
         }
         
@@ -109,7 +129,7 @@ public class Terreno {
     
     public void alteraElevacaoPontoSelecionado(double alteracao) {
         if (pontoSelecionado != null) {
-            pontoSelecionado.translacaoPonto(0.0, alteracao, 0.0);
+            alteraElevacao(selecaoX, selecaoZ, alteracao);
         }
     }
     
@@ -147,21 +167,43 @@ public class Terreno {
     }
     
     private void desenhaCelula(GL gl, int x, int z) {
+        Ponto4D pontos[] = new Ponto4D[4];
+        
+        pontos[3] = malhaTerreno[x][z];
+        pontos[2] = malhaTerreno[x+1][z];
+        pontos[1] = malhaTerreno[x+1][z+1];
+        pontos[0] = malhaTerreno[x][z+1];
+        
+        double altura = 0.0;
+        for (int i = 0; i < pontos.length; ++i) {
+            if (pontos[i].getY() > altura)
+                altura = pontos[i].getY();
+        }
+        
+        Color cor = getCorAltura(altura);
+        gl.glColor3ub((byte)cor.getRed(), (byte)cor.getGreen(), (byte)cor.getBlue());
+        
         gl.glBegin(exibirGrid ? GL.GL_LINE_STRIP : GL.GL_POLYGON);
         
-        Ponto4D ponto = malhaTerreno[x][z];
-        gl.glVertex3d(ponto.getX(), ponto.getY(), ponto.getZ());
-        
-        ponto = malhaTerreno[x+1][z];
-        gl.glVertex3d(ponto.getX(), ponto.getY(), ponto.getZ());
-        
-        ponto = malhaTerreno[x+1][z+1];
-        gl.glVertex3d(ponto.getX(), ponto.getY(), ponto.getZ());
-        
-        ponto = malhaTerreno[x][z+1];
-        gl.glVertex3d(ponto.getX(), ponto.getY(), ponto.getZ());
+        for (int i = 0; i < pontos.length; ++i) {
+            gl.glVertex3d(pontos[i].getX(), pontos[i].getY(), pontos[i].getZ());
+        }
         
         gl.glEnd();
+    }
+    
+    
+    private Color getCorAltura(double altura) {
+        if (altura < ALTURA_MINIMA) return COR_TERRENO_BAIXO;
+        if (altura > ALTURA_MAXIMA) return COR_TERRENO_ALTO;
+        
+        double P = (altura - ALTURA_MINIMA) / (ALTURA_MAXIMA - ALTURA_MINIMA);
+        
+        double R = (COR_TERRENO_ALTO.getRed()   * P) + (COR_TERRENO_BAIXO.getRed()   * (1 - P));
+        double G = (COR_TERRENO_ALTO.getGreen() * P) + (COR_TERRENO_BAIXO.getGreen() * (1 - P));
+        double B = (COR_TERRENO_ALTO.getBlue()  * P) + (COR_TERRENO_BAIXO.getBlue()  * (1 - P));
+        
+        return new Color((int)R, (int)G, (int)B);
     }
     
     

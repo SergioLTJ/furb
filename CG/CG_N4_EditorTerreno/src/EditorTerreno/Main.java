@@ -43,7 +43,7 @@ public class Main implements GLEventListener, KeyListener {
                 initLightning();
                 
                 gl.glEnable(GL.GL_CULL_FACE);
-                //gl.glEnable(GL.GL_DEPTH_TEST);
+                gl.glEnable(GL.GL_DEPTH_TEST);
                 
                 terreno = new Terreno(50, 50);
                 camera = new Camera();
@@ -60,7 +60,7 @@ public class Main implements GLEventListener, KeyListener {
 	//exibicaoPrincipal
         @Override
 	public void display(GLAutoDrawable arg0) {
-		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glLoadIdentity();

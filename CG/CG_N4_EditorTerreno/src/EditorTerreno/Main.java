@@ -102,11 +102,11 @@ public class Main implements GLEventListener, KeyListener {
                         camera.pan(new Ponto4D(10,0,0,1));
                         break;    
                         
-                    // Setas direita/esquerda: Rotacao camera  
-                    case KeyEvent.VK_LEFT:
+                    // Q/E: Rotacao camera  
+                    case KeyEvent.VK_Q:
                         camera.rotate(-10.0);
                         break;
-                    case KeyEvent.VK_RIGHT:
+                    case KeyEvent.VK_E:
                         camera.rotate(10.0);
                         break;
                         
@@ -123,9 +123,16 @@ public class Main implements GLEventListener, KeyListener {
                         terreno.alteraElevacaoPontoSelecionado(-5.0);
                         break;
                         
-                    // SPACE: Aplicar pincel
-                    case KeyEvent.VK_SPACE:
-                        terreno.aplicaPincelPontoSelecionado(Pincel.PINCEL_QUADRADO);
+                    // UP/DOWN/LEFT/RIGHT: Aplicar pincel
+                    case KeyEvent.VK_UP:
+                        terreno.aplicaPincelPontoSelecionado(Pincel.PINCEL_QUADRADO, false);
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        terreno.aplicaPincelPontoSelecionado(Pincel.PINCEL_QUADRADO, true);
+                        break;
+                    case KeyEvent.VK_LEFT:
+                    case KeyEvent.VK_RIGHT:
+                        terreno.aplicaPincelNivelamentoPontoSelecionado(Pincel.PINCEL_QUADRADO);
                         break;
 		}
                 

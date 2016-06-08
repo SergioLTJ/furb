@@ -43,7 +43,7 @@ public class Pincel {
     }
     
     
-    public void aplicaTransformacao(Terreno terreno, int posX, int posZ) {
+    public void aplicaTransformacao(Terreno terreno, int posX, int posZ, boolean inverter) {
         int compTerreno = terreno.getComprimento();
         int largTerreno = terreno.getLargura();
         
@@ -56,7 +56,27 @@ public class Pincel {
                 for (int z = 0; z < largura; ++z) {
                     int chZ = posZ + z;
                     if (chZ >= 0 && chZ < largTerreno) {
-                        terreno.alteraElevacao(chX, chZ, transformacao[x][z]);
+                        terreno.alteraElevacao(chX, chZ, (inverter ? -1 : 1) * transformacao[x][z]);
+                    }
+                }
+            }
+        }
+    }
+    
+    public void aplicaNivelamento(Terreno terreno, int posX, int posZ, double altura) {
+        int compTerreno = terreno.getComprimento();
+        int largTerreno = terreno.getLargura();
+        
+        posX -= comprimento / 2;
+        posZ -= largura / 2;
+        
+        for (int x = 0; x < comprimento; ++x) {
+            int chX = posX + x;
+            if (chX >= 0 && chX < compTerreno) {
+                for (int z = 0; z < largura; ++z) {
+                    int chZ = posZ + z;
+                    if (chZ >= 0 && chZ < largTerreno) {
+                        terreno.nivelaElevacao(chX, chZ, altura, transformacao[x][z]);
                     }
                 }
             }

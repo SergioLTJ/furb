@@ -88,7 +88,7 @@ public class Terreno {
         return largura;
     }
     
-    public double getElevacaoPonto(int x, int z) {
+    public double getElevacao(int x, int z) {
         return malhaTerreno[x][z].getY();
     }
     
@@ -98,6 +98,31 @@ public class Terreno {
         ponto.translacaoPonto(0.0, alteracao, 0.0);
         if (ponto.getY() < ALTURA_MINIMA) ponto.setY(ALTURA_MINIMA);
         if (ponto.getY() > ALTURA_MAXIMA) ponto.setY(ALTURA_MAXIMA);
+    }
+    
+    public void nivelaElevacao(int x, int z, double alvo, double alteracao) {
+        double elevacao = getElevacao(x, z);
+        double variacao = alvo - elevacao;
+        
+        if (variacao > 0) {
+            if (alteracao < 0)
+                alteracao = -alteracao;
+            
+            if (alteracao < variacao)
+                variacao = alteracao;
+        } else {
+            if (alteracao > 0)
+                alteracao = -alteracao;
+            
+            if (alteracao > variacao)
+                variacao = alteracao;
+        }
+        
+        alteraElevacao(x, z, variacao);
+    }
+    
+    public void setElevacao(int x, int z, double elevacao) {
+        malhaTerreno[x][z].setY(elevacao);
     }
     
     public void toggleExibirGrid() {
@@ -133,9 +158,15 @@ public class Terreno {
         }
     }
     
-    public void aplicaPincelPontoSelecionado(Pincel pincel) {
+    public void aplicaPincelPontoSelecionado(Pincel pincel, boolean inverter) {
         if (pontoSelecionado != null) {
-            pincel.aplicaTransformacao(this, selecaoX, selecaoZ);
+            pincel.aplicaTransformacao(this, selecaoX, selecaoZ, inverter);
+        }
+    }
+    
+    public void aplicaPincelNivelamentoPontoSelecionado(Pincel pincel) {
+        if (pontoSelecionado != null) {
+            pincel.aplicaNivelamento(this, selecaoX, selecaoZ, pontoSelecionado.getY());
         }
     }
     

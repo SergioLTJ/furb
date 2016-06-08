@@ -134,6 +134,11 @@ public class Main implements GLEventListener, KeyListener {
                     case KeyEvent.VK_RIGHT:
                         terreno.aplicaPincelNivelamentoPontoSelecionado(Pincel.PINCEL_QUADRADO);
                         break;
+                        
+                    // SPACE: Criar edificio
+                    case KeyEvent.VK_SPACE:
+                        terreno.criaEdificioPontoSelecionado();
+                        break;
 		}
                 
                 terreno.selecionaPontoProximo(camera.getPontoFoco());

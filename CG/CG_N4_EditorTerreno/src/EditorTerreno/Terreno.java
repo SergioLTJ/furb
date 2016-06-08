@@ -6,6 +6,7 @@
 package EditorTerreno;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import javax.media.opengl.GL;
 
 /**
@@ -41,7 +42,8 @@ public class Terreno {
         selecaoZ = -1;
         
         malhaTerreno = new Ponto4D[this.comprimento][this.largura];
-
+        edificios = new ArrayList<>();
+        
         exibirGrid = false;
         
         criaMalhaTerreno();
@@ -67,6 +69,8 @@ public class Terreno {
                 desenhaCelula(gl, x, z);
             }
         }
+        
+        desenhaEdificios(gl);
         
         gl.glDisable(GL.GL_LIGHTING);
 
@@ -155,18 +159,27 @@ public class Terreno {
     public void alteraElevacaoPontoSelecionado(double alteracao) {
         if (pontoSelecionado != null) {
             alteraElevacao(selecaoX, selecaoZ, alteracao);
+            atualizaEdificios();
         }
     }
     
     public void aplicaPincelPontoSelecionado(Pincel pincel, boolean inverter) {
         if (pontoSelecionado != null) {
             pincel.aplicaTransformacao(this, selecaoX, selecaoZ, inverter);
+            atualizaEdificios();
         }
     }
     
     public void aplicaPincelNivelamentoPontoSelecionado(Pincel pincel) {
         if (pontoSelecionado != null) {
             pincel.aplicaNivelamento(this, selecaoX, selecaoZ, pontoSelecionado.getY());
+            atualizaEdificios();
+        }
+    }
+    
+    public void criaEdificioPontoSelecionado() {
+        if (pontoSelecionado != null) {
+            edificios.add(new Edificio(pontoSelecionado));
         }
     }
     
@@ -197,6 +210,11 @@ public class Terreno {
         }
     }
     
+    private void atualizaEdificios() {
+        for (Edificio edificio : edificios)
+            edificio.atualizaPontosDesenho();
+    }
+    
     private void desenhaCelula(GL gl, int x, int z) {
         Ponto4D pontos[] = new Ponto4D[4];
         
@@ -223,6 +241,11 @@ public class Terreno {
         gl.glEnd();
     }
     
+    private void desenhaEdificios(GL gl) {
+        for (Edificio edificio : edificios)
+            edificio.display(gl);
+    }
+    
     
     private Color getCorAltura(double altura) {
         if (altura < ALTURA_MINIMA) return COR_TERRENO_BAIXO;
@@ -245,4 +268,6 @@ public class Terreno {
     private final int comprimento;
     private final int largura;
     private final Ponto4D malhaTerreno[][];
+    
+    private final ArrayList<Edificio> edificios;
 }

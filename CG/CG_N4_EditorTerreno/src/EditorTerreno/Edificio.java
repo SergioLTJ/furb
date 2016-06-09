@@ -15,31 +15,44 @@ import javax.media.opengl.GL;
  */
 public class Edificio {
     
-    private static Color COR_EDIFICIO = new Color(50,50,50);
+    private static Color COR_EDIFICIO = new Color(100,100,100);
+    private static Color COR_SELECIONADO = new Color(255,0,0);
     
     public Edificio(Ponto4D pontoBase) {
         this.pontoBase = pontoBase;
         
+        transform = new Transform();
+        
         Random rnd = new Random();
         altura = 10 + (rnd.nextDouble() * 90);
         largura = 5 + (rnd.nextDouble() * 5);
+        
+        selecionado = false;
         
         atualizaPontosDesenho();
     }
     
     public void display(GL gl) {
         float cor[] = new float[3];
-        COR_EDIFICIO.getColorComponents(cor);
+        getCor().getColorComponents(cor);
         
         //gl.glMaterialfv(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE, cor, 0);
         
         gl.glEnable(GL.GL_COLOR_MATERIAL);
 	gl.glColor3f(cor[0],cor[1],cor[2]);
         
+        gl.glPushMatrix();
+        gl.glMultMatrixd(transform.getDate(), 0);
+        
         desenhaFaces(gl);
         
         gl.glEnable(GL.GL_LIGHTING);
         
+        gl.glPopMatrix();
+    }
+    
+    public void setSelecionado(boolean selecionar) {
+        selecionado = selecionar;
     }
     
     public void atualizaPontosDesenho() {
@@ -70,8 +83,31 @@ public class Edificio {
         pontosDesenho[7].translacaoPonto( desvioBase, altura, -desvioBase);
     }
     
+    public void rotaciona(double rotacao) {
+        Transform local = new Transform();
+
+        pontoBase.inverterSinal(pontoBase);
+        Transform translate = new Transform();
+        
+        translate.atribuirTranslacao(pontoBase.getX(),pontoBase.getY(),pontoBase.getZ());
+	local = translate.transformMatrix(local);
+
+        Transform rotate = new Transform();
+        
+	rotate.atribuirRotacaoY(Transform.DEG_TO_RAD * rotacao);
+	local = rotate.transformMatrix(local);
+
+	pontoBase.inverterSinal(pontoBase);
+        translate.atribuirIdentidade();
+        
+	translate.atribuirTranslacao(pontoBase.getX(),pontoBase.getY(),pontoBase.getZ());
+	local = translate.transformMatrix(local);
+
+	transform = transform.transformMatrix(local);
+    }
+    
     private void desenhaFaces(GL gl) {
-        Color cor = COR_EDIFICIO;
+        Color cor = getCor();
         gl.glColor3ub((byte)cor.getRed(), (byte)cor.getGreen(), (byte)cor.getBlue());
         
         // Fundo: 0-1-2-3
@@ -134,6 +170,14 @@ public class Edificio {
         
         gl.glEnd();
     }
+    
+    private Color getCor() {
+        return selecionado ? COR_SELECIONADO : COR_EDIFICIO;
+    }
+    
+    private Transform transform;
+    
+    private boolean selecionado;
     
     private Ponto4D pontoBase;
     private double altura;

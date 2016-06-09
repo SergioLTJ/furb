@@ -7,6 +7,7 @@ package EditorTerreno;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.media.opengl.GL;
 
 /**
@@ -43,6 +44,7 @@ public class Terreno {
         
         malhaTerreno = new Ponto4D[this.comprimento][this.largura];
         edificios = new ArrayList<>();
+        mapaEdificios = new HashMap<>();
         
         exibirGrid = false;
         
@@ -59,8 +61,6 @@ public class Terreno {
 	gl.glColor3f(cor[0],cor[1],cor[2]);
         
         gl.glEnable(GL.GL_LIGHTING);
-        
-        // ----
         
         gl.glLineWidth(2);
         
@@ -150,6 +150,8 @@ public class Terreno {
             
             System.out.println("(" + pontoSelecionado.getX() + ", " + pontoSelecionado.getZ() + ")");
             
+            setSelecaoEdificio(true);
+            
             return true;
         }
         
@@ -178,15 +180,37 @@ public class Terreno {
     }
     
     public void criaEdificioPontoSelecionado() {
+        if (selecionaEdificio() != null)
+            return;
+        
         if (pontoSelecionado != null) {
-            edificios.add(new Edificio(pontoSelecionado));
+            Edificio edificio = new Edificio(pontoSelecionado); 
+            edificios.add(edificio);
+            mapaEdificios.put(pontoSelecionado, edificio);
+        }
+    }
+    
+    public void rotacionaEdificioPontoSelecionado(double rotacao) {
+        Edificio edificio = selecionaEdificio();
+        
+        if (edificio != null) {
+            edificio.rotaciona(rotacao);
         }
     }
     
     public void limpaSelecao() {
+        setSelecaoEdificio(false);
+        
         pontoSelecionado = null;
         selecaoX = -1;
         selecaoZ = -1;
+    }
+    
+    public Edificio selecionaEdificio() {
+        if (pontoSelecionado != null)
+            return mapaEdificios.get(pontoSelecionado);
+        
+        return null;
     }
     
     
@@ -213,6 +237,12 @@ public class Terreno {
     private void atualizaEdificios() {
         for (Edificio edificio : edificios)
             edificio.atualizaPontosDesenho();
+    }
+    
+    private void setSelecaoEdificio(boolean selecao) {
+        Edificio edificio = selecionaEdificio();
+        if (edificio != null)
+            edificio.setSelecionado(selecao);
     }
     
     private void desenhaCelula(GL gl, int x, int z) {
@@ -270,4 +300,5 @@ public class Terreno {
     private final Ponto4D malhaTerreno[][];
     
     private final ArrayList<Edificio> edificios;
+    private final HashMap<Ponto4D, Edificio> mapaEdificios;
 }

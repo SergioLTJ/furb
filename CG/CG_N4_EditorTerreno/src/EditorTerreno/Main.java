@@ -139,6 +139,14 @@ public class Main implements GLEventListener, KeyListener {
                     case KeyEvent.VK_SPACE:
                         terreno.criaEdificioPontoSelecionado();
                         break;
+                        
+                    //</>: Rotacao edificio 
+                    case KeyEvent.VK_COMMA:
+                        terreno.rotacionaEdificioPontoSelecionado(15.0);
+                        break;
+                    case KeyEvent.VK_PERIOD:
+                        terreno.rotacionaEdificioPontoSelecionado(-15.0);
+                        break;
 		}
                 
                 terreno.selecionaPontoProximo(camera.getPontoFoco());

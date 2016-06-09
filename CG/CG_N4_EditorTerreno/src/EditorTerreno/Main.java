@@ -125,14 +125,14 @@ public class Main implements GLEventListener, KeyListener {
                         
                     // UP/DOWN/LEFT/RIGHT: Aplicar pincel
                     case KeyEvent.VK_UP:
-                        terreno.aplicaPincelPontoSelecionado(Pincel.PINCEL_QUADRADO, false);
+                        terreno.aplicaPincelPontoSelecionado(false);
                         break;
                     case KeyEvent.VK_DOWN:
-                        terreno.aplicaPincelPontoSelecionado(Pincel.PINCEL_QUADRADO, true);
+                        terreno.aplicaPincelPontoSelecionado(true);
                         break;
                     case KeyEvent.VK_LEFT:
                     case KeyEvent.VK_RIGHT:
-                        terreno.aplicaPincelNivelamentoPontoSelecionado(Pincel.PINCEL_QUADRADO);
+                        terreno.aplicaPincelNivelamentoPontoSelecionado();
                         break;
                         
                     // SPACE: Criar edificio
@@ -140,12 +140,17 @@ public class Main implements GLEventListener, KeyListener {
                         terreno.criaEdificioPontoSelecionado();
                         break;
                         
-                    //</>: Rotacao edificio 
+                    // </>: Rotacao edificio 
                     case KeyEvent.VK_COMMA:
                         terreno.rotacionaEdificioPontoSelecionado(15.0);
                         break;
                     case KeyEvent.VK_PERIOD:
                         terreno.rotacionaEdificioPontoSelecionado(-15.0);
+                        break;
+                        
+                    // Z: Altera pincel
+                    case KeyEvent.VK_Z:
+                        terreno.proximoPincel();
                         break;
 		}
                 

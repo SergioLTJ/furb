@@ -29,6 +29,8 @@ public class Terreno {
     
     private static boolean exibirGrid;
     
+    private static final Pincel pinceis[] = {Pincel.PINCEL_DIAMANTE, Pincel.PINCEL_QUADRADO, Pincel.PINCEL_XIS, Pincel.PINCEL_CRATERA };
+    
     /**
      * Cria um terreno com malha de tamanho comprimento * largura e elevacao 0 em todos os pontos
      * @param comprimento Comprimento da malha, analogo ao eixo X
@@ -45,6 +47,8 @@ public class Terreno {
         malhaTerreno = new Ponto4D[this.comprimento][this.largura];
         edificios = new ArrayList<>();
         mapaEdificios = new HashMap<>();
+        
+        pincelSelecionado = 0;
         
         exibirGrid = false;
         
@@ -134,6 +138,12 @@ public class Terreno {
     }
     
     
+    public void proximoPincel() {
+        pincelSelecionado++;
+        if (pincelSelecionado == pinceis.length)
+            pincelSelecionado = 0;
+    }
+    
     public boolean selecionaPontoProximo(Ponto4D ponto) {
         limpaSelecao();
         Ponto4D pontoDeslocado = new Ponto4D(ponto);
@@ -165,22 +175,22 @@ public class Terreno {
         }
     }
     
-    public void aplicaPincelPontoSelecionado(Pincel pincel, boolean inverter) {
+    public void aplicaPincelPontoSelecionado(boolean inverter) {
         if (pontoSelecionado != null) {
-            pincel.aplicaTransformacao(this, selecaoX, selecaoZ, inverter);
+            pinceis[pincelSelecionado].aplicaTransformacao(this, selecaoX, selecaoZ, inverter);
             atualizaEdificios();
         }
     }
     
-    public void aplicaPincelNivelamentoPontoSelecionado(Pincel pincel) {
+    public void aplicaPincelNivelamentoPontoSelecionado() {
         if (pontoSelecionado != null) {
-            pincel.aplicaNivelamento(this, selecaoX, selecaoZ, pontoSelecionado.getY());
+            pinceis[pincelSelecionado].aplicaNivelamento(this, selecaoX, selecaoZ, pontoSelecionado.getY());
             atualizaEdificios();
         }
     }
     
     public void criaEdificioPontoSelecionado() {
-        if (selecionaEdificio() != null)
+        if (removeSelecaoEdificio())
             return;
         
         if (pontoSelecionado != null) {
@@ -245,6 +255,18 @@ public class Terreno {
             edificio.setSelecionado(selecao);
     }
     
+    private boolean removeSelecaoEdificio() {
+        Edificio edificio = selecionaEdificio();
+        if (edificio != null) {
+            mapaEdificios.remove(pontoSelecionado);
+            edificios.remove(edificio);
+            
+            return true;
+        }
+        
+        return false;
+    }
+    
     private void desenhaCelula(GL gl, int x, int z) {
         Ponto4D pontos[] = new Ponto4D[4];
         
@@ -298,6 +320,8 @@ public class Terreno {
     private final int comprimento;
     private final int largura;
     private final Ponto4D malhaTerreno[][];
+    
+    private int pincelSelecionado;
     
     private final ArrayList<Edificio> edificios;
     private final HashMap<Ponto4D, Edificio> mapaEdificios;

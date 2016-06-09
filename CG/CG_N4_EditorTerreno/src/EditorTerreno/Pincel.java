@@ -5,6 +5,8 @@
  */
 package EditorTerreno;
 
+import javax.media.opengl.GL;
+
 /**
  *
  * @author Avell

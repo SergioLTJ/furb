@@ -5,6 +5,7 @@
  */
 package EditorTerreno;
 
+import com.sun.opengl.util.GLUT;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,8 +30,9 @@ public class Terreno {
     
     private static boolean exibirGrid;
     
-    private static final Pincel pinceis[] = {Pincel.PINCEL_DIAMANTE, Pincel.PINCEL_QUADRADO, Pincel.PINCEL_XIS, Pincel.PINCEL_CRATERA };
-    
+    private static final Pincel PINCEIS[] = {Pincel.PINCEL_DIAMANTE, Pincel.PINCEL_QUADRADO, Pincel.PINCEL_XIS, Pincel.PINCEL_CRATERA };
+    private static final String PINCEIS_NOMES[] = {"DIAMANTE", "QUADRADO", "XIS", "CRATERA" };
+            
     /**
      * Cria um terreno com malha de tamanho comprimento * largura e elevacao 0 em todos os pontos
      * @param comprimento Comprimento da malha, analogo ao eixo X
@@ -44,6 +46,8 @@ public class Terreno {
         selecaoX = -1;
         selecaoZ = -1;
         
+        altText = "";
+        
         malhaTerreno = new Ponto4D[this.comprimento][this.largura];
         edificios = new ArrayList<>();
         mapaEdificios = new HashMap<>();
@@ -53,6 +57,23 @@ public class Terreno {
         exibirGrid = false;
         
         criaMalhaTerreno();
+    }
+    
+    public void displayText(GL gl, GLUT glut) {
+        if (pontoSelecionado == null)
+            return;
+        
+        if (altText.isEmpty())
+            altText = pontoSelecionado.getTextoPosicao();
+        
+        float cor[] = new float[3];
+        COR_SELECAO.getColorComponents(cor);
+        gl.glColor3f(cor[0],cor[1],cor[2]);
+        
+        gl.glRasterPos3d(pontoSelecionado.getX(), pontoSelecionado.getY() + 5, pontoSelecionado.getZ());
+        glut.glutBitmapString(GLUT.BITMAP_HELVETICA_10, altText);
+        
+        altText = "";
     }
     
     public void display(GL gl) {
@@ -94,6 +115,10 @@ public class Terreno {
     
     public int getLargura() {
         return largura;
+    }
+    
+    public Ponto4D getPonto(int x, int z) {
+        return malhaTerreno[x][z];
     }
     
     public double getElevacao(int x, int z) {
@@ -140,8 +165,10 @@ public class Terreno {
     
     public void proximoPincel() {
         pincelSelecionado++;
-        if (pincelSelecionado == pinceis.length)
+        if (pincelSelecionado == PINCEIS.length)
             pincelSelecionado = 0;
+        
+        altText = PINCEIS_NOMES[pincelSelecionado];
     }
     
     public boolean selecionaPontoProximo(Ponto4D ponto) {
@@ -177,14 +204,14 @@ public class Terreno {
     
     public void aplicaPincelPontoSelecionado(boolean inverter) {
         if (pontoSelecionado != null) {
-            pinceis[pincelSelecionado].aplicaTransformacao(this, selecaoX, selecaoZ, inverter);
+            PINCEIS[pincelSelecionado].aplicaTransformacao(this, selecaoX, selecaoZ, inverter);
             atualizaEdificios();
         }
     }
     
     public void aplicaPincelNivelamentoPontoSelecionado() {
         if (pontoSelecionado != null) {
-            pinceis[pincelSelecionado].aplicaNivelamento(this, selecaoX, selecaoZ, pontoSelecionado.getY());
+            PINCEIS[pincelSelecionado].aplicaNivelamento(this, selecaoX, selecaoZ, pontoSelecionado.getY());
             atualizaEdificios();
         }
     }
@@ -325,4 +352,6 @@ public class Terreno {
     
     private final ArrayList<Edificio> edificios;
     private final HashMap<Ponto4D, Edificio> mapaEdificios;
+    
+    private String altText;
 }

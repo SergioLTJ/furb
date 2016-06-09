@@ -79,6 +79,7 @@ public class Main implements GLEventListener, KeyListener {
                 glut.glutSolidCube(10.0f);
                 
                 terreno.display(gl);
+                terreno.displayText(gl, glut);
                 
                 // -----
                 

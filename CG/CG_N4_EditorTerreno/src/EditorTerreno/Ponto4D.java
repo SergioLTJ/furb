@@ -141,6 +141,10 @@ public class Ponto4D {
         return new Ponto4D(newX, this.y);
     }
     
+    public String getTextoPosicao() {
+        return "P(" + x + "," + z + ") H(" + y + ")";
+    }
+    
     // EQUALS/HASHCODE
     @Override
     public int hashCode() {

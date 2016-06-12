@@ -1,42 +1,26 @@
 (function (angular) {
     'use strict';
 
-    var moduloBusca = angular.module('busca', []);
+    angular.module('busca', [])
+        .controller('BuscaController', ['$scope',
+            function ($scope) {
+                $scope.campos = [
+                    { descricao: "Título", id: "txTitulo", nomeCurto: "t" },
+                    { descricao: "Banda", id: "txBanda", nomeCurto: "b" },
+                    { descricao: "Gênero", id: "txGenero", nomeCurto: "g" },
+                    { descricao: "Letra", id: "txLetra", nomeCurto: "l" },
+                    { descricao: "Termos de Busca", id: "txTermosBusca", nomeCurto: "terB" },
+                ];
 
-    moduloBusca
-        .controller('BuscaController', function ($scope) {
-            $scope.container = {};
-
-            $scope.campos = [
-                { nome: "Título", id: "txTitulo", model: "titulo", modelPrioridade: "prioridadeTitulo" },
-                { nome: "Banda", id: "txBanda", model: "banda", modelPrioridade: "prioridadeBanda" },
-                { nome: "Artista", id: "txArtista", model: "artista", modelPrioridade: "prioridadeArtista" },
-                { nome: "Gênero", id: "txGenero", model: "genero", modelPrioridade: "prioridadeGenero" },
-                { nome: "Letra", id: "txLetra", model: "letra", modelPrioridade: "prioridadeLetra" },
-                { nome: "Instrumento", id: "txInstrumento", model: "instrumento", modelPrioridade: "prioridadeInstrumento" },
-                { nome: "Termos de Busca", id: "txTermosBusca", model: "termosBusca", modelPrioridade: "prioridadeTermosBusca" },
-            ];
-
-            $scope.inicializarComponentes = function () {
                 $("#headerBuscaAvancada").click(function () {
                     $("#pnlBuscaAvancada").slideToggle(500);
                 });
 
-                $(".numerico-maximo-100").bind("input", function () {
-                    if ($(this).val() > 100) {
-                        $(this).val(100);
-                    }
-                    if ($(this).val().indexOf('e') > -1) {
-                        var valorAtual = $(this).val();
-                        $(this).val(valorAtual.replace('e', ''));
-                    }
-                });
-            }
-        });
+            }]);
 
-    angular.module('login', ['ui-notification'])
-        .controller('LoginController', ['Notification', '$location',
-            function (Notification, $location) {
+    angular.module('login', ['ui-notification', 'ngRoute'])
+        .controller('LoginController', ['Notification', '$location', '$http', '$window', '$route',
+            function (Notification, $location, $http, $window, $route) {
                 this.usuario;
                 this.senha;
                 this.confirmacaoSenha;
@@ -131,10 +115,52 @@
                     }
 
                     if (mensagem == undefined) {
-                        mensagem = 'Cadastro finalizado com sucesso! Foi enviado um email de confirmação para o endereço informado.';
-                    }
+                        var parametros = {
+                            usuario: this.usuario,
+                            senha: this.senha,
+                            email: this.email,
+                        };
 
-                    Notification({ message: mensagem, positionX: "center", positionY: "bottom", delay: 5000 }, tipoMensagem);
+                        $http({
+                            method: 'POST',
+                            url: 'http://localhost:8080/Musicas/Cadastro',
+                            contentType: 'application/json',
+                            data: JSON.stringify(parametros),
+                        }).then(function (retorno) {
+                            if (retorno.data != null) {
+                                mensagem = 'Cadastro finalizado com sucesso!';
+                            } else {
+                                mensagem = 'Ocorreu um erro ao finalizar o cadastro do usuário informado.'
+                                tipoMensagem = 'warning';
+                            }
+
+                            Notification({ message: mensagem, positionX: "center", positionY: "bottom", delay: 5000 }, tipoMensagem);
+                        });
+                    } else {
+                        Notification({ message: mensagem, positionX: "center", positionY: "bottom", delay: 5000 }, tipoMensagem);
+                    }
+                }
+
+                this.realizarLogin = function () {
+                    var parametros = {
+                        usuario: this.usuario,
+                        senha: this.senha,
+                        email: this.email,
+                    };
+
+                    $http({
+                        method: 'POST',
+                        url: 'http://localhost:8080/Musicas/ControladorUsuarioLogado',
+                        contentType: 'application/json',
+                        data: JSON.stringify(parametros),
+                    }).then(function (retorno) {
+                        if (retorno.data) {
+                            $window.location.href = '/git-furb/WEB/html/Busca.html#/';
+                            $route.reload();
+                        } else {
+                            Notification({ message: 'Usuário ou senha incorretos.', positionX: "center", positionY: "bottom", delay: 5000 }, 'warning');
+                        }
+                    });
                 }
 
                 this.adicionarMensagemErro = function (mensagem, campo) {
@@ -145,151 +171,204 @@
                 }
             }]);
 
-    angular.module('musica', [])
-        .controller('MusicaController', function () {
+    angular.module('musica', ['servico-usuario-logado'])
+        .controller('MusicaController', ["$http", '$scope', 'ServicoUsuarioLogado',
+            function ($http, $scope, ServicoUsuarioLogado) {
+                $scope.nota = 0;
+                $scope.favorita = true;
+                $scope.idUsuarioLogado;
 
-            this.musica = musicaPrincipal;
+                // Constantes
+                this.CAMINHO_ESTRELA_CHEIA = "../img/estrela_cheia.png";
+                this.CAMINHO_ESTRELA_VAZIA = "../img/estrela_vazia.png";
 
-            // Constantes
-            this.CAMINHO_ESTRELA_CHEIA = "../img/estrela_cheia.png";
-            this.CAMINHO_ESTRELA_VAZIA = "../img/estrela_vazia.png";
+                this.definirImagemNota = function (numeroEstrela) {
+                    if (this.musica == null) return this.CAMINHO_ESTRELA_VAZIA;
 
-            this.definirImagemNota = function (numeroEstrela) {
-                if (this.musica.nota >= numeroEstrela) {
-                    return this.CAMINHO_ESTRELA_CHEIA;
-                } else {
-                    return this.CAMINHO_ESTRELA_VAZIA;
-                }
-            }
-
-            this.ativarEstrelas = function (numeroEstrelas) {
-                for (var i = 0; i <= numeroEstrelas; i++) {
-                    $("#imgEstrela" + i).attr("src", this.CAMINHO_ESTRELA_CHEIA);
-                }
-
-                for (var i = numeroEstrelas + 1; i <= 5; i++) {
-                    $("#imgEstrela" + i).attr("src", this.CAMINHO_ESTRELA_VAZIA);
-                }
-            }
-
-            this.desativarEstrelas = function () {
-                for (var i = 0; i <= this.musica.nota; i++) {
-                    $("#imgEstrela" + i).attr("src", this.CAMINHO_ESTRELA_CHEIA);
-                }
-
-                for (var i = this.musica.nota + 1; i <= 5; i++) {
-                    $("#imgEstrela" + i).attr("src", this.CAMINHO_ESTRELA_VAZIA);
-                }
-            }
-
-            this.montarArtistasPorTipo = function (tipoArtista) {
-                var artistas = "";
-
-                for (var i = 0; i < this.musica.artistas.length; i++) {
-                    var artista = this.musica.artistas[i];
-                    if (artista.tipo.idTipo == tipoArtista) {
-                        artistas += ", " + artista.nome;
+                    if ($scope.nota >= numeroEstrela) {
+                        return this.CAMINHO_ESTRELA_CHEIA;
+                    } else {
+                        return this.CAMINHO_ESTRELA_VAZIA;
                     }
                 }
 
-                return artistas.substring(2);
-            }
+                this.ativarEstrelas = function (numeroEstrelas) {
+                    for (var i = 0; i <= numeroEstrelas; i++) {
+                        $("#imgEstrela" + i).attr("src", this.CAMINHO_ESTRELA_CHEIA);
+                    }
 
-            this.inicializarComponentes = function () {
-                this.realizarSetupPanel("divHeaderLetra", "divLetra", 1000);
-                this.realizarSetupPanel("divHeaderSobre", "divSobre", 500);
-                this.realizarSetupPanel("divHeaderTags", "divTags", 500);
-            }
-
-            this.realizarSetupPanel = function (idHeader, idPainel, tempoEfeito) {
-                $("#" + idHeader).click(function () {
-                    $("#" + idPainel).slideToggle(tempoEfeito);
-                });
-            }
-
-            this.montarTags = function () {
-                var tags = "";
-                for (var i = 0; i < this.musica.tags.length; i++) {
-                    tags += ", " + this.musica.tags[i];
+                    for (var i = numeroEstrelas + 1; i <= 5; i++) {
+                        $("#imgEstrela" + i).attr("src", this.CAMINHO_ESTRELA_VAZIA);
+                    }
                 }
-                return tags.substring(2);
-            }
-        });
+
+                this.desativarEstrelas = function () {
+                    for (var i = 0; i <= $scope.nota; i++) {
+                        $("#imgEstrela" + i).attr("src", this.CAMINHO_ESTRELA_CHEIA);
+                    }
+
+                    for (var i = $scope.nota + 1; i <= 5; i++) {
+                        $("#imgEstrela" + i).attr("src", this.CAMINHO_ESTRELA_VAZIA);
+                    }
+                }
+
+                this.inicializar = function () {
+                    var self = this;
+
+                    this.inicializarComponentes();
+
+                    ServicoUsuarioLogado.obterUsuarioLogado(function (retorno) {
+                        $scope.idUsuarioLogado = retorno.data != null && retorno.data != "" ? retorno.data.idUsuario : null;
+                        var idMusica = obterValorQueryString("id");
+
+                        $http({
+                            method: 'POST',
+                            url: 'http://localhost:8080/Musicas/BuscaMusicas',
+                            contentType: 'application/json',
+                            data: JSON.stringify({ tipoBusca: "Id", id: idMusica }),
+                        }).then(function (retorno) {
+                            self.musica = retorno.data;
+                        });
+
+                        if ($scope.idUsuarioLogado) {
+                            var parametros = {
+                                operacao: "obter",
+                                idMusica: idMusica,
+                                idUsuario: $scope.idUsuarioLogado,
+                            }
+
+                            $scope.carregarNota();
+                            $scope.carregarFavorita();
+                        }
+                    });
+                }
+
+                $scope.carregarNota = function () {
+                    $scope.carregar('http://localhost:8080/Musicas/NotaServlet', function (retorno) {
+                        $scope.nota = parseInt(retorno.data);
+                    });
+                }
+
+                $scope.carregarFavorita = function () {
+                    $scope.carregar('http://localhost:8080/Musicas/FavoritaServlet', function (retorno) {
+                        $scope.favorita = retorno.data === 'true' ? true : false;
+                    });
+                }
+
+                $scope.criarParametrosRequisicao = function () {
+                    return {
+                        operacao: "obter",
+                        idMusica: obterValorQueryString("id"),
+                        idUsuario: $scope.idUsuarioLogado,
+                    };
+                }
+
+                $scope.carregar = function (url, callback) {
+                    var parametros = $scope.criarParametrosRequisicao();
+
+                    $http({
+                        method: 'POST',
+                        url: url,
+                        contentType: 'application/json',
+                        data: JSON.stringify(parametros),
+                    }).then(callback);
+                }
+
+                $scope.atribuirNotaMusica = function (nota) {
+                    var parametros = $scope.criarParametrosRequisicao();
+                    parametros.operacao = 'atribuir';
+                    parametros.nota = nota;
+
+                    $http({
+                        method: 'POST',
+                        url: 'http://localhost:8080/Musicas/NotaServlet',
+                        contentType: 'application/json',
+                        data: JSON.stringify(parametros),
+                    }).then(function (retorno) {
+                        $scope.carregarNota();
+                    });
+                }
+
+                $scope.atribuirMusicaFavorita = function (favorita) {
+                    var parametros = $scope.criarParametrosRequisicao();
+                    parametros.operacao = 'atribuir';
+                    parametros.favorita = favorita;
+
+                    $http({
+                        method: 'POST',
+                        url: 'http://localhost:8080/Musicas/FavoritaServlet',
+                        contentType: 'application/json',
+                        data: JSON.stringify(parametros),
+                    }).then(function (retorno) {
+                        $scope.carregarFavorita();
+                    });
+                }
+
+                this.inicializarComponentes = function () {
+                    this.realizarSetupPanel("divHeaderLetra", "divLetra", 1000);
+                    this.realizarSetupPanel("divHeaderSobre", "divSobre", 500);
+                    this.realizarSetupPanel("divHeaderTags", "divTags", 500);
+                }
+
+                this.realizarSetupPanel = function (idHeader, idPainel, tempoEfeito) {
+                    $("#" + idHeader).click(function () {
+                        $("#" + idPainel).slideToggle(tempoEfeito);
+                    });
+                }
+            }]);
 
     angular.module('resultadosBusca', [])
-        .controller('ResultadosController', ["$location",
-            function ($location) {
-                this.resultados = {
-                    itens: [
-                        musicaPrincipal,
-                        {
-                            nome: "Chain reaction",
-                            banda: "Journey",
-                            album: {
-                                nome: "Frontiers",
-                                ano: 1983,
-                                capa: "../img/capa1.jpg"
-                            }
-                        },
-                        {
-                            nome: "Send her my love",
-                            banda: "Journey",
-                            album: {
-                                nome: "Frontiers",
-                                ano: 1983,
-                                capa: "../img/capa1.jpg"
-                            }
-                        },
-                        {
-                            nome: "Sandstorm",
-                            banda: "Darude",
-                            album: {
-                                nome: "Before the Storm",
-                                ano: 2000,
-                                capa: "../img/capa2.jpg"
-                            }
-                        },
-                    ],
-                    quantidadeTotal: 32
-                };
+        .controller('ResultadosController', ["$location", "$scope", "$http",
+            function ($location, $scope, $http) {
+                $scope.carregarMusicas = function () {
+                    var tipoBusca = obterValorQueryString("tb");
+                    var parametros = { "tipoBusca": tipoBusca };
 
-                this.determinarTipoBusca = function () {
-                    return $location.search().TipoBusca == "Basica" ? "básica" : "avançada";
+                    if (tipoBusca == "Basica") {
+                        parametros.query = obterValorQueryString("q");
+                    } else {
+                        parametros.titulo = obterValorQueryString("t");
+                        parametros.banda = obterValorQueryString("b");
+                        parametros.genero = obterValorQueryString("g");
+                        parametros.letra = obterValorQueryString("l");
+                        parametros.termosBusca = obterValorQueryString("terB");
+                    }
+
+                    $http({
+                        method: 'POST',
+                        url: 'http://localhost:8080/Musicas/BuscaMusicas',
+                        contentType: 'application/json',
+                        data: JSON.stringify(parametros),
+                    }).then(function (retorno) {
+                        $scope.resultados = retorno.data;
+                    });
+                }
+
+                $scope.determinarTipoBusca = function () {
+                    return obterValorQueryString("tb") == "Basica" ? "básica" : "avançada";
                 }
             }]);
 
     angular.module('historicoEdicoes', ['ui.bootstrap', 'ngAnimate'])
-        .controller('HistoricoController', function ($scope, $uibModal) {
-            $scope.historico = {
-                musica: musicaPrincipal,
-                alteracoes: [
-                    {
-                        usuario: "Sérgio Tomio",
-                        tipoAlteracao: "Adição",
-                        campo: "Sobre",
-                        descricao: 'Adicionado o campo "Sobre" com o conteúdo:\n\nSeparate Ways (Worlds Apart) é uma canção da banda de rock norte-americana Journey, do álbum Frontiers. Lançado em 5 de fevereiro de 1983, o single subiu para a oitava posição na Billboard Hot 100 e ficou lá por seis semanas consecutivas. ',
-                    },
-                    {
-                        usuario: "Guilherme Neto",
-                        tipoAlteracao: "Alteração",
-                        campo: "Letra",
-                        descricao: 'Alterado o campo "Letra"' +
-                        '<div style="background-color: #ff9999">How we touced</div>' +
-                        '<div style="background-color: #aeeaae">How we touched</div>' +
-                        '...\n<div style="background-color: #ff9999">If he eve hurts you</div>' +
-                        '<div style="background-color: #aeeaae">If he ever hurts you</div>' +
-                        '...\n<div style="background-color: #ff9999">True love on\'t desert you</div>' +
-                        '<div style="background-color: #aeeaae">True love won\'t desert you</div>' +
-                        '...\n<div style="background-color: #ff9999">You know I till love you</div>' +
-                        '<div style="background-color: #aeeaae">You know I still love you</div>' +
-                        '...\n<div style="background-color: #ff9999">Though we ouched</div>' +
-                        '<div style="background-color: #aeeaae">Though we touche</div>',
-                    },
-                ],
-            };
+        .controller('HistoricoController', function ($scope, $uibModal, $http) {
+            $scope.historico;
+            $scope.nomeMusica
+
+            $scope.carregar = function () {
+                $scope.nomeMusica = obterValorQueryString('nome');
+
+                $http({
+                    method: 'POST',
+                    url: 'http://localhost:8080/Musicas/HistoricoEdicoesServlet',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ idMusica: obterValorQueryString("id") }),
+                }).then(function (retorno) {
+                    $scope.historico = retorno.data;
+                });
+            }
 
             $scope.visualizarAlteracao = function (indiceAlteracao) {
-                var alteracao = $scope.historico.alteracoes[indiceAlteracao];
+                var alteracao = $scope.historico[indiceAlteracao];
 
                 $uibModal.open({
                     animation: true,
@@ -297,7 +376,7 @@
                     controller: 'AlteracoesPopupController',
                     resolve: {
                         alteracao: function () {
-                            return alteracao.descricao;
+                            return 'Alterado o campo "' + alteracao.campo + '", valor alterado de:\n\n' + alteracao.valorAntigo + '\n\nPara:\n\n' + alteracao.valorNovo;
                         }
                     },
                 });
@@ -315,20 +394,25 @@
             $scope.removerArtistaSelecionado
         });
 
-    angular.module('edicao', [])
-        .controller('EdicaoController', function ($scope) {
-            $scope.musica = musicaPrincipal;
-            $scope.artistaSelecionado = $scope.musica.artistas[0];
-            $scope.artistaNovo;
-            $scope.tiposArtista = [
-                { idTipo: 1, descricao: "Guitarrista" },
-                { idTipo: 2, descricao: "Cantor" },
-                { idTipo: 3, descricao: "Escritor" },
-                { idTipo: 4, descricao: "Produtor" },
-            ];
-            $scope.tipoNovoArtista;
-            $scope.tagNova;
-            $scope.tagSelecionada = $scope.musica.tags[0];
+    angular.module('edicao', ['servico-usuario-logado', 'ngRoute'])
+        .controller('EdicaoController', function ($scope, $http, $window, $route, ServicoUsuarioLogado) {
+            $scope.musica;
+
+            $scope.generos;
+            $scope.generoSelecionado;
+            $scope.generoNovo;
+
+            $scope.bandas;
+            $scope.bandaSelecionada;
+            $scope.bandaNova;
+
+            $scope.albuns;
+            $scope.albumSelecionado;
+            $scope.albumNovo = {};
+
+            $scope.gerarLinkMusica = function () {
+                return 'Musica.html?id=' + $scope.musica.idMusica;
+            }
 
             $scope.removerArtistaSelecionado = function () {
                 var selecionado = $scope.artistaSelecionado;
@@ -351,164 +435,241 @@
                 return -1;
             }
 
-            $scope.adicionarNovoArtista = function () {
-                var artistas = $scope.musica.artistas;
-                $scope.musica.artistas.push({
-                    idArtista: (artistas[artistas.length - 1].idArtista + 1),
-                    nome: $scope.artistaNovo,
-                    tipo: $scope.tipoNovoArtista,
+            $scope.adicionarNovoGenero = function () {
+                $scope.adicionar("genero", $scope.generoNovo, function (retorno) {
+                    $scope.carregar('generos', function (retorno) { $scope.carregarGeneroMusica(retorno.data); });
                 });
-                $scope.artistaNovo = null;
+            }
+
+            $scope.adicionarNovaBanda = function () {
+                $scope.adicionar("banda", $scope.bandaNova, function (retorno) {
+                    $scope.carregar('bandas', function (retorno) { $scope.carregarBandaMusica(retorno.data); });
+                });
+            }
+
+            $scope.adicionarNovoAlbum = function () {
+                var reader = new FileReader();
+
+                reader.addEventListener("load", function () {
+                    var parametros = {
+                        tipo: 'album',
+                        nome: $scope.albumNovo.nome,
+                        ano: $scope.albumNovo.ano,
+                        imagem: reader.result.substring(23),
+                    };
+
+                    $http({
+                        method: 'POST',
+                        url: 'http://localhost:8080/Musicas/InsercaoServlet',
+                        contentType: 'application/json',
+                        data: JSON.stringify(parametros),
+                    }).then(function (retorno) {
+                        $scope.carregar('albuns', function (retorno) { $scope.carregarAlbumMusica(retorno.data); });
+                    });
+                });
+
+                reader.readAsDataURL(document.querySelector('#flAlbum').files[0]);
+            }
+
+            $scope.adicionar = function (tipo, nome, callback) {
+                $http({
+                    method: 'POST',
+                    url: 'http://localhost:8080/Musicas/InsercaoServlet',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ tipo: tipo, nome: nome }),
+                }).then(callback);
             }
 
             $scope.montarDescricaoTipoArtista = function (artista) {
                 return artista.nome + ' (' + artista.tipo.descricao + ')';
             }
 
-            $scope.removerTagSelecionada = function () {
-                var selecionada = $scope.tagSelecionada;
-                if (selecionada != null) {
-                    var indiceSelecionada = $scope.encontrarIndiceTag(selecionada);
-                    $scope.musica.tags.splice(indiceSelecionada, 1);
-                    if (indiceSelecionada < $scope.musica.artistas.length) {
-                        $scope.tagSelecionada = $scope.musica.tags[indiceSelecionada];
-                    } else {
-                        $scope.tagSelecionada = $scope.musica.tags[0];
-                    }
+            $scope.definirTitulo = function () {
+                if (obterValorQueryString("m") == "nova") return "Nova música"
+
+                return "Editando " + $scope.musica.nome;
+            }
+
+            $scope.carregarDados = function () {
+                var self = this;
+
+                if (obterValorQueryString("m") != "nova") {
+                    $http({
+                        method: 'POST',
+                        url: 'http://localhost:8080/Musicas/BuscaMusicas',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ tipoBusca: "Id", id: obterValorQueryString("id") }),
+                    }).then(function (retorno) {
+                        self.musica = retorno.data;
+
+                        $scope.carregar('generos', function (retorno) { $scope.carregarGeneroMusica(retorno.data); });
+                        $scope.carregar('bandas', function (retorno) { $scope.carregarBandaMusica(retorno.data); });
+                        $scope.carregar('albuns', function (retorno) { $scope.carregarAlbumMusica(retorno.data); });
+                    });
+                } else {
+                    $scope.carregar('generos', function (retorno) {
+                        $scope.generos = retorno.data;
+                        $scope.generoSelecionado = $scope.generos[0];
+                    });
+                    $scope.carregar('bandas', function (retorno) {
+                        $scope.bandas = retorno.data;
+                        $scope.bandaSelecionada = $scope.bandas[0];
+                    });
+                    $scope.carregar('albuns', function (retorno) {
+                        $scope.albuns = retorno.data;
+                        $scope.albumSelecionado = $scope.albuns[0];
+                    });
                 }
             }
 
-            $scope.encontrarIndiceTag = function (tag) {
-                var tags = $scope.musica.tags;
-                for (var i = 0; i < tags.length; i++) {
-                    if (tags[i] == tag) return i;
+            $scope.carregarGeneroMusica = function (generos) {
+                $scope.generos = generos;
+
+                for (var i = 0; i < generos.length; i++) {
+                    if (generos[i].idGenero == $scope.musica.genero.idGenero)
+                        $scope.generoSelecionado = generos[i];
                 }
-                return -1;
             }
 
-            $scope.adicionarNovaTag = function () {
-                $scope.musica.tags.push($scope.tagNova);
-                $scope.tagNova = null;
+            $scope.carregarBandaMusica = function (bandas) {
+                $scope.bandas = bandas;
+
+                for (var i = 0; i < bandas.length; i++) {
+                    if (bandas[i].idBanda == $scope.musica.banda.idBanda)
+                        $scope.bandaSelecionada = bandas[i];
+                }
             }
 
+            $scope.carregarAlbumMusica = function (albuns) {
+                $scope.albuns = albuns;
+
+                for (var i = 0; i < albuns.length; i++) {
+                    if (albuns[i].idAlbum == $scope.musica.album.idAlbum)
+                        $scope.albumSelecionado = albuns[i];
+                }
+            }
+
+            $scope.carregar = function (tipoDado, callback) {
+                $http({
+                    method: 'POST',
+                    url: 'http://localhost:8080/Musicas/CarregadorGeral',
+                    contentType: 'application/json',
+                    data: "{ 'tipo': '" + tipoDado + "' }"
+                }).then(callback);
+            }
+
+            $scope.salvarAlteracoes = function () {
+                if (obterValorQueryString("m") != "nova") {
+                    ServicoUsuarioLogado.obterUsuarioLogado(function (retorno) {
+                        var parametros = {
+                            musica: $scope.montarMusica(),
+                            usuario: retorno.data,
+                        };
+
+                        $http({
+                            method: 'POST',
+                            url: 'http://localhost:8080/Musicas/EdicaoMusicaServlet',
+                            contentType: 'application/json',
+                            data: JSON.stringify(parametros),
+                        }).then(function (retorno) {
+                            $window.location.href = '/git-furb/WEB/html/' + $scope.gerarLinkMusica() + '#/';
+                            $route.reload();
+                        });
+                    });
+                } else {
+                    var parametros = {
+                        musica: $scope.montarMusica(),
+                        operacao: 'inserir',
+                    };
+
+                    $http({
+                        method: 'POST',
+                        url: 'http://localhost:8080/Musicas/EdicaoMusicaServlet',
+                        contentType: 'application/json',
+                        data: JSON.stringify(parametros),
+                    }).then(function (retorno) {
+                        $window.history.back();
+                    });
+                }
+            }
+
+            $scope.montarMusica = function () {
+                return {
+                    idMusica: $scope.musica.idMusica,
+                    informacoes: $scope.musica.informacoes,
+                    letra: $scope.musica.letra,
+                    nome: $scope.musica.nome,
+                    tags: $scope.musica.tags,
+                    album: $scope.albumSelecionado,
+                    banda: $scope.bandaSelecionada,
+                    genero: $scope.generoSelecionado,
+                };
+            }
         });
 
-    angular.module('perfil', [])
-        .controller('PerfilController', function ($scope) {
-            $scope.usuario = {
-                nome: "Guilherme Diegoli Neto",
-                email: "gd_neto@hotmail.com",
-                imagemPerfil: "../img/imagem_perfil.jpg",
-                favoritos: [
-                    musicaPrincipal,
-                ],
-                pesquisas: [
-                    musicaPrincipal,
-                ]
-            };
+    angular.module('perfil', ['ngRoute'])
+        .controller('PerfilController', function ($scope, $http) {
+            $scope.usuario;
+
+            $scope.inicializar = function () {
+                $http({
+                    method: 'POST',
+                    url: 'http://localhost:8080/Musicas/CarregadorUsuarioServlet',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ id: obterValorQueryString("id"), carregarMusicas: true }),
+                }).then(function (retorno) {
+                    $scope.usuario = retorno.data;
+                });
+            }
         });
 
     angular.module('perfil')
-        .controller('EditarPerfilController', function ($scope) {
-            $scope.usuario = {
-                nome: "Guilherme Diegoli Neto",
-                email: "gd_neto@hotmail.com",
-                imagemPerfil: "../img/imagem_perfil.jpg",
-                favoritos: [
-                    musicaPrincipal,
-                ],
-                pesquisas: [
-                    musicaPrincipal,
-                ]
-            };
+        .controller('EditarPerfilController', function ($scope, $window, $route, $http) {
+            $scope.usuario;
+
+            $scope.inicializar = function () {
+                $http({
+                    method: 'POST',
+                    url: 'http://localhost:8080/Musicas/CarregadorUsuarioServlet',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ id: obterValorQueryString("id"), carregarMusicas: false }),
+                }).then(function (retorno) {
+                    $scope.usuario = retorno.data;
+                });
+            }
+
+            $scope.salvar = function () {
+                var reader = new FileReader();
+
+                reader.addEventListener("load", function () {
+                    $scope.usuario.imagemPerfil = reader.result.substring(23);
+
+                    $http({
+                        method: 'POST',
+                        url: 'http://localhost:8080/Musicas/PersistidorUsuarioServlet',
+                        contentType: 'application/json',
+                        data: JSON.stringify($scope.usuario),
+                    }).then(function (retorno) {
+                        $window.location.href = '/git-furb/WEB/html/Perfil.html?id=' + $scope.usuario.idUsuario + '#/';
+                        $route.reload();
+                    });
+                });
+
+                reader.readAsDataURL(document.querySelector('#flUsuario').files[0]);
+            }
         });
 
-})(window.angular)
+    angular.module('navegacao', ['servico-usuario-logado'])
+        .controller('BarraNavegacaoController', ['$scope', 'ServicoUsuarioLogado',
+            function ($scope, ServicoUsuarioLogado) {
+                $scope.usuario;
 
-var musicaPrincipal = criarMusica();
+                $scope.verificarUsuarioLogado = function () {
+                    ServicoUsuarioLogado.obterUsuarioLogado(function (retorno) {
+                        $scope.usuario = retorno.data;
+                    });
+                }
+            }]);
 
-function criarMusica() {
-    return {
-        nome: "Separate ways (Worlds apart)",
-        nota: 3,
-        favorita: true,
-        banda: "Journey",
-        album: {
-            nome: "Frontier",
-            ano: "1983",
-            capa: "../img/capa1.jpg",
-        },
-        genero: "Classic Metal",
-        artistas: [
-            { idArtista: 1, nome: "...", tipo: { idTipo: 1, descricao: "Guitarrista" } },
-            { idArtista: 2, nome: "...", tipo: { idTipo: 2, descricao: "Cantor" } },
-            { idArtista: 3, nome: "Jonathan Cain", tipo: { idTipo: 3, descricao: "Escritor" } },
-            { idArtista: 4, nome: "Steve Perry", tipo: { idTipo: 3, descricao: "Escritor" } },
-            { idArtista: 5, nome: "Kevin Elson", tipo: { idTipo: 4, descricao: "Produtor" } },
-            { idArtista: 6, nome: "Mike Stone", tipo: { idTipo: 4, descricao: "Produtor" } },
-        ],
 
-        letra: "Here we stand" +
-        "\nWorld's apart, hearts broken in two, two, two" +
-        "\nSleepless nights" +
-        "\nLosing ground" +
-        "\nI'm reaching for you, you, you" +
-        "\n" +
-        "\nFeelin' that it's gone" +
-        "\nCan change your mind" +
-        "\nIf we can't go on" +
-        "\nTo survive the tide love divides" +
-        "\n" +
-        "\nSomeday love will find you" +
-        "\nBreak those chains that bind you" +
-        "\nOne night will remind you" +
-        "\nHow we touched" +
-        "\nAnd went our separate ways" +
-        "\n" +
-        "\nIf he ever hurts you" +
-        "\nTrue love won't desert you" +
-        "\nYou know I still love you" +
-        "\nThough we touched" +
-        "\nAnd went our separate ways" +
-        "\n" +
-        "\nTroubled times" +
-        "\nCaught between confusions and pain, pain, pain" +
-        "\nDistant eyes" +
-        "\nPromises we made were in vain, in vain, in vain" +
-        "\n" +
-        "\nIf you must go, I wish you love" +
-        "\nYou'll never walk alone" +
-        "\nTake care my love" +
-        "\nMiss you love" +
-        "\n" +
-        "\nSomeday love will find you" +
-        "\nBreak those chains that bind you" +
-        "\nOne night will remind you" +
-        "\nHow we touched" +
-        "\nAnd went our separate ways" +
-        "\n" +
-        "\nIf he ever hurts you" +
-        "\nTrue love won't desert you" +
-        "\nYou know I still love you" +
-        "\nThough we touched" +
-        "\nAnd went our separate ways" +
-        "\n" +
-        "\nSomeday love will find you" +
-        "\nBreak those chains that bind you" +
-        "\nOne night will remind you" +
-        "\n" +
-        "\nIf he ever hurts you" +
-        "\nTrue love won't desert you" +
-        "\nYou know I still love you" +
-        "\n" +
-        "\nI still love you girl" +
-        "\nI really love you girl" +
-        "\nAnd if he ever hurts you" +
-        "\nTrue love won't desert you" +
-        "\nNo, no" +
-        "\nNo",
-
-        informacoes: "Separate Ways (Worlds Apart) é uma canção da banda de rock norte-americana Journey, do álbum Frontiers. Lançado em 5 de fevereiro de 1983, o single subiu para a oitava posição na Billboard Hot 100 e ficou lá por seis semanas consecutivas.",
-        tags: ["Journey", "Frontier", "Separate Ways", "Worlds Apart", "Tron Legacy", "Yes Man"],
-    };
-}
+})(window.angular);

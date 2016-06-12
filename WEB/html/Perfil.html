@@ -6,13 +6,21 @@
     <link rel="stylesheet" type="text/css" href="../css/padrao.css">
     <script type="text/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="../bower_components/angular-route/angular-route.min.js"></script>
+    <script type="text/javascript" src="../js/ServicoObtencaoUsuarioLogado.js"></script>
     <script type="text/javascript" src="../js/controllers.js"></script>
+    <script type="text/javascript" src="../js/Helper.js"></script>
+
+    <script type="text/javascript">
+        vincularElementoNgApp(window.angular, 'divPerfil', 'perfil');
+    </script>
+
     <meta charset="utf-8" />
 </head>
 
 <body>
     <div class="container">
-        <nav class="navbar navbar-default" style="margin-top: 10px">
+        <nav class="navbar navbar-default" ng-app="navegacao" ng-controller="BarraNavegacaoController" ng-init="verificarUsuarioLogado()">
             <div class="container-fluid">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
@@ -31,28 +39,30 @@
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li class="active">
-                            <a href="Perfil.html">Perfil</a>
-                        </li>
-                        <li>
-                            <a href="Login.html">Login</a>
-                        </li>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li ng-show="{{ usuario != null }}">
+                                <a href="Perfil.html?id={{ usuario.idUsuario }}">Perfil</a>
+                            </li>
+                            <li ng-show="{{ usuario == null }}">
+                                <a href="Login.html">Login</a>
+                            </li>
+                        </ul>
                     </ul>
                 </div>
             </div>
         </nav>
 
-        <div ng-app="perfil" ng-controller="PerfilController as controller" ng-init="inicializarComponentes()">
+        <div id="divPerfil" ng-app="perfil" ng-controller="PerfilController as controller" ng-init="inicializar()">
             <div class="panel panel-primary">
                 <div class="panel-heading clearfix">
                     <h3 class="panel-title pull-left">Minha conta</h3>
                     <div class="pull-right" style="display: inline">
-                        <a href="EditarPerfil.html" class="btn btn-primary btn-xs">Editar</a>
+                        <a href="EditarPerfil.html?id={{usuario.idUsuario}}" class="btn btn-primary btn-xs">Editar</a>
                     </div>
                 </div>
                 <div class="panel-body">
                     <div class="pull-left col-xs-3">
-                        <img src="{{ usuario.imagemPerfil }}" alt="Capa álbum" class="img-responsive img-rounded">
+                        <img ng-src="data:image/jpeg;base64,{{ usuario.imagemPerfil }}" alt="Capa álbum" class="img-responsive img-rounded">
                     </div>
                     <div class="pull-right col-xs-9">
                         <h3>{{ usuario.nome }}</h3>
@@ -64,19 +74,19 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">
-                    Favoritos
-                </h3>
+                        Favoritos
+                    </h3>
                 </div>
                 <div class="panel-body">
-                    <div ng-repeat="musica in usuario.favoritos" class="container-fluid" style="margin-bottom: 8px">
+                    <div ng-repeat="musica in usuario.favoritas" class="container-fluid" style="margin-bottom: 8px">
                         <div class="col-xs-1 coluna" style="padding-left: 0px">
-                            <a href="Musica.html">
-                                <img src="{{ musica.album.capa }}" alt="Capa álbum" class="img-responsive img-rounded coluna" />
+                            <a href="Musica.html?id={{musica.idMusica}}">
+                                <img ng-src="data:image/jpeg;base64,{{ musica.album.capa }}" alt="Capa álbum" class="img-responsive img-rounded coluna" />
                             </a>
                         </div>
-                        <span style="font-weight: bold"><a href="Musica.html">{{musica.nome}}</a></span>
+                        <span style="font-weight: bold"><a href="Musica.html?id={{musica.idMusica}}">{{musica.nome}}</a></span>
                         <br>
-                        <small>{{musica.banda}}</small>
+                        <small>{{musica.banda.nome}}</small>
                         <br>
                         <small>{{musica.album.nome}}</small>
                         <br>
@@ -93,11 +103,11 @@
                     <div ng-repeat="musica in usuario.pesquisas" class="container-fluid" style="margin-bottom: 8px">
                         <div class="pull-left">
                             <div class="col-xs-1 coluna" style="padding-left: 0px">
-                                <a href="Musica.html">
-                                    <img src="{{ musica.album.capa }}" alt="Capa álbum" class="img-responsive img-rounded coluna" />
+                                <a href="Musica.html?id={{musica.idMusica}}">
+                                    <img ng-src="data:image/jpeg;base64,{{ musica.album.capa }}" alt="Capa álbum" class="img-responsive img-rounded coluna" />
                                 </a>
                             </div>
-                            <span style="font-weight: bold"><a href="Musica.html">{{musica.nome}}</a></span>
+                            <span style="font-weight: bold"><a href="Musica.html?id={{musica.idMusica}}">{{musica.nome}}</a></span>
                             <br>
                             <small>{{musica.banda}}</small>
                             <br>

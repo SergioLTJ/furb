@@ -7,13 +7,20 @@
     <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
     <script type="text/javascript" src="../bower_components/angular-animate/angular-animate.min.js"></script>
     <script type="text/javascript" src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script type="text/javascript" src="../js/ServicoObtencaoUsuarioLogado.js"></script>
     <script type="text/javascript" src="../js/controllers.js"></script>
+    <script type="text/javascript" src="../js/Helper.js"></script>
+
+    <script type="text/javascript">
+        vincularElementoNgApp(window.angular, 'divHistoricoEdicoes', 'historicoEdicoes');
+    </script>
+
     <meta charset="utf-8" />
 </head>
 
 <body>
     <div class="container">
-        <nav class="navbar navbar-default" style="margin-top: 10px">
+        <nav class="navbar navbar-default" ng-app="navegacao" ng-controller="BarraNavegacaoController" ng-init="verificarUsuarioLogado()">
             <div class="container-fluid">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
@@ -32,20 +39,25 @@
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="Login.html">Login</a>
-                        </li>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li ng-show="{{ usuario != null }}">
+                                <a href="Perfil.html?id={{ usuario.idUsuario }}">Perfil</a>
+                            </li>
+                            <li ng-show="{{ usuario == null }}">
+                                <a href="Login.html">Login</a>
+                            </li>
+                        </ul>
                     </ul>
                 </div>
             </div>
         </nav>
 
-        <div ng-app="historicoEdicoes" ng-controller="HistoricoController as controller" class="panel panel-primary">
+        <div id="divHistoricoEdicoes" ng-app="historicoEdicoes" ng-controller="HistoricoController as controller" class="panel panel-primary" ng-init="carregar()">
             <script type="text/ng-template" id="alteracoes.html">
                 <div class="modal-header">
                     <h3 class="modal-title">Alteração</h3>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="max-height: 500px; overflow-y: auto">
                     <span style="white-space: pre-wrap" ng-bind-html="alteracao"></span>
                 </div>
                 <div class="modal-footer">
@@ -55,7 +67,7 @@
 
             <div class="panel-heading clearfix">
                 <h3 class="panel-title pull-left" style="margin-right: 12px; margin-top: 8px">
-                    {{ historico.musica.nome }} - Histórico de edições
+                    {{ nomeMusica }} - Histórico de edições
                 </h3>
             </div>
             <div class="panel-body">
@@ -69,9 +81,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="alteracao in historico.alteracoes track by $index">
+                        <tr ng-repeat="alteracao in historico track by $index">
                             <td>
-                                {{ alteracao.usuario }}
+                                {{ !alteracao.usuario ? "Anônimo" : alteracao.usuario.nome }}
                             </td>
                             <td>
                                 {{ alteracao.campo }}

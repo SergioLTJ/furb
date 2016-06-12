@@ -5,13 +5,19 @@
     <link rel="stylesheet" type="text/css" href="../css/padrao.css">
     <script type="text/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="../bower_components/angular-route/angular-route.min.js"></script>
+    <script type="text/javascript" src="../js/ServicoObtencaoUsuarioLogado.js"></script>
     <script type="text/javascript" src="../js/controllers.js"></script>
+    <script type="text/javascript" src="../js/Helper.js"></script>
+    <script type="text/javascript">
+        vincularElementoNgApp(window.angular, 'divEdicao', 'edicao');
+    </script>
     <meta charset="utf-8" />
 </head>
 
 <body>
     <div class="container">
-        <nav class="navbar navbar-default" style="margin-top: 10px">
+        <nav class="navbar navbar-default" ng-app="navegacao" ng-controller="BarraNavegacaoController" ng-init="verificarUsuarioLogado()">
             <div class="container-fluid">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
@@ -30,157 +36,160 @@
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="Login.html">Login</a>
-                        </li>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li ng-show="{{ usuario != null }}">
+                                <a href="Perfil.html?id={{ usuario.idUsuario }}">Perfil</a>
+                            </li>
+                            <li ng-show="{{ usuario == null }}">
+                                <a href="Login.html">Login</a>
+                            </li>
+                        </ul>
                     </ul>
                 </div>
             </div>
         </nav>
 
-        <div ng-app="edicao" ng-controller="EdicaoController as controller">
+        <div id="divEdicao" ng-app="edicao" ng-controller="EdicaoController as controller" ng-init="carregarDados()">
             <div class="panel panel-primary">
                 <div class="panel-heading clearfix">
                     <h3 class="panel-title pull-left">
-                        Editando {{ musica.nome }}
+                        {{ definirTitulo() }}
                     </h3>
                 </div>
+
                 <div class="panel-body">
-                    <form action="Musica.html">
-                        <div class="form-group row">
-                            <div class="col-xs-2">
-                                <label for="txNomeMusica" class="control-label">Nome </label>
-                            </div>
-                            <div class="col-xs-8">
-                                <input type="text" class="form-control" id="txNomeMusica" ng-model="musica.nome" />
-                            </div>
+                    <div class="form-group row">
+                        <div class="col-xs-2">
+                            <label for="txNomeMusica" class="control-label">Nome </label>
                         </div>
-                        <div class="form-group row">
-                            <div class="col-xs-2">
+                        <div class="col-xs-8">
+                            <input type="text" class="form-control" id="txNomeMusica" ng-model="musica.nome" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-xs-2">
+                            <label for="cmbGeneros" class="control-label">Gênero </label>
+                        </div>
+                        <div class="col-xs-6">
+                            <select id="cmbGeneros" class="form-control" ng-model="generoSelecionado" ng-options="genero.descricao for genero in generos">
+                                </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-xs-offset-2 col-xs-6">
+                            <input type="text" class="form-control" id="txGenero" ng-model="generoNovo" />
+                        </div>
+                        <div class="col-xs-2">
+                            <button type="button" class="btn" ng-click="adicionarNovoGenero()">
+                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                </button>
+                        </div>
+
+                        <!--<div class="col-xs-2">
                                 <label for="txGeneroMusica" class="control-label">Gênero </label>
                             </div>
                             <div class="col-xs-8">
                                 <input type="text" class="form-control" id="txGeneroMusica" ng-model="musica.genero" />
-                            </div>
+                            </div>-->
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-xs-2">
+                            <label for="txaInformacoes" class="control-label">Informações </label>
                         </div>
-                        <div class="form-group row">
-                            <div class="col-xs-2">
-                                <label for="txaInformacoes" class="control-label">Informações </label>
-                            </div>
-                            <div class="col-xs-8">
-                                <textarea class="form-control" rows="4" id="txaInformacoes" ng-model="musica.informacoes"> </textarea>
-                            </div>
+                        <div class="col-xs-8">
+                            <textarea class="form-control" rows="4" id="txaInformacoes" ng-model="musica.informacoes"> </textarea>
                         </div>
-                        
-                        <div class="form-group row">
-                            <div class="col-xs-2">
-                                <label for="cmbTags" class="control-label">Tags </label>
-                            </div>
-                            <div class="col-xs-6">
-                                <select id="cmbTags" class="form-control" ng-model="tagSelecionada" 
-                                    ng-options="tag for tag in musica.tags">
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-xs-2">
+                            <label for="txaTags" class="control-label">Tags </label>
+                        </div>
+                        <div class="col-xs-8">
+                            <textarea class="form-control" rows="4" id="txaTags" ng-model="musica.tags"> </textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-xs-2">
+                            <label for="cmbAlbuns" class="control-label">Álbum </label>
+                        </div>
+                        <div class="col-xs-6">
+                            <select id="cmbAlbuns" class="form-control" ng-model="albumSelecionado" ng-options="album.nome + ' (' + album.ano + ')' for album in albuns">
                                 </select>
-                            </div>
-                            <div class="col-xs-2">
-                                <button type="button" class="btn" ng-click="removerTagSelecionada()">
-                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                                </button>
-                            </div>
                         </div>
-                        <div class="form-group row">
-                            <div class="col-xs-offset-2 col-xs-6">
-                                <input type="text" class="form-control" id="txTag" ng-model="tagNova" />
-                            </div>
-                            <div class="col-xs-2">
-                                <button type="button" class="btn" ng-click="adicionarNovaTag()">
+                    </div>
+
+                    <hr>
+                    <h3>Novo álbum</h3>
+                    <br>
+                    <div class="form-group row">
+                        <div class="col-xs-2">
+                            <label for="txNomeAlbum" class="control-label">Nome </label>
+                        </div>
+                        <div class="col-xs-8">
+                            <input type="text" class="form-control" id="txNomeAlbum" ng-model="albumNovo.nome" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-xs-2">
+                            <label for="txAnoAlbum" class="control-label">Ano </label>
+                        </div>
+                        <div class="col-xs-8">
+                            <input type="text" class="form-control" id="txAnoAlbum" ng-model="albumNovo.ano" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-xs-2">
+                            <label for="txCapaAlbum" class="control-label">Capa </label>
+                        </div>
+                        <div class="col-xs-8">
+                            <input type="file" class="form-control" id="flAlbum" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <input type="button" ng-click="adicionarNovoAlbum()" class="btn btn-primary col-xs-offset-9" value="Adicionar" />
+                    </div>
+
+                    <hr>
+                    <h3>Artistas</h3>
+                    <br>
+                    <div class="form-group row">
+                        <div class="col-xs-2">
+                            <label for="cmbBandas" class="control-label">Banda </label>
+                        </div>
+                        <div class="col-xs-6">
+                            <select id="cmbBandas" class="form-control" ng-model="bandaSelecionada" ng-options="banda.nome for banda in bandas">
+                                </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-xs-offset-2 col-xs-6">
+                            <input type="text" class="form-control" id="txTag" ng-model="bandaNova" />
+                        </div>
+                        <div class="col-xs-2">
+                            <button type="button" class="btn" ng-click="adicionarNovaBanda()">
                                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                                 </button>
-                            </div>
                         </div>
 
-                        <hr>
-                        <h3>Álbum</h3>
-                        <br>
-                        <div class="form-group row">
-                            <div class="col-xs-2">
-                                <label for="txNomeAlbum" class="control-label">Gênero </label>
-                            </div>
-                            <div class="col-xs-8">
-                                <input type="text" class="form-control" id="txNomeAlbum" ng-model="musica.album.nome" />
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-xs-2">
-                                <label for="txAnoAlbum" class="control-label">Ano </label>
-                            </div>
-                            <div class="col-xs-8">
-                                <input type="text" class="form-control" id="txAnoAlbum" ng-model="musica.album.ano" />
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-xs-2">
-                                <label for="txCapaAlbum" class="control-label">Capa </label>
-                            </div>
-                            <div class="col-xs-8">
-                                <input type="file" class="form-control" id="txNomeAlbum" />
-                            </div>
-                        </div>
+                        <!--<div class="col-xs-8">
+                                <input type="text" class="form-control" id="txBanda" ng-model="musica.banda.nome" />
+                            </div>-->
+                    </div>
 
-                        <hr>
-                        <h3>Artistas</h3>
-                        <br>
-                        <div class="form-group row">
-                            <div class="col-xs-2">
-                                <label for="txBanda" class="control-label">Banda </label>
-                            </div>
-                            <div class="col-xs-8">
-                                <input type="text" class="form-control" id="txBanda" ng-model="musica.banda" />
-                            </div>
+                    <hr>
+                    <h3>Letra</h3>
+                    <br>
+                    <div class="form-group row">
+                        <div class="col-xs-10">
+                            <textarea class="form-control" rows="15" id="txaLetra" ng-model="musica.letra"> </textarea>
                         </div>
-                        <div class="form-group row">
-                            <div class="col-xs-2">
-                                <label for="cmbArtistas" class="control-label">Artistas </label>
-                            </div>
-                            <div class="col-xs-6">
-                                <select id="cmbArtistas" class="form-control" ng-model="artistaSelecionado" 
-                                    ng-options="montarDescricaoTipoArtista(artista) for artista in musica.artistas">
-                                </select>
-                            </div>
-                            <div class="col-xs-2">
-                                <button type="button" class="btn" ng-click="removerArtistaSelecionado()">
-                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-xs-offset-2 col-xs-3">
-                                <input type="text" class="form-control" id="txArtista" ng-model="artistaNovo" />
-                            </div>
-                            <div class="col-xs-3">
-                                <select id="cmbTipoArtista" class="form-control" ng-model="tipoNovoArtista" 
-                                    ng-options="tipoArtista.descricao for tipoArtista in tiposArtista">
-                                </select>
-                            </div>
-                            <div class="col-xs-2">
-                                <button type="button" class="btn" ng-click="adicionarNovoArtista()">
-                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                                </button>
-                            </div>
-                        </div>
+                    </div>
 
-                        <hr>
-                        <h3>Letra</h3>
-                        <br>
-                        <div class="form-group row">
-                            <div class="col-xs-10">
-                                <textarea class="form-control" rows="15" id="txaLetra" ng-model="musica.letra"> </textarea>
-                            </div>
-                        </div>
+                    <hr>
 
-                        <hr>
-                        <input type="Submit" class="btn btn-primary pull-right" value="Salvar" />
-
-                    </form>
+                    <input type="button" ng-click="salvarAlteracoes()" class="btn btn-primary pull-right" value="Salvar" />
                 </div>
             </div>
         </div>

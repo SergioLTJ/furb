@@ -6,14 +6,23 @@
     <link rel="stylesheet" type="text/css" href="../css/padrao.css">
     <script type="text/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="../bower_components/angular-route/angular-route.min.js"></script>
     <script type="text/javascript" src="../bower_components/angular-ui-notification/dist/angular-ui-notification.min.js"></script>
+    <script type="text/javascript" src="../js/ServicoObtencaoUsuarioLogado.js"></script>
     <script type="text/javascript" src="../js/controllers.js"></script>
+    <script type="text/javascript" src="../js/Helper.js"></script>
+    <script type="text/javascript" src="../js/ServicoObtencaoUsuarioLogado.js"></script>
+
+    <script type="text/javascript">
+        vincularElementoNgApp(window.angular, 'divLogin', 'login');
+    </script>
+
     <meta charset="utf-8" />
 </head>
 
 <body>
     <div class="container">
-        <nav class="navbar navbar-default" style="margin-top: 10px">
+        <nav class="navbar navbar-default" ng-app="navegacao" ng-controller="BarraNavegacaoController" ng-init="verificarUsuarioLogado()">
             <div class="container-fluid">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
@@ -32,9 +41,14 @@
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li class="active">
-                            <a href="Login.html">Login</a>
-                        </li>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li ng-show="{{ usuario != null }}">
+                                <a href="Perfil.html?id={{ usuario.idUsuario }}">Perfil</a>
+                            </li>
+                            <li ng-show="{{ usuario == null }}">
+                                <a href="Login.html">Login</a>
+                            </li>
+                        </ul>
                     </ul>
                 </div>
             </div>
@@ -44,11 +58,11 @@
             <div class="panel panel-login panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">
-                    <label id="lblHeader" class="font-weight-bold">Login</label>
-                </h3>
+                        <label id="lblHeader" class="font-weight-bold">Login</label>
+                    </h3>
                 </div>
 
-                <div ng-app="login" ng-controller="LoginController as login" class="panel-body">
+                <div id="divLogin" ng-app="login" ng-controller="LoginController as login" class="panel-body">
                     <div class="form-group">
                         <input id="divUsuario" type="text" class="form-control" placeholder="Usuário" ng-model="login.usuario" required/>
                     </div>
@@ -58,8 +72,9 @@
                         <span id="glpSenha" class="glyphicon form-control-feedback" aria-hidden="true" ng-model="login.confirmacaoSenha"></span>
                     </div>
                     <div class="pull-right">
-                        <input type="button" id="btnRegistrar" class="btn btn-primary" ng-click="login.mostrarDivCadastro()" value="Registrar" required />
-                        <a href="Busca.html" id="btnConfirmarLogin" class="btn btn-primary">Log in</a>
+                        <input type="button" id="btnRegistrar" class="btn btn-primary" ng-click="login.mostrarDivCadastro()" value="Registrar" required
+                        />
+                        <input type="button" id="btnConfirmarLogin" value="Log in" class="btn btn-primary" ng-click="login.realizarLogin()" />
                     </div>
                     <div id="divCadastro" style="display: none">
                         <div id="divConfirmacaoSenha" class="form-group has-feedback">
@@ -72,7 +87,8 @@
                         </div>
                         <div class="pull-right">
                             <input type="submit" id="btnLogin" class="btn btn-primary" value="Log in" ng-click="login.esconderDivCadastro()" />
-                            <input type="submit" id="btnConfirmarCadastro" class="btn btn-primary" value="Registrar" ng-click="login.confirmarCadastro()" />
+                            <input type="submit" id="btnConfirmarCadastro" class="btn btn-primary" value="Registrar" ng-click="login.confirmarCadastro()"
+                            />
                         </div>
                     </div>
                 </div>

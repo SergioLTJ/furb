@@ -42,6 +42,8 @@ public class MusicaDao {
 			query = adicionarClausulaWhere(query, "musica.letra", letra);
 			query = adicionarClausulaWhere(query, "musica.tags", tags);
 			
+			query += " COLLATE utf8_general_ci";
+			
 			Statement stmt = MySql.getConexao().createStatement();
 			ResultSet rs = stmt.executeQuery(query);
 
@@ -63,9 +65,9 @@ public class MusicaDao {
 		}
 		
 		if (comando.endsWith("where")) {
-			return comando += " " + campo + " like '%" + valor + "%'";
+			return comando += " " + campo + " like '%" + valor.replace("'", "\\'") + "%'";
 		} else {
-			return comando += " and " + campo + " like '%" + valor + "%'";
+			return comando += " and " + campo + " like '%" + valor.replace("'", "\\'") + "%'";
 		}
 	}
 

@@ -10,7 +10,8 @@ function obterValorQueryString(nomeParametro) {
     for (var i = 0; i < vars.length; i++) {
         var pair = vars[i].split('=');
         if (decodeURIComponent(pair[0]) == nomeParametro) {
-            return decodeURIComponent(pair[1]);
+            var comEspacos = pair[1].replace(/\+/g, ' ');
+            return decodeURIComponent(comEspacos);
         }
     }
 }

@@ -63,11 +63,11 @@ public class Ponto4D {
      * @param pto Ponto cujas coordenadas serao invertidas
      * @return Ponto com as coordenadas invertidas
      */
-    public Ponto4D inverterSinal(Ponto4D pto) {
-        pto.setX(pto.getX() * -1);
-        pto.setY(pto.getY() * -1);
-        pto.setZ(pto.getZ() * -1);
-        return pto;
+    public Ponto4D inverterSinal() {
+        setX(getX() * -1);
+        setY(getY() * -1);
+        setZ(getZ() * -1);
+        return this;
     }
 
     /**

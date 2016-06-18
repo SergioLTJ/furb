@@ -80,12 +80,10 @@ public class Terreno {
         float cor[] = new float[3];
         COR_TERRENO_BAIXO.getColorComponents(cor);
         
-        //gl.glMaterialfv(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE, cor, 0);
-        
-        gl.glEnable(GL.GL_COLOR_MATERIAL);
+        //gl.glEnable(GL.GL_COLOR_MATERIAL);
 	gl.glColor3f(cor[0],cor[1],cor[2]);
         
-        gl.glEnable(GL.GL_LIGHTING);
+        //gl.glEnable(GL.GL_LIGHTING);
         
         gl.glLineWidth(2);
         
@@ -316,6 +314,9 @@ public class Terreno {
         for (int i = 0; i < pontos.length; ++i) {
             gl.glVertex3d(pontos[i].getX(), pontos[i].getY(), pontos[i].getZ());
         }
+        
+        Ponto4D normal = Geometria.calculaNormal(pontos[0], pontos[1], pontos[2]);
+        gl.glNormal3d(normal.getX(), normal.getY(), normal.getZ());
         
         gl.glEnd();
     }

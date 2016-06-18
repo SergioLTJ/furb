@@ -24,10 +24,12 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
 
 public class Main implements GLEventListener, KeyListener {
-    private static final float LIGHT_POSITION[] = { 5.0f, 5.0f, 5.0f, 0.0f };
+    private static final float LIGHT_POSITION[] = { 0.0f, 100.0f, 500.0f, 1.0f };
     private static final String TEXTURE_FILES[] = { "01.png" , "02.png" , "03.png" , "04.png" , "05.png" };
     
     public static Textura texturas[] = null;
+    
+        public static boolean iluminar = false;
     
         private GL gl;
 	private GLU glu;
@@ -49,7 +51,7 @@ public class Main implements GLEventListener, KeyListener {
 		System.out.println("Espaco de desenho com tamanho: " + drawable.getWidth() + " x " + drawable.getHeight());
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
                 
-                //initLightning();
+                initLightning();
                 initTexture();
                 
                 gl.glEnable(GL.GL_CULL_FACE);
@@ -60,12 +62,15 @@ public class Main implements GLEventListener, KeyListener {
 	}
 	
         private void initLightning() {
-            gl.glShadeModel(GL.GL_SMOOTH);
+            if (iluminar) {
+                
+                gl.glShadeModel(GL.GL_SMOOTH);
             
-            gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, LIGHT_POSITION, 0);
-	    gl.glEnable(GL.GL_LIGHT0);
+                gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, LIGHT_POSITION, 0);
+                gl.glEnable(GL.GL_LIGHT0);
             
-            gl.glColorMaterial(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE);
+                gl.glColorMaterial(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE);
+            }
         }
         
         private void initTexture() {
@@ -114,20 +119,16 @@ public class Main implements GLEventListener, KeyListener {
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glLoadIdentity();
                 
-                //gl.glLightf(GL.GL_LIGHT0, GL.GL_SPOT_EXPONENT, 0);
+                gl.glLightf(GL.GL_LIGHT0, GL.GL_SPOT_EXPONENT, 0);
                 
                 camera.perspective(glu);
                 camera.lookAt(glu);
                 
-                //initLightning();
+                initLightning();
                 
 		SRU();
 		
                 // -----
-                
-                //gl.glColor3f(0, 0, 0);
-                //gl.glTranslated(LIGHT_POSITION[0], LIGHT_POSITION[1], LIGHT_POSITION[2]);
-                //glut.glutSolidCube(10.0f);
                 
                 terreno.display(gl);
                 terreno.displayText(gl, glut);
@@ -203,6 +204,10 @@ public class Main implements GLEventListener, KeyListener {
                     // Z: Altera pincel
                     case KeyEvent.VK_Z:
                         terreno.proximoPincel();
+                        break;
+                        
+                    case KeyEvent.VK_L:
+                        iluminar = !iluminar;
                         break;
 		}
                 

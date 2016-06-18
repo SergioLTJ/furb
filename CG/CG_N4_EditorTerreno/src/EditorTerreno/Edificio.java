@@ -42,23 +42,19 @@ public class Edificio {
         float cor[] = new float[3];
         getCor().getColorComponents(cor);
         
-        //gl.glMaterialfv(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE, cor, 0);
-        
         Textura textura = Main.texturas[idxTextura];
         
-        //gl.glEnable(GL.GL_COLOR_MATERIAL);
         gl.glEnable(GL.GL_TEXTURE_2D);
         gl.glBindTexture(GL.GL_TEXTURE_2D, textura.ID); // Especifica qual e a textura corrente pelo identificador 
 	gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, 3, textura.width, textura.height, 0, GL.GL_BGR,GL.GL_UNSIGNED_BYTE, textura.byteBuffer); // Envio da textura para OpenGL
 			
-	//gl.glColor3f(cor[0],cor[1],cor[2]);
+	gl.glColor3f(cor[0],cor[1],cor[2]);
         
         gl.glPushMatrix();
         gl.glMultMatrixd(transform.getDate(), 0);
         
         desenhaFaces(gl);
         
-        //gl.glEnable(GL.GL_LIGHTING);
         gl.glDisable(GL.GL_TEXTURE_2D);
         
         gl.glPopMatrix();

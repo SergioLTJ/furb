@@ -45,10 +45,12 @@ public class Edificio {
         Textura textura = Main.texturas[idxTextura];
         
         gl.glEnable(GL.GL_TEXTURE_2D);
-        gl.glBindTexture(GL.GL_TEXTURE_2D, textura.ID); // Especifica qual e a textura corrente pelo identificador 
-	gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, 3, textura.width, textura.height, 0, GL.GL_BGR,GL.GL_UNSIGNED_BYTE, textura.byteBuffer); // Envio da textura para OpenGL
+		// Especifica qual e a textura corrente pelo identificador 
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textura.ID); 
+		// Envio da textura para OpenGL
+		gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, 3, textura.width, textura.height, 0, GL.GL_BGR,GL.GL_UNSIGNED_BYTE, textura.byteBuffer); 
 			
-	gl.glColor3f(cor[0],cor[1],cor[2]);
+		gl.glColor3f(cor[0],cor[1],cor[2]);
         
         gl.glPushMatrix();
         gl.glMultMatrixd(transform.getDate(), 0);
@@ -128,7 +130,7 @@ public class Edificio {
         Color cor = getCor();
         gl.glColor3ub((byte)cor.getRed(), (byte)cor.getGreen(), (byte)cor.getBlue());
 
-        // Fundo: 0-1-2-3
+        // Fundo: 3-2-1-0
         gl.glBegin(GL.GL_POLYGON);
         
         gl.glVertex3d(pontosDesenho[3].getX(), pontosDesenho[3].getY(), pontosDesenho[3].getZ());
@@ -138,7 +140,7 @@ public class Edificio {
         
         gl.glEnd();
         
-        // Lado 12h: 0-3-7-4
+        // Lado 12h: 4-7-3-0
         gl.glBegin(GL.GL_POLYGON);
         
         gl.glTexCoord2f(1.0f, ratio); gl.glVertex3d(pontosDesenho[4].getX(), pontosDesenho[4].getY(), pontosDesenho[4].getZ());
@@ -148,7 +150,7 @@ public class Edificio {
         
         gl.glEnd();
         
-        // Lado 3h: 3-2-6-7
+        // Lado 3h: 7-6-2-3
         gl.glBegin(GL.GL_POLYGON);
         
         gl.glTexCoord2f(1.0f, ratio); gl.glVertex3d(pontosDesenho[7].getX(), pontosDesenho[7].getY(), pontosDesenho[7].getZ());
@@ -158,8 +160,8 @@ public class Edificio {
         
         gl.glEnd();
 
-        // Lado 6h: 1-5-6-2
-        gl.glBegin(GL.GL_QUADS);
+        // Lado 6h: 1-2-6-5
+        gl.glBegin(GL.GL_POLYGON);
         
         gl.glNormal3f(0.0f,0.0f,-1.0f);
         gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex3d(pontosDesenho[1].getX(), pontosDesenho[1].getY(), pontosDesenho[1].getZ());
@@ -169,7 +171,7 @@ public class Edificio {
         
         gl.glEnd();
 
-        // Lado 9h: 0-4-5-1
+        // Lado 9h: 1-5-4-0
         gl.glBegin(GL.GL_POLYGON);
         
         gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex3d(pontosDesenho[1].getX(), pontosDesenho[1].getY(), pontosDesenho[1].getZ());

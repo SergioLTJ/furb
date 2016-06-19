@@ -8,8 +8,14 @@ package EditorTerreno;
 /// Obs.: variaveis globais foram usadas por questoes didaticas mas nao sao recomendas para aplicacoes reais.
 
 import com.sun.opengl.util.GLUT;
+import com.sun.opengl.util.texture.TextureData;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import javax.imageio.ImageIO;
 
 import javax.media.opengl.DebugGL;
 import javax.media.opengl.GL;
@@ -18,6 +24,13 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
 
 public class Main implements GLEventListener, KeyListener {
+    private static final float LIGHT_POSITION[] = { 0.0f, 100.0f, 500.0f, 1.0f };
+    private static final String TEXTURE_FILES[] = { "01.png" , "02.png" , "03.png" , "04.png" , "05.png" };
+    
+    public static Textura texturas[] = null;
+    
+        public static boolean iluminar = false;
+    
         private GL gl;
 	private GLU glu;
         private GLUT glut;
@@ -36,11 +49,10 @@ public class Main implements GLEventListener, KeyListener {
                 glut = new GLUT();
 		glDrawable.setGL(new DebugGL(gl));
 		System.out.println("Espaco de desenho com tamanho: " + drawable.getWidth() + " x " + drawable.getHeight());
-		gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-                
-                // -----
+		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
                 
                 initLightning();
+                initTexture();
                 
                 gl.glEnable(GL.GL_CULL_FACE);
                 gl.glEnable(GL.GL_DEPTH_TEST);
@@ -50,11 +62,53 @@ public class Main implements GLEventListener, KeyListener {
 	}
 	
         private void initLightning() {
-            float posLight[] = { 5.0f, 50.0f, 10.0f, 0.0f };
-	    gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, posLight, 0);
-	    gl.glEnable(GL.GL_LIGHT0);
+            if (iluminar) {
+                
+                gl.glShadeModel(GL.GL_SMOOTH);
             
-            gl.glColorMaterial(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE);
+                gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, LIGHT_POSITION, 0);
+                gl.glEnable(GL.GL_LIGHT0);
+            
+                gl.glColorMaterial(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE);
+            }
+        }
+        
+        private void initTexture() {
+            gl.glTexParameteri(GL.GL_TEXTURE_2D,GL.GL_TEXTURE_MIN_FILTER,GL.GL_LINEAR);	
+	    gl.glTexParameteri(GL.GL_TEXTURE_2D,GL.GL_TEXTURE_MAG_FILTER,GL.GL_LINEAR);
+            
+            //gl.glTexParameteri(GL.GL_TEXTURE_2D,GL.GL_TEXTURE_WRAP_S ,GL.GL_REPEAT);
+            //gl.glTexParameteri(GL.GL_TEXTURE_2D,GL.GL_TEXTURE_WRAP_T ,GL.GL_REPEAT);
+            
+            int textureCount = TEXTURE_FILES.length;
+            int ids[] = new int[textureCount + 1];
+            
+            texturas = new Textura[textureCount];
+            
+            gl.glGenTextures(0, ids, textureCount);
+            
+            for (int i = 0; i < textureCount; ++i)
+            {
+                // Tenta carregar o arquivo		
+                BufferedImage image = null;
+                try {
+                    image = ImageIO.read(new File("src\\Images\\" + TEXTURE_FILES[i]));
+                }
+                catch (IOException e) {
+                    System.out.println("Erro na leitura do arquivo");
+                }
+            
+                texturas[i] = new Textura();
+            
+                texturas[i].ID = ids[i];
+                // Obtem largura e altura
+                texturas[i].width  = image.getWidth();
+                texturas[i].height = image.getHeight();
+                // Gera uma nova TextureData...
+                TextureData td = new TextureData(0,0,false,image);
+                // ...e obtem um ByteBuffer a partir dela
+                texturas[i].byteBuffer = (ByteBuffer) td.getBuffer();
+            }
         }
         
 	//exibicaoPrincipal
@@ -65,18 +119,16 @@ public class Main implements GLEventListener, KeyListener {
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glLoadIdentity();
                 
+                gl.glLightf(GL.GL_LIGHT0, GL.GL_SPOT_EXPONENT, 0);
+                
                 camera.perspective(glu);
                 camera.lookAt(glu);
                 
-                //gl.glLightf(GL.GL_LIGHT0, GL.GL_SPOT_EXPONENT, 0);
+                initLightning();
                 
 		SRU();
 		
                 // -----
-                
-                gl.glColor3f(0, 0, 0);
-                gl.glTranslated(5, 50, 10);
-                glut.glutSolidCube(10.0f);
                 
                 terreno.display(gl);
                 terreno.displayText(gl, glut);
@@ -152,6 +204,10 @@ public class Main implements GLEventListener, KeyListener {
                     // Z: Altera pincel
                     case KeyEvent.VK_Z:
                         terreno.proximoPincel();
+                        break;
+                        
+                    case KeyEvent.VK_L:
+                        iluminar = !iluminar;
                         break;
 		}
                 

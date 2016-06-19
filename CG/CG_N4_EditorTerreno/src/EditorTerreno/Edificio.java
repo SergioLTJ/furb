@@ -27,6 +27,12 @@ public class Edificio {
         altura = 10 + (rnd.nextDouble() * 90);
         largura = 5 + (rnd.nextDouble() * 5);
         
+        idxTextura = rnd.nextInt(Main.texturas.length);
+        
+        System.out.println("Textura: " + idxTextura);
+        
+        ratio = (float)(altura / largura);
+        
         selecionado = false;
         
         atualizaPontosDesenho();
@@ -36,9 +42,12 @@ public class Edificio {
         float cor[] = new float[3];
         getCor().getColorComponents(cor);
         
-        //gl.glMaterialfv(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE, cor, 0);
+        Textura textura = Main.texturas[idxTextura];
         
-        gl.glEnable(GL.GL_COLOR_MATERIAL);
+        gl.glEnable(GL.GL_TEXTURE_2D);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textura.ID); // Especifica qual e a textura corrente pelo identificador 
+	gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, 3, textura.width, textura.height, 0, GL.GL_BGR,GL.GL_UNSIGNED_BYTE, textura.byteBuffer); // Envio da textura para OpenGL
+			
 	gl.glColor3f(cor[0],cor[1],cor[2]);
         
         gl.glPushMatrix();
@@ -46,7 +55,7 @@ public class Edificio {
         
         desenhaFaces(gl);
         
-        gl.glEnable(GL.GL_LIGHTING);
+        gl.glDisable(GL.GL_TEXTURE_2D);
         
         gl.glPopMatrix();
     }
@@ -86,7 +95,7 @@ public class Edificio {
     public void rotaciona(double rotacao) {
         Transform local = new Transform();
 
-        pontoBase.inverterSinal(pontoBase);
+        pontoBase.inverterSinal();
         Transform translate = new Transform();
         
         translate.atribuirTranslacao(pontoBase.getX(),pontoBase.getY(),pontoBase.getZ());
@@ -97,7 +106,7 @@ public class Edificio {
 	rotate.atribuirRotacaoY(Transform.DEG_TO_RAD * rotacao);
 	local = rotate.transformMatrix(local);
 
-	pontoBase.inverterSinal(pontoBase);
+	pontoBase.inverterSinal();
         translate.atribuirIdentidade();
         
 	translate.atribuirTranslacao(pontoBase.getX(),pontoBase.getY(),pontoBase.getZ());
@@ -107,56 +116,66 @@ public class Edificio {
     }
     
     private void desenhaFaces(GL gl) {
+        /*
+        4---7
+        |\  |\
+        | 5-+-6
+        0-+-3 |
+         \|  \|
+          1---2
+        */
+        
         Color cor = getCor();
         gl.glColor3ub((byte)cor.getRed(), (byte)cor.getGreen(), (byte)cor.getBlue());
-        
+
         // Fundo: 0-1-2-3
         gl.glBegin(GL.GL_POLYGON);
         
-        gl.glVertex3d(pontosDesenho[0].getX(), pontosDesenho[0].getY(), pontosDesenho[0].getZ());
-        gl.glVertex3d(pontosDesenho[1].getX(), pontosDesenho[1].getY(), pontosDesenho[1].getZ());
-        gl.glVertex3d(pontosDesenho[2].getX(), pontosDesenho[2].getY(), pontosDesenho[2].getZ());
         gl.glVertex3d(pontosDesenho[3].getX(), pontosDesenho[3].getY(), pontosDesenho[3].getZ());
+        gl.glVertex3d(pontosDesenho[2].getX(), pontosDesenho[2].getY(), pontosDesenho[2].getZ());
+        gl.glVertex3d(pontosDesenho[1].getX(), pontosDesenho[1].getY(), pontosDesenho[1].getZ());
+        gl.glVertex3d(pontosDesenho[0].getX(), pontosDesenho[0].getY(), pontosDesenho[0].getZ());
         
         gl.glEnd();
         
         // Lado 12h: 0-3-7-4
         gl.glBegin(GL.GL_POLYGON);
         
-        gl.glVertex3d(pontosDesenho[0].getX(), pontosDesenho[0].getY(), pontosDesenho[0].getZ());
-        gl.glVertex3d(pontosDesenho[3].getX(), pontosDesenho[3].getY(), pontosDesenho[3].getZ());
-        gl.glVertex3d(pontosDesenho[7].getX(), pontosDesenho[7].getY(), pontosDesenho[7].getZ());
-        gl.glVertex3d(pontosDesenho[4].getX(), pontosDesenho[4].getY(), pontosDesenho[4].getZ());
+        gl.glTexCoord2f(1.0f, ratio); gl.glVertex3d(pontosDesenho[4].getX(), pontosDesenho[4].getY(), pontosDesenho[4].getZ());
+        gl.glTexCoord2f(0.0f, ratio); gl.glVertex3d(pontosDesenho[7].getX(), pontosDesenho[7].getY(), pontosDesenho[7].getZ());
+        gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex3d(pontosDesenho[3].getX(), pontosDesenho[3].getY(), pontosDesenho[3].getZ());
+        gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex3d(pontosDesenho[0].getX(), pontosDesenho[0].getY(), pontosDesenho[0].getZ());
         
         gl.glEnd();
         
         // Lado 3h: 3-2-6-7
         gl.glBegin(GL.GL_POLYGON);
         
-        gl.glVertex3d(pontosDesenho[3].getX(), pontosDesenho[3].getY(), pontosDesenho[3].getZ());
-        gl.glVertex3d(pontosDesenho[2].getX(), pontosDesenho[2].getY(), pontosDesenho[2].getZ());
-        gl.glVertex3d(pontosDesenho[6].getX(), pontosDesenho[6].getY(), pontosDesenho[6].getZ());
-        gl.glVertex3d(pontosDesenho[7].getX(), pontosDesenho[7].getY(), pontosDesenho[7].getZ());
+        gl.glTexCoord2f(1.0f, ratio); gl.glVertex3d(pontosDesenho[7].getX(), pontosDesenho[7].getY(), pontosDesenho[7].getZ());
+        gl.glTexCoord2f(0.0f, ratio); gl.glVertex3d(pontosDesenho[6].getX(), pontosDesenho[6].getY(), pontosDesenho[6].getZ());
+        gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex3d(pontosDesenho[2].getX(), pontosDesenho[2].getY(), pontosDesenho[2].getZ());
+        gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex3d(pontosDesenho[3].getX(), pontosDesenho[3].getY(), pontosDesenho[3].getZ());
         
         gl.glEnd();
-        
+
         // Lado 6h: 1-5-6-2
-        gl.glBegin(GL.GL_POLYGON);
+        gl.glBegin(GL.GL_QUADS);
         
-        gl.glVertex3d(pontosDesenho[1].getX(), pontosDesenho[1].getY(), pontosDesenho[1].getZ());
-        gl.glVertex3d(pontosDesenho[5].getX(), pontosDesenho[5].getY(), pontosDesenho[5].getZ());
-        gl.glVertex3d(pontosDesenho[6].getX(), pontosDesenho[6].getY(), pontosDesenho[6].getZ());
-        gl.glVertex3d(pontosDesenho[2].getX(), pontosDesenho[2].getY(), pontosDesenho[2].getZ());
+        gl.glNormal3f(0.0f,0.0f,-1.0f);
+        gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex3d(pontosDesenho[1].getX(), pontosDesenho[1].getY(), pontosDesenho[1].getZ());
+        gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex3d(pontosDesenho[2].getX(), pontosDesenho[2].getY(), pontosDesenho[2].getZ());
+        gl.glTexCoord2f(1.0f, ratio); gl.glVertex3d(pontosDesenho[6].getX(), pontosDesenho[6].getY(), pontosDesenho[6].getZ());
+        gl.glTexCoord2f(0.0f, ratio); gl.glVertex3d(pontosDesenho[5].getX(), pontosDesenho[5].getY(), pontosDesenho[5].getZ());
         
         gl.glEnd();
-        
+
         // Lado 9h: 0-4-5-1
         gl.glBegin(GL.GL_POLYGON);
         
-        gl.glVertex3d(pontosDesenho[0].getX(), pontosDesenho[0].getY(), pontosDesenho[0].getZ());
-        gl.glVertex3d(pontosDesenho[4].getX(), pontosDesenho[4].getY(), pontosDesenho[4].getZ());
-        gl.glVertex3d(pontosDesenho[5].getX(), pontosDesenho[5].getY(), pontosDesenho[5].getZ());
-        gl.glVertex3d(pontosDesenho[1].getX(), pontosDesenho[1].getY(), pontosDesenho[1].getZ());
+        gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex3d(pontosDesenho[1].getX(), pontosDesenho[1].getY(), pontosDesenho[1].getZ());
+        gl.glTexCoord2f(1.0f, ratio); gl.glVertex3d(pontosDesenho[5].getX(), pontosDesenho[5].getY(), pontosDesenho[5].getZ());
+        gl.glTexCoord2f(0.0f, ratio); gl.glVertex3d(pontosDesenho[4].getX(), pontosDesenho[4].getY(), pontosDesenho[4].getZ());
+        gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex3d(pontosDesenho[0].getX(), pontosDesenho[0].getY(), pontosDesenho[0].getZ());
         
         gl.glEnd();
         
@@ -182,6 +201,9 @@ public class Edificio {
     private Ponto4D pontoBase;
     private double altura;
     private double largura;
+    private float ratio;
+    
+    private int idxTextura;
     
     private Ponto4D pontosDesenho[];
 }

@@ -1,4 +1,4 @@
-package trabalho1;
+package com.furb.ia.trabalhofinal.dados;
 
 public class Dia implements Clonavel<Dia> {
 

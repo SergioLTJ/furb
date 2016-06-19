@@ -1,9 +1,11 @@
-package trabalho1;
+package com.furb.ia.trabalhofinal.dados;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+
+import com.furb.ia.trabalhofinal.Utils;
 
 public class Semestre implements Clonavel<Semestre> {
 
@@ -272,12 +274,45 @@ public class Semestre implements Clonavel<Semestre> {
 
 			if (dia.ehMesmaAula())
 				fitness -= 1;
+			
+			for (Disciplina disciplina : this.disciplinas) {
+				fitness += this.validarDisciplina(disciplina);
+			}
 		}
 
 		return fitness;
 	}
 	
+	private float validarDisciplina(Disciplina disciplina) {
+		int tempoDisciplina = disciplina.getCargaSemanal();
+		
+		for (Dia dia : dias) {
+			if (dia.getAula1().equals(disciplina)) tempoDisciplina--;
+			if (dia.getAula2().equals(disciplina)) tempoDisciplina--;
+		}
+		
+		if (tempoDisciplina > 0) tempoDisciplina = -tempoDisciplina;
+		
+		return tempoDisciplina * 2;
+	}
+
 	public List<Disciplina> getDisciplinas() {
 		return this.disciplinas;
+	}
+	
+	public String paraHtml() {
+		String html = "<h4>" + this.numero + "º Semestre</h4><table class=\"table table-bordered\"><tr><th></th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th></tr><tr><th>1ª aula</th>";
+		
+		for (Dia dia : this.dias) {
+			html += "<td>" + dia.getAula1().getNome() + " (" + dia.getAula1().getProfessorMinistrando().getNome() + ")" + "</td>";
+		}
+		
+		html += "</tr><tr><th>2ª aula</th>";
+		
+		for (Dia dia : this.dias) {
+			html += "<td>" + dia.getAula2().getNome() + " (" + dia.getAula2().getProfessorMinistrando().getNome() + ")" + "</td>";
+		}
+		
+		return html + "</tr></table>";
 	}
 }

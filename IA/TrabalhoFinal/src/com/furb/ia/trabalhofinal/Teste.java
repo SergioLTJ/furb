@@ -1,9 +1,14 @@
-package trabalho1;
+package com.furb.ia.trabalhofinal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import com.furb.ia.trabalhofinal.dados.CargaSemanalDisciplina;
+import com.furb.ia.trabalhofinal.dados.Disciplina;
+import com.furb.ia.trabalhofinal.dados.Professor;
+import com.furb.ia.trabalhofinal.dados.Semestre;
 
 public class Teste {
 

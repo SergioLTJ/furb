@@ -7,11 +7,11 @@ import java.util.List;
 
 public class Teste {
 
-	private static HashMap<String, Professor> professores;
-	private static HashMap<Integer, List<Disciplina>> mapaDisciplinasSemestre;
-	private static HashMap<Integer, List<Professor>> mapaProfessoresSemestre;
-	
-	static {
+	private HashMap<String, Professor> professores;
+	private HashMap<Integer, List<Disciplina>> mapaDisciplinasSemestre;
+	private HashMap<Integer, List<Professor>> mapaProfessoresSemestre;
+
+	public Teste() {
 		professores = new HashMap<>();
 		
 		professores.put("Daniel", new Professor("Daniel"));
@@ -59,35 +59,35 @@ public class Teste {
 		criarDisciplinasSetimoSemestre();
 	}
 	
-	private static List<Professor> professoresPrimeiroSemestre() {
+	private List<Professor> professoresPrimeiroSemestre() {
 		return Arrays.asList(professores.get("Miguel"), professores.get("Evandro"), professores.get("Mauro"), professores.get("Aurélio"), professores.get("Lamar"));
 	}
 	
-	private static List<Professor> professoresSegundoSemestre() {
+	private List<Professor> professoresSegundoSemestre() {
 		return Arrays.asList(professores.get("Waldir"), professores.get("Joyce"), professores.get("Marcel"));
 	}
 
-	private static List<Professor> professoresTerceiroSemestre() {
+	private List<Professor> professoresTerceiroSemestre() {
 		return Arrays.asList(professores.get("Tavares"), professores.get("Henriete"), professores.get("Gilvan"), professores.get("Gabriele"));
 	}
 
-	private static List<Professor> professoresQuartoSemestre() {
+	private List<Professor> professoresQuartoSemestre() {
 		return Arrays.asList(professores.get("Cintia"), professores.get("Luciana"), professores.get("Neumann"), professores.get("Péricas"));
 	}
 
-	private static List<Professor> professoresQuintoSemestre() {
+	private List<Professor> professoresQuintoSemestre() {
 		return Arrays.asList(professores.get("Paulo"), professores.get("Pedro"));
 	}
 
-	private static List<Professor> professoresSextoSemestre() {
+	private List<Professor> professoresSextoSemestre() {
 		return Arrays.asList(professores.get("Ratike"), professores.get("Jairson"), professores.get("Jacques"));
 	}
 
-	private static List<Professor> professoresSetimoSemestre() {
+	private List<Professor> professoresSetimoSemestre() {
 		return Arrays.asList(professores.get("Daniel"), professores.get("Matheus"), professores.get("Dalton"));
 	}
 	
-	private static void criarDisciplinasPrimeiroSemestre() {
+	private void criarDisciplinasPrimeiroSemestre() {
 		Disciplina compDig = CriarDisciplina("Computação Digital", CargaSemanalDisciplina.QUATRO_HORAS, "Miguel");
 		Disciplina fundMat = CriarDisciplina("Fundamentos Matemáticos", CargaSemanalDisciplina.QUATRO_HORAS, "Evandro");
 		Disciplina intComp = CriarDisciplina("Introdução a Computação", CargaSemanalDisciplina.QUATRO_HORAS, "Mauro");
@@ -99,7 +99,7 @@ public class Teste {
 		mapaDisciplinasSemestre.put(1, disciplinasPrimeiro);
 	}
 	
-	private static void criarDisciplinasSegundoSemestre() {
+	private void criarDisciplinasSegundoSemestre() {
 		Disciplina algebLin = CriarDisciplina("Álgebra Linear", CargaSemanalDisciplina.QUATRO_HORAS, "Evandro");
 		Disciplina arqComp = CriarDisciplina("Arquitetura de Computadores", CargaSemanalDisciplina.QUATRO_HORAS, "Miguel");
 		Disciplina lingCien = CriarDisciplina("Linguagem Científica", CargaSemanalDisciplina.QUATRO_HORAS, "Waldir");
@@ -111,8 +111,8 @@ public class Teste {
 		mapaDisciplinasSemestre.put(2, disciplinasSegundo);
 	}
 
-	private static void criarDisciplinasTerceiroSemestre() {
-		Disciplina algEstDad = CriarDisciplina("Algoritmos e Estruturas de Dados", CargaSemanalDisciplina.QUATRO_HORAS, "Tavares", "Aurélio");
+	private void criarDisciplinasTerceiroSemestre() {
+		Disciplina algEstDad = CriarDisciplina("Algoritmos e Estruturas de Dados", CargaSemanalDisciplina.QUATRO_HORAS, "Tavares");
 		Disciplina estatistica = CriarDisciplina("Estatística", CargaSemanalDisciplina.QUATRO_HORAS, "Henriete");
 		Disciplina progObj2 = CriarDisciplina("Programação Orientada a Objetos II", CargaSemanalDisciplina.QUATRO_HORAS, "Gilvan");
 		Disciplina sisOp = CriarDisciplina("Sistemas Operacionais", CargaSemanalDisciplina.QUATRO_HORAS, "Tavares");
@@ -123,7 +123,7 @@ public class Teste {
 		mapaDisciplinasSemestre.put(3, disciplinasTerceiro);
 	}
 
-	private static void criarDisciplinasQuartoSemestre() {
+	private void criarDisciplinasQuartoSemestre() {
 		Disciplina desSoc = CriarDisciplina("Desafios Sociais e Contemporâneos", CargaSemanalDisciplina.QUATRO_HORAS, "Cintia");
 		Disciplina lingProg = CriarDisciplina("Linguagens de Programação", CargaSemanalDisciplina.QUATRO_HORAS, "Luciana");
 		Disciplina lingForm = CriarDisciplina("Linguagens Formais", CargaSemanalDisciplina.DUAS_HORAS, "Joyce");
@@ -136,7 +136,7 @@ public class Teste {
 		mapaDisciplinasSemestre.put(4, disciplinasQuarto);
 	}
 
-	private static void criarDisciplinasQuintoSemestre() {
+	private void criarDisciplinasQuintoSemestre() {
 		Disciplina bd1 = CriarDisciplina("Banco de Dados I", CargaSemanalDisciplina.QUATRO_HORAS, "Luciana");
 		Disciplina compiladores = CriarDisciplina("Compiladores", CargaSemanalDisciplina.QUATRO_HORAS, "Joyce");
 		Disciplina concorr = CriarDisciplina("Galáxias", CargaSemanalDisciplina.QUATRO_HORAS, "Paulo");
@@ -148,7 +148,7 @@ public class Teste {
 		mapaDisciplinasSemestre.put(5, disciplinasQuinto);
 	}
 
-	private static void criarDisciplinasSextoSemestre() {
+	private void criarDisciplinasSextoSemestre() {
 		Disciplina bd2 = CriarDisciplina("Banco de Dados II", CargaSemanalDisciplina.QUATRO_HORAS, "Ratike");
 		Disciplina compOrg = CriarDisciplina("Comportamento Organizacional", CargaSemanalDisciplina.QUATRO_HORAS, "Jairson");
 		Disciplina ps1 = CriarDisciplina("Processos de Software I", CargaSemanalDisciplina.QUATRO_HORAS, "Jacques");
@@ -160,7 +160,7 @@ public class Teste {
 		mapaDisciplinasSemestre.put(6, disciplinasSexto);
 	}
 
-	private static void criarDisciplinasSetimoSemestre() {
+	private void criarDisciplinasSetimoSemestre() {
 		Disciplina ia = CriarDisciplina("Inteligência Artificial", CargaSemanalDisciplina.QUATRO_HORAS, "Daniel");
 		Disciplina ps2 = CriarDisciplina("Processos de Software II", CargaSemanalDisciplina.QUATRO_HORAS, "Mauro");
 		Disciplina rob = CriarDisciplina("Robótica", CargaSemanalDisciplina.QUATRO_HORAS, "Aurélio");
@@ -172,7 +172,7 @@ public class Teste {
 		mapaDisciplinasSemestre.put(7, disciplinasSetimo);
 	}
 
-	private static Disciplina CriarDisciplina(String nome, CargaSemanalDisciplina carga, String... nomeProfessores) {
+	private Disciplina CriarDisciplina(String nome, CargaSemanalDisciplina carga, String... nomeProfessores) {
 		Disciplina disciplina = new Disciplina(nome, carga);
 		for (String nomeProfessor : nomeProfessores) {
 			professores.get(nomeProfessor).addDisciplinasAptoMinistrar(disciplina);
@@ -180,7 +180,7 @@ public class Teste {
 		return disciplina;
 	}
 	
-	public static EstadoSemestre criarEstadoInicial(int numeroSemestres) {
+	public EstadoSemestre criarEstadoInicial(int numeroSemestres) {
 		List<Semestre> semestres = new ArrayList<>();
 		
 		for (int i = 1; i <= numeroSemestres; i++) {
@@ -194,7 +194,7 @@ public class Teste {
 		return estadoInicial;
 	}
 
-	private static List<Professor> criarListaProfessores(int numeroSemestres) {
+	private List<Professor> criarListaProfessores(int numeroSemestres) {
 		List<Professor> professores = new ArrayList<Professor>();
 		
 		for (int i = 1; i <= numeroSemestres; i++) {

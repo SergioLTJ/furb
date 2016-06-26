@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.web.database.dao.UsuarioDao;
@@ -38,8 +39,13 @@ public class PersistidorUsuarioServlet extends HttpServlet {
 		int idUsuario = objeto.get("idUsuario").getAsInt();
 		String nome = objeto.get("nome").getAsString();
 		String email = objeto.get("email").getAsString();
-		String imagem = objeto.get("imagemPerfil").getAsString();
 		
+		String imagem = null;
+		JsonElement elementoImagem = objeto.get("imagemPerfil");
+		if (elementoImagem != null && !elementoImagem.isJsonNull()) {
+			imagem = elementoImagem.getAsString();
+		}
+
 		UsuarioDao dao = new UsuarioDao();
 		dao.atualizar(idUsuario, nome, email, imagem);
 	}

@@ -1,5 +1,10 @@
 package com.web.helper;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.web.model.Album;
@@ -7,6 +12,7 @@ import com.web.model.Banda;
 import com.web.model.Genero;
 import com.web.model.Musica;
 import com.web.model.Usuario;
+import com.web.model.relatorios.DadosRelatorio;
 
 public class ConversaoHelper {
 
@@ -73,5 +79,18 @@ public class ConversaoHelper {
 		JsonElement elemento = objeto.get(nomePropriedade);
 		if (elemento == null || elemento.isJsonNull()) return null;
 		return elemento.getAsString();
+	}
+	
+	public List<DadosRelatorio> converterParaDadosRelatorio(ResultSet rs) throws SQLException {
+		List<DadosRelatorio> retorno = new ArrayList<>();
+		
+		while (rs.next()) {
+			DadosRelatorio dados = new DadosRelatorio();
+			dados.addDado(rs.getString(1));
+			dados.addDado(rs.getInt(2));
+			retorno.add(dados);
+		}
+		
+		return retorno;
 	}
 }

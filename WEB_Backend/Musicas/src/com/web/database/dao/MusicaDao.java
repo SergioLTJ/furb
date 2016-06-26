@@ -8,10 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.web.database.MySql;
+import com.web.helper.ConversaoHelper;
 import com.web.model.Album;
 import com.web.model.Banda;
 import com.web.model.Genero;
 import com.web.model.Musica;
+import com.web.model.relatorios.DadosRelatorio;
 
 public class MusicaDao {
 
@@ -221,6 +223,19 @@ public class MusicaDao {
 			return retorno;
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
+			return null;
+		}
+	}
+	
+	public List<DadosRelatorio> obterMusicasMaisFavoritas() {
+		try {
+			String query = "select musicas.titulo, count(*) as quantidade from usuarios_musicas join musicas on musicas.idMusica = usuarios_musicas.idMusica where usuarios_musicas.favorita = 1 group by usuarios_musicas.idMusica order by quantidade desc limit 10;";
+			Statement comando = MySql.getConexao().createStatement();
+			ResultSet rs = comando.executeQuery(query);
+			
+			return new ConversaoHelper().converterParaDadosRelatorio(rs);
+		} catch(Exception ex) {
+			ex.printStackTrace();
 			return null;
 		}
 	}

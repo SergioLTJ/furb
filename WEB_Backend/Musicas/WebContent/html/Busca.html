@@ -1,0 +1,104 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/padrao.css">
+    <script type="text/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="../js/ServicoObtencaoUsuarioLogado.js"></script>
+    <script type="text/javascript" src="../js/Controllers.js"></script>
+    <script type="text/javascript" src="../js/Helper.js"></script>
+    <script type="text/javascript" src="../js/InicializadorBusca.js"></script>
+    <meta charset="utf-8" />
+</head>
+
+<body>
+    <div class="container">
+
+        <nav class="navbar navbar-default" id="navPrincipal" ng-app="navegacao" ng-controller="BarraNavegacaoController as navegacaoController" ng-init="verificarUsuarioLogado()">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                        aria-controls="navbar">
+                        <span class="sr-only">Toggle</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Nome do Site</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-left">
+                        <li class="active">
+                            <a href="Busca.html"><strong>Realizar uma busca</strong></a>
+                        </li>
+                        <li>
+                        	<a href="Relatorios.html">Relatórios</a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                    	<li ng-show="container.usuario">
+	                    	<a href="#" ng-click="deslogar()">Log out</a>
+                    	</li>
+                        <li ng-show="container.usuario">
+                            <a href="Perfil.html?id={{ container.usuario.idUsuario }}">Perfil</a>
+                        </li>
+                        <li ng-hide="container.usuario">
+                            <a href="Login.html">Login</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Busca simples 
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div style="margin-bottom: 10px">
+                    <span>Use este campo para pesquisar músicas usando termos gerais como <strong>gênero</strong>,
+                    <strong>nome</strong>, <strong>artistas participantes</strong>, etc. Vários termos podem ser combinados para ajudar a refinar a pesquisa.</span>
+                </div>
+                <form method="GET" action='ResultadosBusca.html'>
+                    <input type="hidden" name="tb" value="Basica" />
+                    <input type="text" id="txTermosBusca" name="q" class="form-control" placeholder="Insira termos de busca aqui..." style="width: 100%;" />
+                    <input type="submit" id="btnBuscaSimples" class="btn btn-primary pull-right" style="margin-top: 5px" value="Buscar" />
+                </form>
+            </div>
+        </div>
+
+        <div class="panel panel-primary">
+            <div class="panel-heading" id="headerBuscaAvancada" style="cursor: pointer">
+                <h3 class="panel-title">
+                    Busca avançada
+                </h3>
+            </div>
+            <div class="panel-body" id="pnlBuscaAvancada" style="display: none">
+                <div style="margin-bottom: 10px">
+                    <span>A pesquisa avançada permite especificar separadamente palavras-chave para várias características das músicas, 
+                    assim como o <strong>peso</strong> que cada um desses fatores deve ter no resultado da pesquisa.</span>
+                </div>
+                <div id="divBuscaAvancada" ng-app="busca" ng-controller="BuscaController">
+                    <form method="GET" action="ResultadosBusca.html">
+                        <input type="hidden" name="tb" value="Avancada" />
+                        <div ng-repeat="campo in campos" class="form-group row">
+                            <div class="col-xs-2">
+                                <label for="{{campo.id}}" class="control-label">{{ campo.descricao }}</label>
+                            </div>
+                            <div class="col-xs-10">
+                                <input type="text" class="form-control" placeholder="Insira {{ campo.descricao }} aqui..." 
+                                    name="{{ campo.nomeCurto }}" id="{{ campo.id }}" />
+                            </div>
+                        </div>
+                        <input type="submit" class="btn btn-primary pull-right" id="btnBuscaAvancada" value="Buscar">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

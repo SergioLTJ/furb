@@ -17,6 +17,7 @@ import com.google.gson.JsonParser;
 import com.web.database.dao.MusicaDao;
 import com.web.helper.GsonHelper;
 import com.web.model.Musica;
+import com.web.relatorios.GeradorHistoricoPesquisa;
 
 /**
  * Servlet implementation class BuscaMusicas
@@ -54,26 +55,29 @@ public class BuscaMusicas extends HttpServlet {
 		MusicaDao dao = new MusicaDao();
 		List<Musica> musicas = new ArrayList<>();
 		Gson gson = new Gson();
+
+		String termos = null;
 		
 		if(tipoBusca.equals("Basica")) {
-			musicas = dao.obterPorQuery(objeto.get("query").getAsString());
+			termos = objeto.get("query").getAsString();
+			musicas = dao.obterPorQuery(termos);
 			response.getWriter().write(gson.toJson(musicas));
 		} else if (tipoBusca.equals("Avancada")) {
+			termos = GsonHelper.obterValorOuNull(objeto.get("termosBusca")); 
+			
 			musicas = dao.obterPorParametros(
 					      GsonHelper.obterValorOuNull(objeto.get("titulo")),
 					      GsonHelper.obterValorOuNull(objeto.get("banda")), 
 					      GsonHelper.obterValorOuNull(objeto.get("genero")), 
 					      GsonHelper.obterValorOuNull(objeto.get("letra")), 
-						  GsonHelper.obterValorOuNull(objeto.get("termosBusca"))
-					  );
+					      termos);
 			
 			response.getWriter().write(gson.toJson(musicas));
 		} else {
 			Musica musica = dao.obterPorId(objeto.get("id").getAsInt());
 			response.getWriter().write(gson.toJson(musica));
 		}
+		
+		new GeradorHistoricoPesquisa().gerarRegistros(termos);
 	}
-
-	
-	
 }

@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.web.database.dao.UsuarioDao;
@@ -36,6 +35,40 @@ public class ControladorUsuarioLogado extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		JsonParser parser = new JsonParser();
+		JsonObject objeto = (JsonObject)parser.parse(request.getReader());
+		
+		switch (objeto.get("operacao").getAsString()) {
+		case "login":
+			this.realizarLogin(request, response, objeto);
+			break;
+		case "obterLogado":
+			this.obterUsuarioLogado(request, response, objeto);
+			break;
+		case "logoff":
+			this.realizarLogoff(request);
+			break;
+		}
+	}
+
+	private void realizarLogin(HttpServletRequest request, HttpServletResponse response, JsonObject objeto) throws IOException {
+		String login = objeto.get("usuario").getAsString();
+		
+		String senha = objeto.get("senha").getAsString();
+		String senhaBase64 = Base64.getEncoder().encodeToString(senha.getBytes());
+
+		UsuarioDao dao = new UsuarioDao();
+		Usuario usuario = dao.obterUsuarioSemImagem(login, senhaBase64);
+
+		Gson gson = new Gson();
+		
+		if (usuario != null) {
+			request.getSession().setAttribute("UsuarioLogado", usuario);
+			response.getWriter().write(gson.toJson(usuario));
+		}
+	}
+	
+	private void obterUsuarioLogado(HttpServletRequest request, HttpServletResponse response, JsonObject objeto) throws IOException {
 		Usuario usuarioLogado = (Usuario) request.getSession().getAttribute("UsuarioLogado");
 		Gson gson = new Gson();
 		
@@ -43,25 +76,9 @@ public class ControladorUsuarioLogado extends HttpServlet {
 			response.getWriter().write(gson.toJson(usuarioLogado));
 			return;
 		}
-		
-		JsonParser parser = new JsonParser();
-		Object json = parser.parse(request.getReader());
-		JsonObject objeto = json instanceof JsonNull ? null : (JsonObject)json;
-
-		if (objeto != null) {
-			String login = objeto.get("usuario").getAsString();
-			
-			String senha = objeto.get("senha").getAsString();
-			String senhaBase64 = Base64.getEncoder().encodeToString(senha.getBytes());
-
-			UsuarioDao dao = new UsuarioDao();
-			Usuario usuario = dao.obterUsuario(login, senhaBase64);
-
-			if (usuario != null) {
-				request.getSession().setAttribute("UsuarioLogado", usuario);
-				response.getWriter().write(gson.toJson(usuario));
-			}
-		}
 	}
 
+	private void realizarLogoff(HttpServletRequest request) {
+		request.getSession().setAttribute("UsuarioLogado", null);
+	}
 }

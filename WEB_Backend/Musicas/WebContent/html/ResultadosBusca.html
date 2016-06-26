@@ -1,0 +1,91 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/padrao.css">
+    <script type="text/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="../js/ServicoObtencaoUsuarioLogado.js"></script>
+    <script type="text/javascript" src="../js/Controllers.js"></script>
+    <script type="text/javascript" src="../js/Helper.js"></script>
+
+    <script type="text/javascript">
+        vincularElementoNgApp(window.angular, 'divResultados', 'resultadosBusca');
+    </script>
+
+    <meta charset="utf-8" />
+</head>
+
+<body>
+    <div class="container">
+        <nav class="navbar navbar-default" ng-app="navegacao" ng-controller="BarraNavegacaoController" ng-init="verificarUsuarioLogado()">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                        aria-controls="navbar">
+                        <span class="sr-only">Toggle</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Nome do Site</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-left">
+                        <li class="active">
+                            <a href="Busca.html"><strong>Realizar uma busca</strong></a>
+                        </li>
+                        <li>
+                        	<a href="Relatorios.html">Relatórios</a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li ng-show="container.usuario">
+	                    		<a href="#" ng-click="deslogar()">Log out</a>
+                    		</li>
+                            <li ng-show="container.usuario">
+	                            <a href="Perfil.html?id={{ container.usuario.idUsuario }}">Perfil</a>
+                        	</li>
+                        	<li ng-hide="container.usuario">
+	                            <a href="Login.html">Login</a>
+                        	</li>
+                        </ul>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div id="divResultados" ng-app="resultadosBusca" ng-controller="ResultadosController as controller" ng-init="carregarMusicas()">
+            <div class="panel panel-primary">
+                <div class="panel-heading clearfix">
+                    <h3 class="panel-title pull-left">
+                        Resultados busca {{ determinarTipoBusca() }}
+                    </h3>
+                    <div class="pull-right" style="display: inline">
+                        <a href="EditarMusica.html?m=nova" class="btn btn-primary btn-xs">Nova</a>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div ng-repeat="musica in resultados" class="container-fluid" style="margin-bottom: 8px">
+                        <div class="col-xs-1 coluna" style="padding-left: 0px">
+                            <a href="Musica.html?id={{musica.idMusica}}">
+                                <img ng-src="data:image/jpeg;base64, {{ musica.album.capa }}" alt="Capa álbum" class="img-responsive img-rounded coluna"
+                                />
+                            </a>
+                        </div>
+                        <span style="font-weight: bold"><a href="Musica.html?id={{musica.idMusica}}">{{musica.nome}}</a></span>
+                        <br>
+                        <small>{{musica.banda.nome}}</small>
+                        <br>
+                        <small>{{musica.album.nome}}</small>
+                        <br>
+                        <small>{{musica.album.ano}}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

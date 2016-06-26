@@ -1,0 +1,127 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/padrao.css">
+    <script type="text/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="../js/ServicoObtencaoUsuarioLogado.js"></script>
+    <script type="text/javascript" src="../js/Controllers.js"></script>
+    <script type="text/javascript" src="../js/Helper.js"></script>
+
+    <script type="text/javascript">
+        vincularElementoNgApp(window.angular, 'divMusica', 'musica');
+    </script>
+
+    <meta charset="utf-8" />
+
+    <style>
+        #btnFavorita:active {
+            background-color: #DBD814 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <nav class="navbar navbar-default" ng-app="navegacao" ng-controller="BarraNavegacaoController" ng-init="verificarUsuarioLogado()">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                        aria-controls="navbar">
+                        <span class="sr-only">Toggle</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Nome do Site</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-left">
+                        <li>
+                            <a href="Busca.html"><strong>Realizar uma busca</strong></a>
+                        </li>
+                        <li>
+                        	<a href="Relatorios.html">Relatórios</a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li ng-show="container.usuario">
+	                    		<a href="#" ng-click="deslogar()">Log out</a>
+                    		</li>
+                            <li ng-show="container.usuario">
+	                            <a href="Perfil.html?id={{ container.usuario.idUsuario }}">Perfil</a>
+                        	</li>
+                        	<li ng-hide="container.usuario">
+	                            <a href="Login.html">Login</a>
+                        	</li>
+                        </ul>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div id="divMusica" ng-app="musica" ng-controller="MusicaController as controller" ng-init="controller.inicializar()">
+            <div class="panel panel-primary">
+                <div class="panel-heading clearfix">
+                    <h3 class="panel-title pull-left" style="margin-right: 12px; margin-top: 8px">
+                        {{ controller.musica.nome }}
+                    </h3>
+                    <div ng-show="idUsuarioLogado != null" style="display: inline">
+                        <div style="display:inline; cursor: pointer;" ng-repeat="i in [1, 2, 3, 4, 5]" ng-mouseenter="controller.ativarEstrelas(i);"
+                            ng-mouseleave="controller.desativarEstrelas()" ng-click="atribuirNotaMusica(i)">
+                            <img id="imgEstrela{{ i }}" ng-src="{{ controller.definirImagemNota(i) }}" alt="Nota {{ i }}" />
+                        </div>
+                        <input id="btnFavorita" type="button" class="btn btn-primary {{ favorita ? 'active' : ''}}" style="margin-left: 8px" value="Favorita" 
+                            ng-click="atribuirMusicaFavorita(!favorita)" />
+                    </div>
+                    <div class="pull-right">
+                        <a id="btnHistoricoEdicoes" href="HistoricoEdicoes.html?id={{controller.musica.idMusica}}&nome={{controller.musica.nome}}"
+                            class="btn btn-primary">Histórico de edições</a>
+                        <a id="btnEditar" href="EditarMusica.html?id={{controller.musica.idMusica}}" class="btn btn-primary">Editar</a>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="pull-left col-xs-4">
+                        <img ng-src="data:image/jpeg;base64, {{ controller.musica.album.capa }}" alt="Capa álbum" class="img-responsive img-rounded">
+                    </div>
+                    <div class="pull-right col-xs-8">
+                        <h2 class="text-left">{{ controller.musica.nome }}</h2>
+                        <h4 class="text-left">{{ controller.musica.banda.nome }}</h4>
+                        <h4 class="text-left">{{ controller.musica.album.nome }} ({{ controller.musica.album.ano }})</h4>
+                        <br>
+                        <span class="text-left">Gênero: {{ controller.musica.genero.descricao }}</span>
+                        <br>
+                        <br>
+                        <span class="text-left">{{ controller.musica.informacoes }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-primary">
+                <div id="divHeaderLetra" class="panel-heading clearfix">
+                    <h3 class="panel-title pull-left">
+                        Letra
+                    </h3>
+                </div>
+                <div id="divLetra" class="panel-body" style="display: none">
+                    <span style="white-space: pre-wrap">{{ controller.musica.letra }}</span>
+                </div>
+            </div>
+
+            <div class="panel panel-primary">
+                <div id="divHeaderTags" class="panel-heading clearfix">
+                    <h3 class="panel-title pull-left">
+                        Tags
+                    </h3>
+                </div>
+                <div id="divTags" class="panel-body" style="display: none">
+                    <span style="white-space: pre-wrap">{{ controller.musica.tags }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

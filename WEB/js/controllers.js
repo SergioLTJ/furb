@@ -336,7 +336,8 @@
 
                     $http({
                         method: 'POST',
-                        url: 'http://localhost:8080/Musicas/BuscaMusicas',
+                        //http://localhost:8080/
+                        url: 'Musicas/BuscaMusicas',
                         contentType: 'application/json',
                         data: JSON.stringify(parametros),
                     }).then(function (retorno) {

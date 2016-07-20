@@ -47,6 +47,7 @@
             this.Vitórias});
             this.grdUsuarios.Location = new System.Drawing.Point(565, 12);
             this.grdUsuarios.Name = "grdUsuarios";
+            this.grdUsuarios.ReadOnly = true;
             this.grdUsuarios.Size = new System.Drawing.Size(344, 461);
             this.grdUsuarios.TabIndex = 5;
             // 

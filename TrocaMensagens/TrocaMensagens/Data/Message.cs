@@ -15,7 +15,8 @@ namespace TrocaMensagens.Data
 
         private void ProcessResponse(string response)
         {
-            if (response.StartsWith("."))
+            if (response.StartsWith(".") ||
+                response.StartsWith(":\r\n"))
             {
                 this.IsLast = true;
                 return;

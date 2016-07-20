@@ -24,10 +24,20 @@ namespace TrocaMensagens
 
             var messagesThread = new MessagesThread();
             messagesThread.NewMessage += MessagesThread_NewMessage;
+            new Thread(messagesThread.Monitor).Start();
 
             var publicTab = new TabPage("Geral") { Name = "0" };
             publicTab.Controls.Add(new RichTextBox() { Dock = DockStyle.Fill, Enabled = false });
             tbcChats.TabPages.Add(publicTab);
+
+            this.grdUsuarios.CellMouseDoubleClick += GrdUsuarios_CellMouseDoubleClick;
+        }
+
+        private void GrdUsuarios_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            var row = this.grdUsuarios.Rows[e.RowIndex];
+            var userId = row.Cells[0].Value.ToString();
+            this.FindUserPage(userId);
         }
 
         private void UsersThread_UsersUpdated(UserList users)
@@ -55,23 +65,29 @@ namespace TrocaMensagens
         private void AddMessage(Data.Message message)
         {
             var senderId = message.UserId;
-            var userPanel = this.FindUserPage(senderId);
-            ((RichTextBox)userPanel.Controls[0]).Text += "\n[" + senderId + "]: " + message.Content;
+            var userPanel = this.FindUserPage(senderId.ToString());
+            ((RichTextBox)userPanel.Controls[0]).Text += "[" + senderId + "]: " + message.Content;
         }
 
-        private TabPage FindUserPage(int userId)
+        private TabPage FindUserPage(string userId, bool selectPage = false)
         {
-            var userIdString = userId.ToString();
-
             foreach (TabPage page in this.tbcChats.TabPages)
             {
-                if (page.Name == userIdString)
+                if (page.Name == userId)
                     return page;
             }
 
-            var userPage = new TabPage(userIdString);
-            userPage.Name = userIdString;
+            var userPage = new TabPage(userId);
+            userPage.Name = userId;
             userPage.Controls.Add(new RichTextBox() { Dock = DockStyle.Fill, Enabled = false });
+
+            this.tbcChats.TabPages.Add(userPage);
+
+            if (selectPage)
+            {
+                this.tbcChats.SelectedTab = userPage;
+            }
+
             return userPage;
         }
 
@@ -93,7 +109,10 @@ namespace TrocaMensagens
 
             var currentUser = Main.UserId;
 
-            ((RichTextBox)this.tbcChats.Controls[0]).Text += "\n[" + currentUser + "]: " + message;
+            txbMessage.Clear();
+
+            var messageBox = ((RichTextBox)this.tbcChats.SelectedTab.Controls[0]);
+            messageBox.Text += "[" + currentUser + "]: " + message;
         }
     }
 }

@@ -29,7 +29,7 @@ namespace TrocaMensagens
             foreach (var address in hostEntry.AddressList)
             {
                 var ipe = new IPEndPoint(address, port);
-                var tempSocket = new Socket(ipe.AddressFamily, SocketType.Stream, ProtocolType.Tcp/*_protocol*/);
+                var tempSocket = new Socket(ipe.AddressFamily, SocketType.Stream, ProtocolType.Unspecified);
 
                 tempSocket.Connect(ipe);
 

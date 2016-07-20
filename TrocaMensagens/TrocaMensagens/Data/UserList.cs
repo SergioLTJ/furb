@@ -27,7 +27,7 @@ namespace TrocaMensagens.Data
 
             for(int i = 0; i < tokens.Length; i += 3)
             {
-                if (String.IsNullOrEmpty(tokens[i]))
+                if (tokens[i].StartsWith("\r\n"))
                 {
                     break;
                 }

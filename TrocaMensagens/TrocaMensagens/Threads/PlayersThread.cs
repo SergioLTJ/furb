@@ -28,7 +28,7 @@ namespace TrocaMensagens.Threads
                         PlayersUpdated(players);
                     }
 
-                    Thread.Sleep(1000);
+                    Thread.Sleep(1000); 
                 } while (ShouldRun);
 
                 Thread.Sleep(50);

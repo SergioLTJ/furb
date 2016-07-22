@@ -35,7 +35,17 @@
             this.txbMessage = new System.Windows.Forms.RichTextBox();
             this.btnSend = new System.Windows.Forms.Button();
             this.tbcChats = new System.Windows.Forms.TabControl();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.btnGetCard = new System.Windows.Forms.Button();
+            this.btnStartStop = new System.Windows.Forms.Button();
+            this.txbGameLog = new System.Windows.Forms.RichTextBox();
+            this.grdPlayers = new System.Windows.Forms.DataGridView();
+            this.IdPlayer = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PlayerStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnFinishRound = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.grdUsuarios)).BeginInit();
+            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.grdPlayers)).BeginInit();
             this.SuspendLayout();
             // 
             // grdUsuarios
@@ -48,23 +58,27 @@
             this.grdUsuarios.Location = new System.Drawing.Point(565, 12);
             this.grdUsuarios.Name = "grdUsuarios";
             this.grdUsuarios.ReadOnly = true;
-            this.grdUsuarios.Size = new System.Drawing.Size(344, 461);
+            this.grdUsuarios.Size = new System.Drawing.Size(444, 461);
             this.grdUsuarios.TabIndex = 5;
             // 
             // ID
             // 
             this.ID.HeaderText = "ID";
             this.ID.Name = "ID";
+            this.ID.ReadOnly = true;
             // 
             // Nome
             // 
+            this.Nome.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.Nome.HeaderText = "Nome";
             this.Nome.Name = "Nome";
+            this.Nome.ReadOnly = true;
             // 
             // Vitórias
             // 
             this.Vitórias.HeaderText = "Vitórias";
             this.Vitórias.Name = "Vitórias";
+            this.Vitórias.ReadOnly = true;
             // 
             // txbMessage
             // 
@@ -92,11 +106,93 @@
             this.tbcChats.Size = new System.Drawing.Size(546, 398);
             this.tbcChats.TabIndex = 8;
             // 
+            // panel1
+            // 
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel1.Controls.Add(this.btnFinishRound);
+            this.panel1.Controls.Add(this.btnGetCard);
+            this.panel1.Controls.Add(this.btnStartStop);
+            this.panel1.Controls.Add(this.txbGameLog);
+            this.panel1.Location = new System.Drawing.Point(12, 480);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(997, 236);
+            this.panel1.TabIndex = 9;
+            // 
+            // btnGetCard
+            // 
+            this.btnGetCard.Enabled = false;
+            this.btnGetCard.Location = new System.Drawing.Point(455, 93);
+            this.btnGetCard.Name = "btnGetCard";
+            this.btnGetCard.Size = new System.Drawing.Size(85, 46);
+            this.btnGetCard.TabIndex = 2;
+            this.btnGetCard.Text = "Pegar uma carta";
+            this.btnGetCard.UseVisualStyleBackColor = true;
+            this.btnGetCard.Click += new System.EventHandler(this.btnGetCard_Click);
+            // 
+            // btnStartStop
+            // 
+            this.btnStartStop.Location = new System.Drawing.Point(455, 4);
+            this.btnStartStop.Name = "btnStartStop";
+            this.btnStartStop.Size = new System.Drawing.Size(85, 46);
+            this.btnStartStop.TabIndex = 1;
+            this.btnStartStop.Text = "Iniciar";
+            this.btnStartStop.UseVisualStyleBackColor = true;
+            this.btnStartStop.Click += new System.EventHandler(this.btnStartStop_Click);
+            // 
+            // txbGameLog
+            // 
+            this.txbGameLog.Location = new System.Drawing.Point(4, 4);
+            this.txbGameLog.Name = "txbGameLog";
+            this.txbGameLog.ReadOnly = true;
+            this.txbGameLog.Size = new System.Drawing.Size(444, 225);
+            this.txbGameLog.TabIndex = 0;
+            this.txbGameLog.Text = "";
+            // 
+            // grdPlayers
+            // 
+            this.grdPlayers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.grdPlayers.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.IdPlayer,
+            this.PlayerStatus});
+            this.grdPlayers.Location = new System.Drawing.Point(565, 480);
+            this.grdPlayers.Name = "grdPlayers";
+            this.grdPlayers.ReadOnly = true;
+            this.grdPlayers.Size = new System.Drawing.Size(444, 236);
+            this.grdPlayers.TabIndex = 10;
+            // 
+            // IdPlayer
+            // 
+            this.IdPlayer.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.IdPlayer.FillWeight = 25F;
+            this.IdPlayer.HeaderText = "ID";
+            this.IdPlayer.Name = "IdPlayer";
+            this.IdPlayer.ReadOnly = true;
+            // 
+            // PlayerStatus
+            // 
+            this.PlayerStatus.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.PlayerStatus.HeaderText = "Status";
+            this.PlayerStatus.Name = "PlayerStatus";
+            this.PlayerStatus.ReadOnly = true;
+            // 
+            // btnFinishRound
+            // 
+            this.btnFinishRound.Enabled = false;
+            this.btnFinishRound.Location = new System.Drawing.Point(454, 182);
+            this.btnFinishRound.Name = "btnFinishRound";
+            this.btnFinishRound.Size = new System.Drawing.Size(85, 46);
+            this.btnFinishRound.TabIndex = 3;
+            this.btnFinishRound.Text = "Terminar rodada";
+            this.btnFinishRound.UseVisualStyleBackColor = true;
+            this.btnFinishRound.Click += new System.EventHandler(this.btnFinishRound_Click);
+            // 
             // frmTrocaMensagens
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(921, 485);
+            this.ClientSize = new System.Drawing.Size(1023, 728);
+            this.Controls.Add(this.grdPlayers);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.tbcChats);
             this.Controls.Add(this.btnSend);
             this.Controls.Add(this.txbMessage);
@@ -104,18 +200,28 @@
             this.Name = "frmTrocaMensagens";
             this.Text = "Troca de mensagens";
             ((System.ComponentModel.ISupportInitialize)(this.grdUsuarios)).EndInit();
+            this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.grdPlayers)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
         private System.Windows.Forms.DataGridView grdUsuarios;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Nome;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Vitórias;
         private System.Windows.Forms.RichTextBox txbMessage;
         private System.Windows.Forms.Button btnSend;
         private System.Windows.Forms.TabControl tbcChats;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Nome;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Vitórias;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button btnGetCard;
+        private System.Windows.Forms.Button btnStartStop;
+        private System.Windows.Forms.RichTextBox txbGameLog;
+        private System.Windows.Forms.DataGridView grdPlayers;
+        private System.Windows.Forms.DataGridViewTextBoxColumn IdPlayer;
+        private System.Windows.Forms.DataGridViewTextBoxColumn PlayerStatus;
+        private System.Windows.Forms.Button btnFinishRound;
     }
 }
 

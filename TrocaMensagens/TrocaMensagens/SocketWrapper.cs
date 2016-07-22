@@ -1,22 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace TrocaMensagens
 {
     public class SocketWrapper : IDisposable
     {
         private Socket _socket;
-        //private ProtocolType _protocol;
 
         public SocketWrapper(string server, int port)
         {
-            //_protocol = protocol;
-            //var port = protocol == ProtocolType.Tcp ? 1012 : 1011;
             this.Connect(server, port);
         }
 

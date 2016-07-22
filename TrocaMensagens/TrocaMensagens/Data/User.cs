@@ -9,8 +9,8 @@
             this.Name = name;
         }
 
-        public long Id { get; }
-        public int Wins { get; }
-        public string Name { get; }
+        public long Id { get; private set; }
+        public int Wins { get; private set; }
+        public string Name { get; private set; }
     }
 }

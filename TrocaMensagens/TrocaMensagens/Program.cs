@@ -16,7 +16,7 @@ namespace TrocaMensagens
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmTrocaMensagens());
+            Application.Run(new Login());
         }
     }
 }

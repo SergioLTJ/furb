@@ -14,9 +14,9 @@ namespace TrocaMensagens.Threads
         {
             while (true)
             {
-                using (var socket = new SocketWrapper(Main.SERVER, 1012))
+                using (var socket = new SocketWrapper(Configuration.SERVER, 1012))
                 {
-                    var request = String.Format("GET USERS {0}:{1}", Main.UserId, Main.Password);
+                    var request = String.Format("GET USERS {0}:{1}", Configuration.UserId, Configuration.Password);
                     var returnValue = socket.SendSync(request);
 
                     var users = new UserList(returnValue);

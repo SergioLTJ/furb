@@ -14,9 +14,9 @@ namespace TrocaMensagens.Threads
         {
             while (true)
             {
-                using (var socket = new SocketWrapper(Main.SERVER, 1012))
+                using (var socket = new SocketWrapper(Configuration.SERVER, 1012))
                 {
-                    var data = String.Format("GET MESSAGE {0}:{1}", Main.UserId, Main.Password);
+                    var data = String.Format("GET MESSAGE {0}:{1}", Configuration.UserId, Configuration.Password);
                     var response = socket.SendSync(data);
 
                     var message = new Message(response);

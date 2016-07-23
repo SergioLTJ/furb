@@ -36,13 +36,13 @@
             this.btnSend = new System.Windows.Forms.Button();
             this.tbcChats = new System.Windows.Forms.TabControl();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnFinishRound = new System.Windows.Forms.Button();
             this.btnGetCard = new System.Windows.Forms.Button();
             this.btnStartStop = new System.Windows.Forms.Button();
             this.txbGameLog = new System.Windows.Forms.RichTextBox();
             this.grdPlayers = new System.Windows.Forms.DataGridView();
             this.IdPlayer = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PlayerStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.btnFinishRound = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.grdUsuarios)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.grdPlayers)).BeginInit();
@@ -58,7 +58,7 @@
             this.grdUsuarios.Location = new System.Drawing.Point(565, 12);
             this.grdUsuarios.Name = "grdUsuarios";
             this.grdUsuarios.ReadOnly = true;
-            this.grdUsuarios.Size = new System.Drawing.Size(444, 461);
+            this.grdUsuarios.Size = new System.Drawing.Size(444, 269);
             this.grdUsuarios.TabIndex = 5;
             // 
             // ID
@@ -82,17 +82,17 @@
             // 
             // txbMessage
             // 
-            this.txbMessage.Location = new System.Drawing.Point(12, 419);
+            this.txbMessage.Location = new System.Drawing.Point(13, 230);
             this.txbMessage.Name = "txbMessage";
-            this.txbMessage.Size = new System.Drawing.Size(450, 54);
+            this.txbMessage.Size = new System.Drawing.Size(450, 51);
             this.txbMessage.TabIndex = 6;
             this.txbMessage.Text = "";
             // 
             // btnSend
             // 
-            this.btnSend.Location = new System.Drawing.Point(468, 417);
+            this.btnSend.Location = new System.Drawing.Point(469, 230);
             this.btnSend.Name = "btnSend";
-            this.btnSend.Size = new System.Drawing.Size(91, 56);
+            this.btnSend.Size = new System.Drawing.Size(91, 51);
             this.btnSend.TabIndex = 7;
             this.btnSend.Text = "Enviar";
             this.btnSend.UseVisualStyleBackColor = true;
@@ -103,20 +103,32 @@
             this.tbcChats.Location = new System.Drawing.Point(13, 13);
             this.tbcChats.Name = "tbcChats";
             this.tbcChats.SelectedIndex = 0;
-            this.tbcChats.Size = new System.Drawing.Size(546, 398);
+            this.tbcChats.Size = new System.Drawing.Size(546, 211);
             this.tbcChats.TabIndex = 8;
             // 
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel1.Controls.Add(this.grdPlayers);
             this.panel1.Controls.Add(this.btnFinishRound);
             this.panel1.Controls.Add(this.btnGetCard);
             this.panel1.Controls.Add(this.btnStartStop);
             this.panel1.Controls.Add(this.txbGameLog);
-            this.panel1.Location = new System.Drawing.Point(12, 480);
+            this.panel1.Location = new System.Drawing.Point(12, 287);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(997, 236);
             this.panel1.TabIndex = 9;
+            // 
+            // btnFinishRound
+            // 
+            this.btnFinishRound.Enabled = false;
+            this.btnFinishRound.Location = new System.Drawing.Point(454, 182);
+            this.btnFinishRound.Name = "btnFinishRound";
+            this.btnFinishRound.Size = new System.Drawing.Size(85, 46);
+            this.btnFinishRound.TabIndex = 3;
+            this.btnFinishRound.Text = "Terminar rodada";
+            this.btnFinishRound.UseVisualStyleBackColor = true;
+            this.btnFinishRound.Click += new System.EventHandler(this.btnFinishRound_Click);
             // 
             // btnGetCard
             // 
@@ -154,7 +166,7 @@
             this.grdPlayers.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.IdPlayer,
             this.PlayerStatus});
-            this.grdPlayers.Location = new System.Drawing.Point(565, 480);
+            this.grdPlayers.Location = new System.Drawing.Point(553, -2);
             this.grdPlayers.Name = "grdPlayers";
             this.grdPlayers.ReadOnly = true;
             this.grdPlayers.Size = new System.Drawing.Size(444, 236);
@@ -175,23 +187,11 @@
             this.PlayerStatus.Name = "PlayerStatus";
             this.PlayerStatus.ReadOnly = true;
             // 
-            // btnFinishRound
-            // 
-            this.btnFinishRound.Enabled = false;
-            this.btnFinishRound.Location = new System.Drawing.Point(454, 182);
-            this.btnFinishRound.Name = "btnFinishRound";
-            this.btnFinishRound.Size = new System.Drawing.Size(85, 46);
-            this.btnFinishRound.TabIndex = 3;
-            this.btnFinishRound.Text = "Terminar rodada";
-            this.btnFinishRound.UseVisualStyleBackColor = true;
-            this.btnFinishRound.Click += new System.EventHandler(this.btnFinishRound_Click);
-            // 
             // frmTrocaMensagens
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1023, 728);
-            this.Controls.Add(this.grdPlayers);
+            this.ClientSize = new System.Drawing.Size(1023, 531);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.tbcChats);
             this.Controls.Add(this.btnSend);

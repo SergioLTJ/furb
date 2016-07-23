@@ -21,7 +21,7 @@ namespace TrocaMensagens
         public void SwitchState()
         {
             var command = this.GamePlaying ? "QUIT" : "ENTER";
-            var request = String.Format("SEND GAME {0}:{1}", Main.UserIdentification, command);
+            var request = String.Format("SEND GAME {0}:{1}", Configuration.UserIdentification, command);
             this.SendUdpRequest(request);
             this.GamePlaying = !this.GamePlaying;
             var message = String.Format("Jogo {0} com sucesso.", this.GamePlaying ? "iniciado" : "finalizado");
@@ -30,7 +30,7 @@ namespace TrocaMensagens
 
         public void GetCard()
         {
-            var request = String.Format("GET CARD {0}", Main.UserIdentification);
+            var request = String.Format("GET CARD {0}", Configuration.UserIdentification);
             var response = this.SendTcpRequest(request);
             var card = new Card(response);
             this.AddCard(card);
@@ -39,14 +39,14 @@ namespace TrocaMensagens
         public void EndRound()
         {
             this.Score = 0;
-            var request = String.Format("SEND GAME {0}:STOP", Main.UserIdentification);
+            var request = String.Format("SEND GAME {0}:STOP", Configuration.UserIdentification);
             this.SendUdpRequest(request);
             RoundEnded();
         }
 
         public void SendUdpRequest(string request)
         {
-            using (var client = new UdpClient(Main.SERVER, 1011))
+            using (var client = new UdpClient(Configuration.SERVER, 1011))
             {
                 var datagram = Encoding.ASCII.GetBytes(request);
                 client.Send(datagram, datagram.Length);
@@ -55,7 +55,7 @@ namespace TrocaMensagens
 
         public string SendTcpRequest(string request)
         {
-            using (var socket = new SocketWrapper(Main.SERVER, 1012))
+            using (var socket = new SocketWrapper(Configuration.SERVER, 1012))
             {
                 return socket.SendSync(request);
             }

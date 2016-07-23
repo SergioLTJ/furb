@@ -19,10 +19,9 @@ namespace TrocaMensagens
         {
             InitializeComponent();
 
-            Main.UserId = "5143";
-            Main.Password = "behbd";
-
             _controller = new BlackjackController();
+
+            this.Text += " - " + Configuration.UserId;
 
             this.txbMessage.KeyPress += txbMessage_KeyPress;
 
@@ -142,7 +141,7 @@ namespace TrocaMensagens
         {
             var senderId = message.UserId.ToString();
 
-            if (senderId == Main.UserId) { return; }
+            if (senderId == Configuration.UserId) { return; }
 
             var userPanel = this.FindUserPage(senderId);
             ((RichTextBox)userPanel.Controls[0]).Text += "[" + senderId + "]: " + message.Content;
@@ -199,7 +198,7 @@ namespace TrocaMensagens
 
             new Thread(() => new SendMessageCommand().Send(message, user)).Start();
 
-            var currentUser = Main.UserId;
+            var currentUser = Configuration.UserId;
 
             txbMessage.Clear();
 
@@ -214,20 +213,10 @@ namespace TrocaMensagens
 
         private void ChangeGameState(bool playing, string message)
         {
-            if (playing)
-            {
-                btnStartStop.Text = "Parar";
-                btnGetCard.Enabled = true;
-                btnFinishRound.Enabled = true;
-                _playersThread.ShouldRun = true;
-            }
-            else
-            {
-                btnStartStop.Text = "Iniciar";
-                btnGetCard.Enabled = false;
-                btnFinishRound.Enabled = false;
-                _playersThread.ShouldRun = false;
-            }
+            btnStartStop.Text = playing ? "Parar" : "Iniciar";
+
+            btnGetCard.Enabled = playing;
+            btnFinishRound.Enabled = playing;
 
             txbGameLog.Text += message + "\n";
         }

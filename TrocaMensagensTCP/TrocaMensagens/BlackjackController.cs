@@ -21,16 +21,16 @@ namespace TrocaMensagens
         public void SwitchState()
         {
             var command = this.GamePlaying ? "QUIT" : "ENTER";
-            var request = String.Format("SEND GAME {0}:{1}", Configuration.UserIdentification, command);
-            this.SendUdpRequest(request);
+            var request = String.Format("SEND GAME {0}:{1}\n", Configuration.UserIdentification, command);
+            this.SendTcpRequest(request);
             this.GamePlaying = !this.GamePlaying;
             var message = String.Format("Jogo {0} com sucesso.", this.GamePlaying ? "iniciado" : "finalizado");
-            StateChanged(this.GamePlaying, message);
+            this.StateChanged(this.GamePlaying, message);
         }
 
         public void GetCard()
         {
-            var request = String.Format("GET CARD {0}", Configuration.UserIdentification);
+            var request = String.Format("GET CARD {0}\n", Configuration.UserIdentification);
             var response = this.SendTcpRequest(request);
             var card = new Card(response);
             this.AddCard(card);
@@ -38,19 +38,9 @@ namespace TrocaMensagens
 
         public void EndRound()
         {
-            this.Score = 0;
-            var request = String.Format("SEND GAME {0}:STOP", Configuration.UserIdentification);
-            this.SendUdpRequest(request);
-            RoundEnded();
-        }
-
-        public void SendUdpRequest(string request)
-        {
-            using (var client = new UdpClient(Configuration.SERVER, 1011))
-            {
-                var datagram = Encoding.ASCII.GetBytes(request);
-                client.Send(datagram, datagram.Length);
-            }
+            var request = String.Format("SEND GAME {0}:STOP\n", Configuration.UserIdentification);
+            this.SendTcpRequest(request);
+            this.RoundEnded();
         }
 
         public string SendTcpRequest(string request)

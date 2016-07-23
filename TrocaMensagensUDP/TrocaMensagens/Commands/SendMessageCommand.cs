@@ -10,7 +10,7 @@ namespace TrocaMensagens.Commands
         {
             using (var client = new UdpClient(Configuration.SERVER, 1011))
             {
-                var data = String.Format("SEND MESSAGE {0}:{1}:{2}:{3}", Configuration.UserId, Configuration.Password, user, message);
+                var data = String.Format("SEND MESSAGE {0}:{1}:{2}\r\n", Configuration.UserIdentification, user, message);
                 var datagram = Encoding.ASCII.GetBytes(data);
                 client.Send(datagram, datagram.Length);
             }

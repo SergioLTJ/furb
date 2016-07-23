@@ -8,9 +8,12 @@ namespace TrocaMensagens
     public class SocketWrapper : IDisposable
     {
         private Socket _socket;
+        private IPEndPoint _ipe;
+        private ProtocolType _protocol;
 
-        public SocketWrapper(string server, int port)
+        public SocketWrapper(string server, int port, ProtocolType protocol = ProtocolType.Tcp)
         {
+            _protocol = protocol;
             this.Connect(server, port);
         }
 
@@ -22,10 +25,10 @@ namespace TrocaMensagens
 
             foreach (var address in hostEntry.AddressList)
             {
-                var ipe = new IPEndPoint(address, port);
-                var tempSocket = new Socket(ipe.AddressFamily, SocketType.Stream, ProtocolType.Unspecified);
+                _ipe = new IPEndPoint(address, port);
+                var tempSocket = new Socket(_ipe.AddressFamily, _protocol == ProtocolType.Tcp ? SocketType.Stream : SocketType.Dgram, _protocol);
 
-                tempSocket.Connect(ipe);
+                tempSocket.Connect(_ipe);
 
                 if (tempSocket.Connected)
                 {
@@ -42,7 +45,7 @@ namespace TrocaMensagens
         public void Send(string data)
         {
             var bytes = Encoding.ASCII.GetBytes(data);
-            _socket.Send(bytes);
+            _socket.SendTo(bytes, _ipe);
         }
 
         public string SendSync(string data)

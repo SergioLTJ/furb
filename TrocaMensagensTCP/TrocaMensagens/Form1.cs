@@ -141,7 +141,7 @@ namespace TrocaMensagens
         {
             var senderId = message.UserId.ToString();
 
-            if (senderId == Configuration.UserId) { return; }
+            //if (senderId == Configuration.UserId) { return; }
 
             var userPanel = this.FindUserPage(senderId);
             ((RichTextBox)userPanel.Controls[0]).Text += "[" + senderId + "]: " + message.Content;
@@ -193,17 +193,17 @@ namespace TrocaMensagens
 
         private void btnSend_Click(object sender, EventArgs e)
         {
-            var message = this.txbMessage.Text;
+            var message = this.txbMessage.Text.Replace("\n", String.Empty);
             var user = this.tbcChats.SelectedTab.Name;
 
-            new Thread(() => new SendMessageCommand().Send(message, user)).Start();
+            new SendMessageCommand().Send(message, user);
 
             var currentUser = Configuration.UserId;
 
             txbMessage.Clear();
 
             var messageBox = ((RichTextBox)this.tbcChats.SelectedTab.Controls[0]);
-            messageBox.Text += "[" + currentUser + "]: " + message;
+            messageBox.Text += String.Format("[{0}]: {1}{2}", currentUser, message, "\n");
         }
 
         private void _controller_StateChanged(bool playing, string message)

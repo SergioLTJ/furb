@@ -4,11 +4,11 @@ using TrocaMensagens.Data;
 
 namespace TrocaMensagens.Threads
 {
-    public delegate void UsersUpdatedHandler(UserList users);
+    public delegate void PlayersUpdatedHandler(PlayerList players);
 
-    public class UsersThread
+    public class PlayersThread
     {
-        public event UsersUpdatedHandler UsersUpdated;
+        public event PlayersUpdatedHandler PlayersUpdated;
 
         public void Monitor()
         {
@@ -16,15 +16,15 @@ namespace TrocaMensagens.Threads
             {
                 using (var socket = new SocketWrapper(Configuration.SERVER, 1012))
                 {
-                    var request = String.Format("GET USERS {0}:{1}", Configuration.UserId, Configuration.Password);
+                    var request = String.Format("GET PLAYERS {0}\n", Configuration.UserIdentification);
                     var returnValue = socket.SendSync(request);
 
-                    var users = new UserList(returnValue);
+                    var players = new PlayerList(returnValue);
 
-                    UsersUpdated(users);
+                    PlayersUpdated(players);
                 }
 
-                Thread.Sleep(6000);
+                Thread.Sleep(1000);
             }
         }
     }

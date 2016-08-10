@@ -7,9 +7,17 @@
 #fundo {
 	background-color: white;
 	border: 3px solid black;
-	width: 1010px;
-	height: 510px;
+	width: 95%;
+	height: 95%;
 	position: absolute;
+}
+
+#gol1 {
+	background-color: red;
+	width: 10px;
+	height: 150px;
+	top: 50%;
+	left: 0;
 }
 
 #jogador1 {
@@ -18,6 +26,14 @@
   width: 100px;
   position: absolute;
   border-radius: 50%;
+}
+
+#gol2 {
+	background-color: red;
+	width: 10px;
+	height: 150px;
+	top: 50%;
+	right: 0;
 }
 
 #jogador2 {
@@ -36,6 +52,6 @@
   border-radius: 50%;
 }
 
-#myElement:fullscreen, #myElement:-webkit-full-screen, #myElement:-moz-full-screen {
+*:fullscreen, *:-webkit-full-screen, *:-moz-full-screen {
     background-color: transparent;
 }

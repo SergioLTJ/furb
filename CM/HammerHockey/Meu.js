@@ -12,12 +12,19 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		// by default, it only adds horizontal recognizers
 		var mc = new Hammer(elemento);
 		
+		mc.add(new Hammer.Press({ time: 1, }));
+		
 		// let the pan gesture support all directions.
 		// this will block the vertical scrolling on a touch-device while on the element
 		mc.get('pan').set({ direction: Hammer.DIRECTION_ALL });
 		
 		var variacaoX = 0;
 		var variacaoY = 0;
+		
+		mc.on('press', function(ev) {
+			variacaoX = 0;
+			variacaoY = 0;
+		});
 		
 		// listen to events...
 		mc.on("panleft panright panup pandown", function(ev) {
@@ -27,16 +34,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			variacaoX = ev.deltaX;
 			variacaoY = ev.deltaY;
 		});
-		
-		mc.on("pressup", function(ev) {
-			variacaoX = 0;
-			variacaoY = 0;
-		});
 	}
 });
 
 function toggleFullScreen() {
-	var elem = document.getElementById("fundo")
+	var elem = document.getElementById("fundo");
 	if (!elem.fullscreenElement) {
 		if (elem.requestFullscreen) {
 			elem.requestFullscreen();

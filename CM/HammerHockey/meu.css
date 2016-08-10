@@ -1,0 +1,41 @@
+#fullscreen {
+	right: 0px;
+	bottom: 0px;
+	position: absolute;
+}
+
+#fundo {
+	background-color: white;
+	border: 3px solid black;
+	width: 1010px;
+	height: 510px;
+	position: absolute;
+}
+
+#jogador1 {
+  background: silver;
+  height: 100px;
+  width: 100px;
+  position: absolute;
+  border-radius: 50%;
+}
+
+#jogador2 {
+  background: silver;
+  height: 100px;
+  width: 100px;
+  position: absolute;
+  border-radius: 50%;
+}
+
+#bola {
+  background: red;
+  height: 50px;
+  width: 50px;
+  position: absolute;
+  border-radius: 50%;
+}
+
+#myElement:fullscreen, #myElement:-webkit-full-screen, #myElement:-moz-full-screen {
+    background-color: transparent;
+}

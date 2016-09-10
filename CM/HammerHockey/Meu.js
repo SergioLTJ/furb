@@ -1,57 +1,27 @@
-document.addEventListener("DOMContentLoaded", function(event) {
-	var jogador1 = document.getElementById('jogador1');
-	var jogador2 = document.getElementById('jogador2');
-	var bola = document.getElementById('bola');
-	
-	inicializarHammerMovimentacao(jogador1);
-	inicializarHammerMovimentacao(jogador2);
-	inicializarHammerMovimentacao(bola);
+$(document).ready(function () {
+	var c = document.getElementById("canvasJogo");
+	var contexto = c.getContext("2d");
+	var tabuleiro = new Tabuleiro();
+	tabuleiro.desenhar(contexto);
+	tabuleiro.posicionarJogador(0, 0, 1, 'red');
+	tabuleiro.posicionarJogador(0, 0, 2, 'green');
+	tabuleiro.posicionarJogador(0, 0, 3, 'blue');
+	tabuleiro.posicionarJogador(0, 0, 4, 'orange');
 
-	function inicializarHammerMovimentacao(elemento) {
-		// create a simple instance
-		// by default, it only adds horizontal recognizers
-		var mc = new Hammer(elemento);
-		
-		mc.add(new Hammer.Press({ time: 1, }));
-		
-		// let the pan gesture support all directions.
-		// this will block the vertical scrolling on a touch-device while on the element
-		mc.get('pan').set({ direction: Hammer.DIRECTION_ALL });
-		
-		var variacaoX = 0;
-		var variacaoY = 0;
-		
-		mc.on('press', function(ev) {
-			variacaoX = 0;
-			variacaoY = 0;
-		});
-		
-		// listen to events...
-		mc.on("panleft panright panup pandown", function(ev) {
-			elemento.style.top = parseInt(elemento.style.top, 10) + (ev.deltaY - variacaoY);
-			elemento.style.left  = parseInt(elemento.style.left, 10) + (ev.deltaX - variacaoX);
-				
-			variacaoX = ev.deltaX;
-			variacaoY = ev.deltaY;
-		});
+	$(window).resize(function() {
+		resizeCanvas();
+	});
+
+	resizeCanvas();
+
+	function resizeCanvas() {
+		var htmlCanvas = document.getElementById('canvasJogo');
+
+		htmlCanvas.width = window.innerWidth;
+		htmlCanvas.height = window.innerHeight;
 	}
+
+	setInterval(function () {
+		tabuleiro.desenhar(contexto);
+	}, 16.66666666666666666667)
 });
-
-function toggleFullScreen() {
-	var elem = document.getElementById("fundo");
-	if (!elem.fullscreenElement) {
-		if (elem.requestFullscreen) {
-			elem.requestFullscreen();
-		} else if (elem.msRequestFullscreen) {
-			elem.msRequestFullscreen();
-		} else if (elem.mozRequestFullScreen) {
-			elem.mozRequestFullScreen();
-		} else if (elem.webkitRequestFullscreen) {
-			elem.webkitRequestFullscreen();
-		}
-	} else {
-		if (elem.exitFullscreen) {
-			elem.exitFullscreen(); 
-		}
-	}
-}

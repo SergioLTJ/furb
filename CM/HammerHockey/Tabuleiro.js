@@ -1,12 +1,10 @@
 function Tabuleiro() {
-	this.tamanhoCelula = 50;
-
 	this.matriz = [
-		[new Celula(0, 0, 1), null,                null,                null,                   new Celula(4, 0, 10)],
-		[new Celula(0, 1, 2), null,                new Celula(2, 1, 8), new Celula(3, 1, 9),    new Celula(4, 1, 11)],
-		[new Celula(0, 2, 3), null,                new Celula(2, 2, 7), null,                   new Celula(4, 2, 12)],
-		[new Celula(0, 3, 4), new Celula(1, 3, 5), new Celula(2, 3, 6), null,                   new Celula(4, 3, 13)],
-		[null,                null,                null,                null,                   null],
+		[1, 0, 0, 0, 11],
+		[2, 0, 8, 9, 10],
+		[3, 0, 7, 0, 12],
+		[4, 5, 6, 0, 13],
+		[0, 0, 0, 0, 0],
 	];
 
 	this.desenhar = function (contextoGrafico) {
@@ -24,19 +22,30 @@ function Tabuleiro() {
 		this.matriz[x][y].atribuirJogador(jogador);
 	}
 
-	this.montarOrdem = function() {
-		var atual = this.matriz[0][0];
-		for (var i = 2; i < 14; i++) {
+	this.inicializarTabuleiro = function() {
+		var posicaoFinal = this.determinarPosicaoFinal();
+		for (var i = 1; i <= posicaoFinal; i++) {
 			for (var j = 0; j < this.matriz.length; j++) {
 				for (var k = 0; k < this.matriz[j].length; k++) {
-					if (this.matriz[j][k] && this.matriz[j][k].ordem == i) {
-						atual.atribuirSucessor(this.matriz[j][k]);
-						atual = this.matriz[j][k];
+					if (this.matriz[j][k] == i) {
+						this.matriz[j][k] = new Celula(k, j, i);
 					}
 				}
 			}
 		}
- 	}
-
- 	this.montarOrdem();
+	}
+	
+	this.determinarPosicaoFinal = function() {
+		var maior = 0;
+		for (var i = 0; i < this.matriz.length; i++) {
+			for (var j = 0; j < this.matriz[i].length; j++) {
+				if (this.matriz[i][j] > maior) {
+					maior = this.matriz[i][j];
+				}
+			}
+		}
+		return maior;
+	}
+	
+ 	this.inicializarTabuleiro();
 }

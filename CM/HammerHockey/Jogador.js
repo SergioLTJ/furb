@@ -1,44 +1,55 @@
 var idJogador = 0;
 
-function Jogador(x, y, posicao, cor) {
-	this.x = x;
-	this.y = y;
+function Jogador(celula, posicao, cor) {
+	this.celulaAtual = celula;
 	this.posicao = posicao;
 	this.cor = cor;
-	
+
 	this.desenhar = function (contexto) {
 		contexto.fillStyle = this.cor;
 
-		var posicaoX = this.definirX();
-		var posicaoY = this.definirY();
-
 		contexto.beginPath();
-		contexto.arc(posicaoX, posicaoY, configuracoes.TAMANHO_JOGADOR / 2, 0, 2 * Math.PI);
+		contexto.arc(this.posicaoX, this.posicaoY, configuracoes.TAMANHO_JOGADOR / 2, 0, 2 * Math.PI);
 		contexto.fill();
 	}
 
-	this.definirX = function() {
-		var umQuartoCelula = configuracoes.TAMANHO_CELULA / 4;
-		if (this.posicao == 1 || 
-			this.posicao == 3) 
-			return (this.x * configuracoes.TAMANHO_CELULA) + (umQuartoCelula);
-		else 
-			return (this.x * configuracoes.TAMANHO_CELULA) + (configuracoes.TAMANHO_CELULA - umQuartoCelula);
+	this.definirDiferenca = function(valorInicial, valorFinal) {
+		if (valorInicial > valorFinal) return -1;
+		if (valorInicial < valorFinal) return 1;
+		return 0;
+	} 
+
+	this.mover = function (novaCelula, contexto, tabuleiro) {
+		this.celulaAtual = novaCelula;
+		this.posicaoX = this.definirX(novaCelula);
+		this.posicaoY = this.definirY(novaCelula);
 	}
 
-	this.definirY = function() {
+	this.definirX = function(celula) {
 		var umQuartoCelula = configuracoes.TAMANHO_CELULA / 4;
-		if (this.posicao == 1 || 
+		if (this.posicao == 0 || 
 			this.posicao == 2) 
-			return (this.x * configuracoes.TAMANHO_CELULA) + (umQuartoCelula);
+			return (celula.x * configuracoes.TAMANHO_CELULA) + (umQuartoCelula);
 		else 
-			return (this.x * configuracoes.TAMANHO_CELULA) + (configuracoes.TAMANHO_CELULA - umQuartoCelula);
+			return (celula.x * configuracoes.TAMANHO_CELULA) + (configuracoes.TAMANHO_CELULA - umQuartoCelula);
+	}
+
+	this.definirY = function(celula) {
+		var umQuartoCelula = configuracoes.TAMANHO_CELULA / 4;
+		if (this.posicao == 0 || 
+			this.posicao == 1) 
+			return (celula.y * configuracoes.TAMANHO_CELULA) + (umQuartoCelula);
+		else 
+			return (celula.y * configuracoes.TAMANHO_CELULA) + (configuracoes.TAMANHO_CELULA - umQuartoCelula);
 	}
 
 	this.gerarNovoIdentificador = function() {
 		idJogador++;
 		this.identificador = idJogador;
 	}
+
+	this.posicaoX = this.definirX(this.celulaAtual);
+	this.posicaoY = this.definirY(this.celulaAtual);
 
 	this.identificador = this.gerarNovoIdentificador();
 }

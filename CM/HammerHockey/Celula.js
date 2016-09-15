@@ -21,8 +21,13 @@ function Celula(x, y, ordem) {
 		}
 	}
 
+	this.avancarJogador = function(posicao, contexto, tabuleiro) {
+		var jogador = this.jogadores[posicao];
+		jogador.mover(this.sucessor, contexto, tabuleiro);
+	}
+
 	this.atribuirJogador = function(jogador) {
-		this.jogadores[jogador.posicao - 1] = jogador;
+		this.jogadores[jogador.posicao] = jogador;
 	}	
 
 	this.atribuirSucessor = function(sucessor) {

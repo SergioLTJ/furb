@@ -6,7 +6,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{78D38094-2A31-A983-971E-31D8D41A3081}</ProjectGuid>
+    <ProjectGuid>{F15073EF-7689-6A63-45FF-2F608A4A4C11}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -45,9 +45,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\CameraController.cs" />
-     <Compile Include="Assets\Scripts\PlayerController.cs" />
-     <Compile Include="Assets\Scripts\Rotator.cs" />
+     <Compile Include="Assets\Classes\GrafoTabuleiro.cs" />
+     <Compile Include="Assets\Classes\TabuleiroCreator.cs" />
+     <Compile Include="Assets\Classes\VerticeTabuleiro.cs" />
+     <Compile Include="Assets\Scripts\GameLoop.cs" />
+     <Compile Include="Assets\Scripts\PlayerBehavior.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

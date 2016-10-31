@@ -9,8 +9,7 @@ function Tabuleiro(contextoGrafico) {
 		[1, 0, 0, 0, 0],
 		[2, 0, 8, 9, 10],
 		[3, 0, 7, 0, 11],
-		[4, 5, 6, 0, 12],
-		[0, 0, 0, 0, 0],
+		[4, 5, 6, 0, 12],		
 	];
 
 	this.jogadores = [];
@@ -32,6 +31,58 @@ function Tabuleiro(contextoGrafico) {
 		return jogador;
 	}
 
+	this.verificarLinhaPreenchida = function(indice) {
+		for (var i = 0; i < this.matriz[indice].length; i++) {
+			if (this.matriz[indice][i] != 0) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	this.verificarColunaPreenchida = function(indice) {
+		for (var i = 0; i < this.matriz.length; i++) {
+			if (this.matriz[i][indice] != 0) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	this.determinarAlturaTabuleiro = function() {
+		var self = this;
+		var primeiraLinhaPreenchida = (function() { 
+			for (var i = 0; i < self.matriz.length; i++) { 
+				if (self.verificarLinhaPreenchida(i)) 
+					return true; 
+			} 
+			return false;
+		})();
+		var ultimaLinhaPreenchida = (function() { 
+			for (var i = self.matriz.length - 1; i > -1; i--) { 
+				if (self.verificarLinhaPreenchida(i)) 
+					return true; 
+			} 
+			return false;
+		})();
+		var primeiraColunaPreenchida = (function() { 
+			for (var i = 0; i < self.matriz.length; i++) { 
+				if (self.verificarColunaPreenchida(i)) 
+					return true; 
+			} 
+			return false;
+		})();
+		var ultimaColunaPreenchida = (function() { 
+			for (var i = self.matriz.length - 1; i > -1; i--) { 
+				if (self.verificarColunaPreenchida(i)) 
+					return true; 
+			} 
+			return false;
+		})();
+	}
+	
 	this.inicializarTabuleiro = function() {
 		var anterior = null;
 		var posicaoFinal = this.determinarPosicaoFinal();
@@ -50,6 +101,8 @@ function Tabuleiro(contextoGrafico) {
 				}
 			}
 		}
+		
+		configuracoes.alturaTabuleiro = determinarAlturaTabuleiro();
 	}
 	
 	this.determinarPosicaoFinal = function() {
@@ -62,6 +115,10 @@ function Tabuleiro(contextoGrafico) {
 			}
 		}
 		return maior;
+	}
+	
+	this.verificarClique = function() {
+		
 	}
 	
  	this.inicializarTabuleiro();

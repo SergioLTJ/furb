@@ -48,6 +48,10 @@ function Jogador(celula, posicao, cor) {
 		this.identificador = idJogador;
 	}
 
+	this.desenharMenu = function() {
+		
+	}
+	
 	this.posicaoX = this.definirX(this.celulaAtual);
 	this.posicaoY = this.definirY(this.celulaAtual);
 

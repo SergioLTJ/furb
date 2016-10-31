@@ -1,18 +1,22 @@
 function Jogo(contexto) {
 
 	this.tabuleiro;
+	this.jogadores = [];
 
+	
 	this.contexto = contexto;
 
 	this.iniciar = function() {
+		var self = this;
+		
 		this.tabuleiro = new Tabuleiro(this.contexto);
-		this.tabuleiro.adicionarJogador(0, 'red');
-		this.tabuleiro.adicionarJogador(1, 'green');
-		this.tabuleiro.adicionarJogador(2, 'blue');
-		this.tabuleiro.adicionarJogador(3, 'yellow');
+		jogadores.push(this.tabuleiro.adicionarJogador(0, 'red'));
+		jogadores.push(this.tabuleiro.adicionarJogador(1, 'green'));
+		jogadores.push(this.tabuleiro.adicionarJogador(2, 'blue'));
+		jogadores.push(this.tabuleiro.adicionarJogador(3, 'yellow'));
 		
 		var canvas = document.getElementById('canvasJogo');
-		canvas.onclick = function (evento) { tabuleiro.verificarClique(evento, canvas); };
+		canvas.onclick = function (evento) { self.tabuleiro.verificarClique(evento, canvas); };
 
 		this.step();
 	}

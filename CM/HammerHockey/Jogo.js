@@ -16,7 +16,12 @@ function Jogo(contexto) {
 		jogadores.push(this.tabuleiro.adicionarJogador(3, 'yellow'));
 		
 		var canvas = document.getElementById('canvasJogo');
-		canvas.onclick = function (evento) { self.tabuleiro.verificarClique(evento, canvas); };
+		canvas.onclick = function (evento) { 
+			self.tabuleiro.verificarClique(evento, canvas); 
+			for (var i = 0; i < self.jogadores.length; i++) {
+				self.jogadores[i].verificarClique(evento);
+			}
+		};
 
 		this.step();
 	}

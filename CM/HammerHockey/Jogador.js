@@ -13,12 +13,6 @@ function Jogador(celula, posicao, cor) {
 		contexto.fill();
 	}
 
-	this.definirDiferenca = function(valorInicial, valorFinal) {
-		if (valorInicial > valorFinal) return -1;
-		if (valorInicial < valorFinal) return 1;
-		return 0;
-	} 
-
 	this.mover = function (novaCelula, contexto, tabuleiro) {
 		this.celulaAtual = novaCelula;
 		this.posicaoX = this.definirX(novaCelula);
@@ -44,11 +38,24 @@ function Jogador(celula, posicao, cor) {
 	}
 
 	this.gerarNovoIdentificador = function() {
-		idJogador++;
-		this.identificador = idJogador;
+		this.identificador = ++idJogador;
 	}
 
-	this.desenharMenu = function() {
+	this.desenharMenu = function(contexto) {
+		switch (this.posicao) {
+			case 0:
+				contexto.rect(configuracoes.primeiraColunaPreenchida * configuracoes.TAMANHO_CELULA, configuracoes.primeiraLinhaPreenchida * configuracoes.TAMANHO_CELULA - 11, 10, 10);
+				return;
+			case 1:
+				return;
+			case 2:
+				return;
+			case 3:
+				return;
+		}		
+	}
+
+	this.verificarClique = function(evento) {
 		
 	}
 	

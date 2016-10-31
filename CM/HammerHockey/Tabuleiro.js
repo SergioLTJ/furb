@@ -1,14 +1,22 @@
-function Tabuleiro() {
+function Tabuleiro(contextoGrafico) {
+	this.contexto = contextoGrafico;
+
+	this.turnoDisponivel = true;
+
+	this.jogadorAtual = 0;
+
 	this.matriz = [
-		[1, 0, 0, 0, 11],
+		[1, 0, 0, 0, 0],
 		[2, 0, 8, 9, 10],
-		[3, 0, 7, 0, 12],
-		[4, 5, 6, 0, 13],
+		[3, 0, 7, 0, 11],
+		[4, 5, 6, 0, 12],
 		[0, 0, 0, 0, 0],
 	];
 
-	this.desenhar = function (contextoGrafico) {
-		contextoGrafico.clearRect(0, 0, 1920, 1080);
+	this.jogadores = [];
+
+	this.atualizar = function () {
+		this.contexto.clearRect(0, 0, 1920, 1080);
 		for (var i = 0; i < this.matriz.length; i++) {
 			for (var j = 0; j < this.matriz[i].length; j++) {
 				if (this.matriz[i][j]) {
@@ -18,10 +26,10 @@ function Tabuleiro() {
 		}
 	}
 
-	this.posicionarJogador = function(x, y, posicao, cor) {
-		var celula = this.matriz[y][x];
-		var jogador = new Jogador(celula, posicao, cor);
-		celula.atribuirJogador(jogador);
+	this.adicionarJogador = function(posicao, cor) {
+		var jogador = new Jogador(this.celulaInicial, posicao, cor);
+		this.celulaInicial.atribuirJogador(jogador);
+		return jogador;
 	}
 
 	this.inicializarTabuleiro = function() {
@@ -34,6 +42,8 @@ function Tabuleiro() {
 						this.matriz[j][k] = new Celula(k, j, i);
 						if (anterior != null) {
 							anterior.sucessor = this.matriz[j][k];
+						} else {
+							this.celulaInicial = this.matriz[j][k];
 						}
 						anterior = this.matriz[j][k];
 					}

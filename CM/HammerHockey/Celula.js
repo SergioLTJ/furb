@@ -7,12 +7,27 @@ function Celula(x, y, ordem) {
 	this.jogadores = [ ];
 
 	this.desenhar = function(contexto) {
+		contexto.save();
+
+		contexto.fillStyle = 'green';
+
+		if (this.sucessor == null) {
+			contexto.fillRect(
+				configuracoes.TAMANHO_CELULA * this.x,
+				configuracoes.TAMANHO_CELULA * this.y, 
+				configuracoes.TAMANHO_CELULA, 
+				configuracoes.TAMANHO_CELULA
+			);
+		}
+
 		contexto.strokeRect(
 			configuracoes.TAMANHO_CELULA * this.x,
 			configuracoes.TAMANHO_CELULA * this.y, 
 			configuracoes.TAMANHO_CELULA, 
 			configuracoes.TAMANHO_CELULA
 		);
+
+		contexto.restore();
 
 		if (this.jogadores.length > 0) {
 			for (var i = 0; i < this.jogadores.length; i++) {

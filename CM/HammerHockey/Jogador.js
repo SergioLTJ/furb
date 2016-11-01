@@ -37,11 +37,13 @@ function Jogador(celula, posicao, cor) {
 
 	this.definirY = function(celula) {
 		var umQuartoCelula = configuracoes.TAMANHO_CELULA / 4;
+		
 		if (this.posicao == 0 || 
-			this.posicao == 1) 
+			this.posicao == 1) {
 			return (celula.y * configuracoes.TAMANHO_CELULA) + (umQuartoCelula);
-		else 
+		} else {
 			return (celula.y * configuracoes.TAMANHO_CELULA) + (configuracoes.TAMANHO_CELULA - umQuartoCelula);
+		}
 	}
 
 	this.gerarNovoIdentificador = function() {
@@ -85,5 +87,5 @@ function Jogador(celula, posicao, cor) {
 	this.posicaoX = this.definirX(this.celulaAtual);
 	this.posicaoY = this.definirY(this.celulaAtual);
 
-	this.identificador = this.gerarNovoIdentificador();
+	this.gerarNovoIdentificador();
 }

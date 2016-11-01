@@ -6,16 +6,15 @@ function Tabuleiro(contextoGrafico) {
 	this.jogadorAtual = 0;
 
 	this.matriz = [
-		[1, 0, 0, 8, 9, 10, 0],
-		[2, 3, 0, 7, 0, 11, 12],
-		[0, 4, 5, 6, , 0, 13],
-		[0, 0, 0, 0, , 0, 14],
-		[0, 0, 0, 18, 17, 16, 15],
-		[0, 0, 0, 19, 0, 0, 0],
-		[0, 0, 0, 20, 21, 21, 21],
+		[0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 1, 0, 0, 8, 9, 10, 0],
+		[0, 2, 3, 0, 7, 0, 11, 12],
+		[0, 0, 4, 5, 6, , 0, 13],
+		[0, 0, 0, 0, 0, , 0, 14],
+		[0, 0, 0, 0, 18, 17, 16, 15],
+		[0, 0, 0, 0, 19, 0, 0, 0],
+		[0, 0, 0, 0, 20, 21, 22, 23],
 	];
-
-	this.jogadores = [];
 
 	this.atualizar = function () {
 		this.contexto.clearRect(0, 0, 1920, 1080);
@@ -54,36 +53,43 @@ function Tabuleiro(contextoGrafico) {
 		return false;
 	}
 	
-	this.determinarAlturaTabuleiro = function() {
+	this.determinarUltimaColunaPreenchida = function() {
+		var ultimaColuna = -1;
+		for (var i = 0; i < this.matriz.length; i++) {
+			for (var j = this.matriz[i].length - 1; j > ultimaColuna; j--) {
+				if (this.matriz[i][j] !== 0) {
+					ultimaColuna = j;
+					break;
+				}
+			}
+		}
+		return ultimaColuna;
+	}
+	
+	this.determinarTamanhoTabuleiro = function() {
 		var self = this;
 		configuracoes.primeiraLinhaPreenchida = (function() { 
 			for (var i = 0; i < self.matriz.length; i++) { 
 				if (self.verificarLinhaPreenchida(i)) 
-					return true; 
+					return i; 
 			} 
-			return false;
+			return -1;
 		})();
 		configuracoes.ultimaLinhaPreenchida = (function() { 
 			for (var i = self.matriz.length - 1; i > -1; i--) { 
 				if (self.verificarLinhaPreenchida(i)) 
-					return true; 
+					return i; 
 			} 
-			return false;
+			return -1;
 		})();
 		configuracoes.primeiraColunaPreenchida = (function() { 
 			for (var i = 0; i < self.matriz.length; i++) { 
 				if (self.verificarColunaPreenchida(i)) 
-					return true; 
+					return i; 
 			} 
-			return false;
+			return -1;
 		})();
-		configuracoes.ultimaColunaPreenchida = (function() { 
-			for (var i = self.matriz.length - 1; i > -1; i--) { 
-				if (self.verificarColunaPreenchida(i)) 
-					return true; 
-			} 
-			return false;
-		})();
+		configuracoes.ultimaColunaPreenchida = this.determinarUltimaColunaPreenchida();
 	}
 	
 	this.inicializarTabuleiro = function() {
@@ -105,7 +111,7 @@ function Tabuleiro(contextoGrafico) {
 			}
 		}
 		
-		configuracoes.alturaTabuleiro = determinarAlturaTabuleiro();
+		this.determinarTamanhoTabuleiro();
 	}
 	
 	this.determinarPosicaoFinal = function() {

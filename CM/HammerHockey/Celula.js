@@ -11,22 +11,30 @@ function Celula(x, y, ordem) {
 
 		contexto.fillStyle = 'green';
 
+		var xTopoEsquerdoCelula = configuracoes.TAMANHO_CELULA * this.x;
+		var yTopoEsquerdoCelula = configuracoes.TAMANHO_CELULA * this.y;
+		
 		if (this.sucessor == null) {
 			contexto.fillRect(
-				configuracoes.TAMANHO_CELULA * this.x,
-				configuracoes.TAMANHO_CELULA * this.y, 
+				xTopoEsquerdoCelula,
+				yTopoEsquerdoCelula, 
 				configuracoes.TAMANHO_CELULA, 
 				configuracoes.TAMANHO_CELULA
 			);
 		}
 
 		contexto.strokeRect(
-			configuracoes.TAMANHO_CELULA * this.x,
-			configuracoes.TAMANHO_CELULA * this.y, 
+			xTopoEsquerdoCelula,
+			yTopoEsquerdoCelula, 
 			configuracoes.TAMANHO_CELULA, 
 			configuracoes.TAMANHO_CELULA
 		);
 
+		contexto.fillStyle = 'black';
+		contexto.textAlign = 'center';
+		contexto.font = '20px Arial';
+		contexto.fillText(this.ordem, xTopoEsquerdoCelula + configuracoes.TAMANHO_CELULA / 2, yTopoEsquerdoCelula + configuracoes.TAMANHO_CELULA / 2 + 5);
+		
 		contexto.restore();
 
 		if (this.jogadores.length > 0) {

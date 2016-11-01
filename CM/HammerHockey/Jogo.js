@@ -10,14 +10,14 @@ function Jogo(contexto) {
 		var self = this;
 		
 		this.tabuleiro = new Tabuleiro(this.contexto);
-		jogadores.push(this.tabuleiro.adicionarJogador(0, 'red'));
-		jogadores.push(this.tabuleiro.adicionarJogador(1, 'green'));
-		jogadores.push(this.tabuleiro.adicionarJogador(2, 'blue'));
-		jogadores.push(this.tabuleiro.adicionarJogador(3, 'yellow'));
+		this.jogadores.push(this.tabuleiro.adicionarJogador(0, 'red'));
+		this.jogadores.push(this.tabuleiro.adicionarJogador(1, 'green'));
+		this.jogadores.push(this.tabuleiro.adicionarJogador(2, 'blue'));
+		this.jogadores.push(this.tabuleiro.adicionarJogador(3, 'yellow'));
 		
 		var canvas = document.getElementById('canvasJogo');
 		canvas.onclick = function (evento) { 
-			self.tabuleiro.verificarClique(evento, canvas); 
+			self.tabuleiro.verificarClique(evento, canvas);
 			for (var i = 0; i < self.jogadores.length; i++) {
 				self.jogadores[i].verificarClique(evento);
 			}
@@ -29,5 +29,8 @@ function Jogo(contexto) {
 	this.step = function() {
 		requestAnimationFrame(this.step.bind(this));
 		this.tabuleiro.atualizar();
+		for (var i = 0; i < this.jogadores.length; i++) {
+			this.jogadores[i].desenharMenu(this.contexto);
+		}
 	}
 }

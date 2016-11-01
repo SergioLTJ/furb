@@ -4,11 +4,6 @@ function Jogador(celula, posicao, cor) {
 	this.celulaAtual = celula;
 	this.posicao = posicao;
 	this.cor = cor;
-
-	this.xPrimeiraColuna = configuracoes.primeiraColunaPreenchida * configuracoes.TAMANHO_CELULA;
-	this.yPrimeiraLinha = configuracoes.primeiraLinhaPreenchida * configuracoes.TAMANHO_CELULA - (configuracoes.ALTURA_MENU + 5);
-	this.xSegundaColuna = (configuracoes.ultimaColunaPreenchida + 1) * configuracoes.TAMANHO_CELULA - (configuracoes.LARGURA_MENU);
-	this.ySegundaLinha = (configuracoes.ultimaLinhaPreenchida + 1) * configuracoes.TAMANHO_CELULA + 5;
 	
 	this.desenhar = function (contexto) {
 		contexto.fillStyle = this.cor;
@@ -16,6 +11,8 @@ function Jogador(celula, posicao, cor) {
 		contexto.beginPath();
 		contexto.arc(this.posicaoX, this.posicaoY, configuracoes.TAMANHO_JOGADOR / 2, 0, 2 * Math.PI);
 		contexto.fill();
+		
+		this.desenharMenu(contexto);
 	}
 
 	this.mover = function (novaCelula, contexto, tabuleiro) {
@@ -58,24 +55,8 @@ function Jogador(celula, posicao, cor) {
 		var altura = configuracoes.ALTURA_MENU;
 		var largura = configuracoes.LARGURA_MENU;
 		
-		switch (this.posicao) {
-			case 0:
-				contexto.fillRect(this.xPrimeiraColuna, this.yPrimeiraLinha, largura, altura);
-				contexto.strokeRect(this.xPrimeiraColuna, this.yPrimeiraLinha, largura, altura);
-				break;
-			case 1:
-				contexto.fillRect(this.xSegundaColuna, this.yPrimeiraLinha, largura, altura);
-				contexto.strokeRect(this.xSegundaColuna, this.yPrimeiraLinha, largura, altura);
-				break;
-			case 2:
-				contexto.fillRect(this.xPrimeiraColuna, this.ySegundaLinha, largura, altura);
-				contexto.strokeRect(this.xPrimeiraColuna, this.ySegundaLinha, largura, altura);
-				break;
-			case 3:
-				contexto.fillRect(this.xSegundaColuna, this.ySegundaLinha, largura, altura);
-				contexto.strokeRect(this.xSegundaColuna, this.ySegundaLinha, largura, altura);
-				break;
-		}
+		contexto.fillRect(this.xMenu, this.yMenu, largura, altura);
+		contexto.strokeRect(this.xMenu, this.yMenu, largura, altura);
 		
 		contexto.restore();
 	}
@@ -83,9 +64,36 @@ function Jogador(celula, posicao, cor) {
 	this.verificarClique = function(evento) {
 		
 	}
+
+	this.definirPosicoesMenu = function() {
+		var xPrimeiraColuna = configuracoes.primeiraColunaPreenchida * configuracoes.TAMANHO_CELULA;
+		var yPrimeiraLinha = configuracoes.primeiraLinhaPreenchida * configuracoes.TAMANHO_CELULA - (configuracoes.ALTURA_MENU + 5);
+		var xSegundaColuna = (configuracoes.ultimaColunaPreenchida + 1) * configuracoes.TAMANHO_CELULA - (configuracoes.LARGURA_MENU);
+		var ySegundaLinha = (configuracoes.ultimaLinhaPreenchida + 1) * configuracoes.TAMANHO_CELULA + 5;
+		
+		switch (this.posicao) {
+			case 0:
+				this.xMenu = xPrimeiraColuna;
+				this.yMenu = yPrimeiraLinha;
+				return;
+			case 1:
+				this.xMenu = xSegundaColuna;
+				this.y = yPrimeiraLinha;
+				return;
+			case 2:
+				this.xMenu = xPrimeiraColuna;
+				this.yMenu = ySegundaLinha;
+				return;
+			case 3:
+				this.xMenu = xSegundaColuna;
+				this.yMenu = ySegundaLinha;
+				return;
+		}
+	}
 	
 	this.posicaoX = this.definirX(this.celulaAtual);
 	this.posicaoY = this.definirY(this.celulaAtual);
 
 	this.gerarNovoIdentificador();
+	this.definirPosicoesMenu();
 }

@@ -36,12 +36,6 @@ function Celula(x, y, ordem) {
 		contexto.fillText(this.ordem, xTopoEsquerdoCelula + configuracoes.TAMANHO_CELULA / 2, yTopoEsquerdoCelula + configuracoes.TAMANHO_CELULA / 2 + 5);
 		
 		contexto.restore();
-
-		if (this.jogadores.length > 0) {
-			for (var i = 0; i < this.jogadores.length; i++) {
-				this.jogadores[i].desenhar(contexto);
-			}
-		}
 	}
 
 	this.avancarJogador = function(posicao, contexto, tabuleiro) {

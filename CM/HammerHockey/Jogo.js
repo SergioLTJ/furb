@@ -30,7 +30,7 @@ function Jogo(contexto) {
 		requestAnimationFrame(this.step.bind(this));
 		this.tabuleiro.atualizar();
 		for (var i = 0; i < this.jogadores.length; i++) {
-			this.jogadores[i].desenharMenu(this.contexto);
+			this.jogadores[i].desenhar(this.contexto);
 		}
 	}
 }

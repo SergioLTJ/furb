@@ -62,19 +62,19 @@ function Jogador(celula, posicao, cor) {
 			case 0:
 				contexto.fillRect(this.xPrimeiraColuna, this.yPrimeiraLinha, largura, altura);
 				contexto.strokeRect(this.xPrimeiraColuna, this.yPrimeiraLinha, largura, altura);
-				return;
+				break;
 			case 1:
 				contexto.fillRect(this.xSegundaColuna, this.yPrimeiraLinha, largura, altura);
 				contexto.strokeRect(this.xSegundaColuna, this.yPrimeiraLinha, largura, altura);
-				return;
+				break;
 			case 2:
 				contexto.fillRect(this.xPrimeiraColuna, this.ySegundaLinha, largura, altura);
 				contexto.strokeRect(this.xPrimeiraColuna, this.ySegundaLinha, largura, altura);
-				return;
+				break;
 			case 3:
 				contexto.fillRect(this.xSegundaColuna, this.ySegundaLinha, largura, altura);
 				contexto.strokeRect(this.xSegundaColuna, this.ySegundaLinha, largura, altura);
-				return;
+				break;
 		}
 		
 		contexto.restore();

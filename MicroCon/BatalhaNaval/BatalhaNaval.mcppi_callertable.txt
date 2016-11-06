@@ -1,0 +1,18 @@
+main
+	__CC2DW
+	setup
+		UART1_Init
+		init_matrix
+			Mul_16X16_U
+		Mul_16X16_U
+		posicionar_horizontal
+			gerar_aleatorio
+				rand
+					srand
+					Mul_32x32_U
+				Div_16x16_S
+					Div_16x16_S_L
+			validar_posicoes_vazias
+				Mul_16X16_U
+			Mul_16X16_U
+	main_loop

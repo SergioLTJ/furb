@@ -7,22 +7,44 @@ function Celula(x, y, ordem) {
 	this.jogadores = [ ];
 
 	this.desenhar = function(contexto) {
+		contexto.save();
+
+		contexto.fillStyle = 'green';
+
+		var xTopoEsquerdoCelula = configuracoes.TAMANHO_CELULA * this.x;
+		var yTopoEsquerdoCelula = configuracoes.TAMANHO_CELULA * this.y;
+		
+		if (this.sucessor == null) {
+			contexto.fillRect(
+				xTopoEsquerdoCelula,
+				yTopoEsquerdoCelula, 
+				configuracoes.TAMANHO_CELULA, 
+				configuracoes.TAMANHO_CELULA
+			);
+		}
+
 		contexto.strokeRect(
-			configuracoes.TAMANHO_CELULA * this.x,
-			configuracoes.TAMANHO_CELULA * this.y, 
+			xTopoEsquerdoCelula,
+			yTopoEsquerdoCelula, 
 			configuracoes.TAMANHO_CELULA, 
 			configuracoes.TAMANHO_CELULA
 		);
 
-		if (this.jogadores.length > 0) {
-			for (var i = 0; i < this.jogadores.length; i++) {
-				this.jogadores[i].desenhar(contexto);
-			}
-		}
+		contexto.fillStyle = 'black';
+		contexto.textAlign = 'center';
+		contexto.font = '20px Arial';
+		contexto.fillText(this.ordem, xTopoEsquerdoCelula + configuracoes.TAMANHO_CELULA / 2, yTopoEsquerdoCelula + configuracoes.TAMANHO_CELULA / 2 + 5);
+		
+		contexto.restore();
+	}
+
+	this.avancarJogador = function(posicao, contexto, tabuleiro) {
+		var jogador = this.jogadores[posicao];
+		jogador.mover(this.sucessor, contexto, tabuleiro);
 	}
 
 	this.atribuirJogador = function(jogador) {
-		this.jogadores[jogador.posicao - 1] = jogador;
+		this.jogadores[jogador.posicao] = jogador;
 	}	
 
 	this.atribuirSucessor = function(sucessor) {

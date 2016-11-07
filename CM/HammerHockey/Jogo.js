@@ -3,7 +3,6 @@ function Jogo(contexto) {
 	this.tabuleiro;
 	this.jogadores = [];
 
-	
 	this.contexto = contexto;
 
 	this.iniciar = function() {
@@ -13,15 +12,16 @@ function Jogo(contexto) {
 		this.jogadores.push(this.tabuleiro.adicionarJogador(0, 'red'));
 		this.jogadores.push(this.tabuleiro.adicionarJogador(1, 'green'));
 		this.jogadores.push(this.tabuleiro.adicionarJogador(2, 'blue'));
-		this.jogadores.push(this.tabuleiro.adicionarJogador(3, 'yellow'));
+		this.jogadores.push(this.tabuleiro.adicionarJogador(3, 'magenta'));
 		
 		var canvas = document.getElementById('canvasJogo');
 		canvas.onclick = function (evento) { 
-			self.tabuleiro.verificarClique(evento, canvas);
 			for (var i = 0; i < self.jogadores.length; i++) {
 				self.jogadores[i].verificarClique(evento);
 			}
 		};
+
+		this.jogadores[0].entrarTurno();
 
 		this.step();
 	}

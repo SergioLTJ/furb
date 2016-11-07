@@ -4,7 +4,15 @@ function Jogador(celula, posicao, cor) {
 	this.celulaAtual = celula;
 	this.posicao = posicao;
 	this.cor = cor;
-	
+
+	this.corMenu = cor;
+	this.bufferCor = 'yellow';
+
+	this.estaNoTurno = false;
+
+	this.amarelo = false;
+	this.tempoAnimacao = 0;
+
 	this.desenhar = function (contexto) {
 		contexto.fillStyle = this.cor;
 
@@ -50,7 +58,17 @@ function Jogador(celula, posicao, cor) {
 	this.desenharMenu = function(contexto) {
 		contexto.save();
 		
-		contexto.fillStyle = this.cor;
+		var data = new Date();
+		var tempoMillis = data.getTime();
+		if (this.estaNoTurno && 
+			(tempoMillis - this.tempoAnimacao) > configuracoes.TEMPO_ANIMACAO_TURNO) {
+			this.tempoAnimacao = tempoMillis;
+			var corIntermediaria = this.corMenu;
+			this.corMenu = this.bufferCor;
+			this.bufferCor = corIntermediaria;
+		}
+
+		contexto.fillStyle = this.corMenu;
 		
 		var altura = configuracoes.ALTURA_MENU;
 		var largura = configuracoes.LARGURA_MENU;
@@ -58,11 +76,45 @@ function Jogador(celula, posicao, cor) {
 		contexto.fillRect(this.xMenu, this.yMenu, largura, altura);
 		contexto.strokeRect(this.xMenu, this.yMenu, largura, altura);
 		
+		contexto.fillStyle = 'black';
+		contexto.textAlign = 'center';
+		contexto.font = '16px Arial';
+		contexto.fillText("Jogador " + (this.posicao + 1), this.xMenu + configuracoes.LARGURA_MENU / 2, this.yMenu + configuracoes.ALTURA_MENU / 2 + 5);
+
 		contexto.restore();
 	}
 
-	this.verificarClique = function(evento) {
-		
+	this.verificarClique = function(evento, jogo) {
+		var altura = configuracoes.ALTURA_MENU;
+		var largura = configuracoes.LARGURA_MENU;
+
+		var xInferiorMenu = this.xMenu + largura;
+		var yInferiorMenu = this.yMenu + altura;
+
+		if (evento.offsetX > this.xMenu &&
+			evento.offsetX < xInferiorMenu &&
+			evento.offsetY > this.yMenu &&
+			evento.offsetY < yInferiorMenu)
+		{
+			if (this.estaNoTurno)
+			{
+				this.estaNoTurno = false;
+				this.rolarDado();
+			}
+		}
+	}
+
+	this.entrarTurno = function() {
+		var data = new Date();
+		this.estaNoTurno = true;
+		this.tempoAnimacao = data.getTime();
+	}
+
+	this.rolarDado = function() {
+		var valor = Math.floor((Math.random() * 5));
+		for (var i = 0; i < valor; i++) {
+			this.celulaAtual = this.celulaAtual.sucessor;
+		}
 	}
 
 	this.definirPosicoesMenu = function() {
@@ -78,7 +130,7 @@ function Jogador(celula, posicao, cor) {
 				return;
 			case 1:
 				this.xMenu = xSegundaColuna;
-				this.y = yPrimeiraLinha;
+				this.yMenu = yPrimeiraLinha;
 				return;
 			case 2:
 				this.xMenu = xPrimeiraColuna;

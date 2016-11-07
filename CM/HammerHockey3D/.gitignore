@@ -2,3 +2,5 @@
 /Build/
 /obj/Debug/
 .userprefs
+.unitypackage
+/Temp/

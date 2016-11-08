@@ -8,10 +8,41 @@ function Jogador(celula, posicao, cor) {
 	this.corMenu = cor;
 	this.bufferCor = 'yellow';
 
+	this.texto = 'Jogador ' + (posicao + 1);
+	this.bufferTexto = 'Clique para rolar o dado';
+
 	this.estaNoTurno = false;
 
 	this.amarelo = false;
 	this.tempoAnimacao = 0;
+
+	this.movimentosRestantes = 0;
+	this.tempoMovimentacao = 0;
+
+	this.atualizar = function(jogo) {
+		if (this.movimentosRestantes == 0)
+			return;
+
+		var data = new Date();
+		var tempoMillis = data.getTime();
+		if ((tempoMillis - this.tempoMovimentacao) > configuracoes.TEMPO_AVANCO_JOGADOR) 
+		{
+			this.mover();
+			if (this.celulaAtual.sucessor == null) 
+			{
+				jogo.finalizar(this);
+			} 
+			else 
+			{
+				this.movimentosRestantes--;
+				this.tempoMovimentacao = tempoMillis;
+				if (this.movimentosRestantes == 0)
+				{
+					jogo.avancarTurno();
+				}
+			}
+		}
+	}
 
 	this.desenhar = function (contexto) {
 		contexto.fillStyle = this.cor;
@@ -23,13 +54,13 @@ function Jogador(celula, posicao, cor) {
 		this.desenharMenu(contexto);
 	}
 
-	this.mover = function (novaCelula, contexto, tabuleiro) {
-		this.celulaAtual = novaCelula;
-		this.posicaoX = this.definirX(novaCelula);
-		this.posicaoY = this.definirY(novaCelula);
+	this.mover = function () {
+		this.celulaAtual = this.celulaAtual.sucessor;
+		this.posicaoX = this.definirX(this.celulaAtual);
+		this.posicaoY = this.definirY(this.celulaAtual);
 	}
 
-	this.definirX = function(celula) {
+	this.definirX = function(celula) {	
 		var umQuartoCelula = configuracoes.TAMANHO_CELULA / 4;
 		
 		if (this.posicao == 0 || 
@@ -79,7 +110,7 @@ function Jogador(celula, posicao, cor) {
 		contexto.fillStyle = 'black';
 		contexto.textAlign = 'center';
 		contexto.font = '16px Arial';
-		contexto.fillText("Jogador " + (this.posicao + 1), this.xMenu + configuracoes.LARGURA_MENU / 2, this.yMenu + configuracoes.ALTURA_MENU / 2 + 5);
+		contexto.fillText(this.texto, this.xMenu + configuracoes.LARGURA_MENU / 2, this.yMenu + configuracoes.ALTURA_MENU / 2 + 5);
 
 		contexto.restore();
 	}
@@ -99,29 +130,29 @@ function Jogador(celula, posicao, cor) {
 			if (this.estaNoTurno)
 			{
 				this.estaNoTurno = false;
+				this.corMenu = this.cor;												
+				this.texto = 'Jogador ' + (this.posicao + 1);
 				this.rolarDado();
 			}
 		}
 	}
 
 	this.entrarTurno = function() {
-		var data = new Date();
 		this.estaNoTurno = true;
-		this.tempoAnimacao = data.getTime();
+		this.tempoAnimacao = new Date().getTime();
+		this.texto = 'Clique para rolar o dado';
 	}
 
 	this.rolarDado = function() {
-		var valor = Math.floor((Math.random() * 5));
-		for (var i = 0; i < valor; i++) {
-			this.celulaAtual = this.celulaAtual.sucessor;
-		}
+		this.movimentosRestantes = Math.floor((Math.random() * 6) + 1);
+		this.tempoMovimentacao = new Date().getTime();
 	}
 
 	this.definirPosicoesMenu = function() {
 		var xPrimeiraColuna = configuracoes.primeiraColunaPreenchida * configuracoes.TAMANHO_CELULA;
-		var yPrimeiraLinha = configuracoes.primeiraLinhaPreenchida * configuracoes.TAMANHO_CELULA - (configuracoes.ALTURA_MENU + 5);
+		var yPrimeiraLinha = configuracoes.primeiraLinhaPreenchida * configuracoes.TAMANHO_CELULA - (configuracoes.ALTURA_MENU + configuracoes.DISTANCIA_MENU_TABULEIRO);
 		var xSegundaColuna = (configuracoes.ultimaColunaPreenchida + 1) * configuracoes.TAMANHO_CELULA - (configuracoes.LARGURA_MENU);
-		var ySegundaLinha = (configuracoes.ultimaLinhaPreenchida + 1) * configuracoes.TAMANHO_CELULA + 5;
+		var ySegundaLinha = (configuracoes.ultimaLinhaPreenchida + 1) * configuracoes.TAMANHO_CELULA + configuracoes.DISTANCIA_MENU_TABULEIRO;
 		
 		switch (this.posicao) {
 			case 0:

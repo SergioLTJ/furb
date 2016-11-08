@@ -2,6 +2,7 @@ function Jogo(contexto) {
 
 	this.tabuleiro;
 	this.jogadores = [];
+	this.indiceJogadorAtual = 0;
 
 	this.contexto = contexto;
 
@@ -14,10 +15,12 @@ function Jogo(contexto) {
 		this.jogadores.push(this.tabuleiro.adicionarJogador(2, 'blue'));
 		this.jogadores.push(this.tabuleiro.adicionarJogador(3, 'magenta'));
 		
+		configuracoes.numeroJogadores = 4;
+
 		var canvas = document.getElementById('canvasJogo');
 		canvas.onclick = function (evento) { 
 			for (var i = 0; i < self.jogadores.length; i++) {
-				self.jogadores[i].verificarClique(evento);
+				self.jogadores[i].verificarClique(evento, self);
 			}
 		};
 
@@ -26,11 +29,23 @@ function Jogo(contexto) {
 		this.step();
 	}
 
+	this.avancarTurno = function() {
+		if (++this.indiceJogadorAtual == configuracoes.numeroJogadores) {
+			this.indiceJogadorAtual = 0;
+		}
+		this.jogadores[this.indiceJogadorAtual].entrarTurno();
+	}
+
 	this.step = function() {
 		requestAnimationFrame(this.step.bind(this));
 		this.tabuleiro.atualizar();
 		for (var i = 0; i < this.jogadores.length; i++) {
+			this.jogadores[i].atualizar(this);
 			this.jogadores[i].desenhar(this.contexto);
 		}
+	}
+
+	this.finalizar = function() {
+		this.contexto.clearRect(0, 1920, 1080)
 	}
 }

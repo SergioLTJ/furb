@@ -32,8 +32,8 @@ function Celula(x, y, ordem) {
 
 		contexto.fillStyle = 'black';
 		contexto.textAlign = 'center';
-		contexto.font = '20px Arial';
-		contexto.fillText(this.ordem, xTopoEsquerdoCelula + configuracoes.TAMANHO_CELULA / 2, yTopoEsquerdoCelula + configuracoes.TAMANHO_CELULA / 2 + 5);
+		contexto.font = configuracoes.TAMANHO_TEXTO_CELULAS + ' Arial';
+		contexto.fillText(this.ordem, xTopoEsquerdoCelula + configuracoes.TAMANHO_CELULA / 2, yTopoEsquerdoCelula + configuracoes.TAMANHO_CELULA / 2 + 3);
 		
 		contexto.restore();
 	}

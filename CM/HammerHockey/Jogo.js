@@ -6,6 +6,8 @@ function Jogo(contexto) {
 
 	this.contexto = contexto;
 
+	this.terminou = false;
+
 	this.iniciar = function() {
 		var self = this;
 		
@@ -37,15 +39,29 @@ function Jogo(contexto) {
 	}
 
 	this.step = function() {
-		requestAnimationFrame(this.step.bind(this));
-		this.tabuleiro.atualizar();
-		for (var i = 0; i < this.jogadores.length; i++) {
-			this.jogadores[i].atualizar(this);
-			this.jogadores[i].desenhar(this.contexto);
+		if (!this.terminou)  
+		{
+			requestAnimationFrame(this.step.bind(this));
+
+			this.tabuleiro.atualizar();
+			for (var i = 0; i < this.jogadores.length; i++) 
+			{
+				this.jogadores[i].atualizar(this);
+				if (!this.terminou) 
+					this.jogadores[i].desenhar(this.contexto);
+			}
 		}
 	}
 
-	this.finalizar = function() {
-		this.contexto.clearRect(0, 1920, 1080)
+	this.finalizar = function(jogadorVencedor) {
+		this.terminou = true;
+		this.contexto.clearRect(0, 0, 1920, 1080)
+		contexto.fillStyle = jogadorVencedor.cor;
+		contexto.textAlign = 'center';
+		contexto.font = '32px Arial';
+
+		var xTexto = (configuracoes.ultimaColunaPreenchida * configuracoes.TAMANHO_CELULA + configuracoes.TAMANHO_CELULA) / 2;
+		var yTexto = (configuracoes.ultimaLinhaPreenchida * configuracoes.TAMANHO_CELULA + configuracoes.TAMANHO_CELULA + configuracoes.ALTURA_MENU * 2 + configuracoes.DISTANCIA_MENU_TABULEIRO * 2) / 2;
+		contexto.fillText("O jogador " + jogadorVencedor.posicao + " venceu!", xTexto, yTexto);
 	}
 }

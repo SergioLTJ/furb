@@ -109,7 +109,7 @@ function Jogador(celula, posicao, cor) {
 		
 		contexto.fillStyle = 'black';
 		contexto.textAlign = 'center';
-		contexto.font = '16px Arial';
+		contexto.font = '12px Arial';
 		contexto.fillText(this.texto, this.xMenu + configuracoes.LARGURA_MENU / 2, this.yMenu + configuracoes.ALTURA_MENU / 2 + 5);
 
 		contexto.restore();
@@ -130,7 +130,8 @@ function Jogador(celula, posicao, cor) {
 			if (this.estaNoTurno)
 			{
 				this.estaNoTurno = false;
-				this.corMenu = this.cor;												
+				this.corMenu = this.cor;
+				this.bufferCor = 'yellow';
 				this.texto = 'Jogador ' + (this.posicao + 1);
 				this.rolarDado();
 			}

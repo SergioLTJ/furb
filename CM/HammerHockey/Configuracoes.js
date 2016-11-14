@@ -1,5 +1,5 @@
 function Configuracoes() {
-	this.TAMANHO_CELULA = 45;
+	this.TAMANHO_CELULA = 70;
 	this.TAMANHO_JOGADOR = (this.TAMANHO_CELULA / 4) - 3;
 
 	this.DISTANCIA_MENU_TABULEIRO = 10;
@@ -8,6 +8,13 @@ function Configuracoes() {
 	this.TEMPO_ANIMACAO_TURNO = 500;
 	this.TEMPO_AVANCO_JOGADOR = 50;
 	this.TAMANHO_TEXTO_CELULAS = '12px';
+	this.TAMANHO_TEXTO_EVENTOS = '20px';
+	this.TAMANHO_LINHA_RESPOSTAS = 10;
+
+	this.LARGURA_TELA_PERGUNTAS = 500;
+	this.TAMANHO_CIRCULO_RESPOSTAS = 8;
+
+	this.LARGURA_TELA_FINAL_PERGUNTAS = 300;
 }
 
 var configuracoes = new Configuracoes();

@@ -1,20 +1,35 @@
-function Celula(x, y, ordem) {
+function Celula(x, y, ordem, evento) {
 	this.x = x;
 	this.y = y;
 	this.ordem = ordem;
 	this.sucessor = null;
+	this.antecessor = null;
 
 	this.jogadores = [ ];
+	this.evento = evento;
 
 	this.desenhar = function(contexto) {
 		contexto.save();
 
-		contexto.fillStyle = 'green';
-
 		var xTopoEsquerdoCelula = configuracoes.TAMANHO_CELULA * this.x;
 		var yTopoEsquerdoCelula = configuracoes.TAMANHO_CELULA * this.y;
 		
+		var texto = this.ordem;
+
+		if (this.evento != null) {
+			contexto.fillStyle = 'yellow';
+			texto = '?';			
+			if (this.evento.tipoEvento != TipoEvento.PERGUNTA) {
+				contexto.fillRect(
+					xTopoEsquerdoCelula,
+					yTopoEsquerdoCelula,
+					configuracoes.TAMANHO_CELULA, 
+					configuracoes.TAMANHO_CELULA
+				);
+			}
+		}
 		if (this.sucessor == null) {
+			contexto.fillStyle = 'green';
 			contexto.fillRect(
 				xTopoEsquerdoCelula,
 				yTopoEsquerdoCelula, 
@@ -32,8 +47,8 @@ function Celula(x, y, ordem) {
 
 		contexto.fillStyle = 'black';
 		contexto.textAlign = 'center';
-		contexto.font = configuracoes.TAMANHO_TEXTO_CELULAS + ' Arial';
-		contexto.fillText(this.ordem, xTopoEsquerdoCelula + configuracoes.TAMANHO_CELULA / 2, yTopoEsquerdoCelula + configuracoes.TAMANHO_CELULA / 2 + 3);
+		contexto.font = (this.evento != null ? configuracoes.TAMANHO_TEXTO_EVENTOS : configuracoes.TAMANHO_TEXTO_CELULAS) + ' Arial';
+		contexto.fillText(texto, xTopoEsquerdoCelula + configuracoes.TAMANHO_CELULA / 2, yTopoEsquerdoCelula + configuracoes.TAMANHO_CELULA / 2 + 3);
 		
 		contexto.restore();
 	}
@@ -46,6 +61,14 @@ function Celula(x, y, ordem) {
 	this.atribuirJogador = function(jogador) {
 		this.jogadores[jogador.posicao] = jogador;
 	}	
+
+	this.onJogadorParouCelula = function(jogador) {
+		if (this.evento != null)
+		{
+			this.evento.disparar(jogador);
+			this.evento = null;
+		}
+	}
 
 	this.atribuirSucessor = function(sucessor) {
 		this.sucessor = sucessor;

@@ -38,6 +38,7 @@ function Jogador(celula, posicao, cor) {
 				this.tempoMovimentacao = tempoMillis;
 				if (this.movimentosRestantes == 0)
 				{
+					this.celulaAtual.onJogadorParouCelula(this);
 					jogo.avancarTurno();
 				}
 			}
@@ -56,6 +57,14 @@ function Jogador(celula, posicao, cor) {
 
 	this.mover = function () {
 		this.celulaAtual = this.celulaAtual.sucessor;
+		this.celulaAtual.atribuirJogador(this);
+		this.posicaoX = this.definirX(this.celulaAtual);
+		this.posicaoY = this.definirY(this.celulaAtual);
+	}
+
+	this.retroceder = function () {
+		this.celulaAtual = this.celulaAtual.antecessor;
+		this.celulaAtual.atribuirJogador(this);
 		this.posicaoX = this.definirX(this.celulaAtual);
 		this.posicaoY = this.definirY(this.celulaAtual);
 	}
@@ -149,28 +158,23 @@ function Jogador(celula, posicao, cor) {
 		this.tempoMovimentacao = new Date().getTime();
 	}
 
-	this.definirPosicoesMenu = function() {
-		var xPrimeiraColuna = configuracoes.primeiraColunaPreenchida * configuracoes.TAMANHO_CELULA;
-		var yPrimeiraLinha = configuracoes.primeiraLinhaPreenchida * configuracoes.TAMANHO_CELULA - (configuracoes.ALTURA_MENU + configuracoes.DISTANCIA_MENU_TABULEIRO);
-		var xSegundaColuna = (configuracoes.ultimaColunaPreenchida + 1) * configuracoes.TAMANHO_CELULA - (configuracoes.LARGURA_MENU);
-		var ySegundaLinha = (configuracoes.ultimaLinhaPreenchida + 1) * configuracoes.TAMANHO_CELULA + configuracoes.DISTANCIA_MENU_TABULEIRO;
-		
+	this.definirPosicoesMenu = function() {		
 		switch (this.posicao) {
 			case 0:
-				this.xMenu = xPrimeiraColuna;
-				this.yMenu = yPrimeiraLinha;
+				this.xMenu = Posicoes.TopoEsquerdo.x;
+				this.yMenu = Posicoes.TopoEsquerdo.y;
 				return;
 			case 1:
-				this.xMenu = xSegundaColuna;
-				this.yMenu = yPrimeiraLinha;
+				this.xMenu = Posicoes.TopoDireito.x - configuracoes.LARGURA_MENU;
+				this.yMenu = Posicoes.TopoDireito.y;
 				return;
 			case 2:
-				this.xMenu = xPrimeiraColuna;
-				this.yMenu = ySegundaLinha;
+				this.xMenu = Posicoes.BaseEsquerda.x;
+				this.yMenu = Posicoes.BaseEsquerda.y - configuracoes.ALTURA_MENU;
 				return;
 			case 3:
-				this.xMenu = xSegundaColuna;
-				this.yMenu = ySegundaLinha;
+				this.xMenu = Posicoes.BaseDireita.x - configuracoes.LARGURA_MENU;
+				this.yMenu = Posicoes.BaseDireita.y - configuracoes.ALTURA_MENU;
 				return;
 		}
 	}

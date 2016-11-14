@@ -1,3 +1,9 @@
+var ModoJogo = {
+	NORMAL: 1,
+	PERGUNTA: 2,
+	MINI_GAME: 3,
+}
+
 function Jogo(contexto) {
 
 	this.tabuleiro;
@@ -8,27 +14,48 @@ function Jogo(contexto) {
 
 	this.terminou = false;
 
+	this.evento;
+
 	this.iniciar = function() {
 		var self = this;
 		
-		this.tabuleiro = new Tabuleiro(this.contexto);
+		this.modo = ModoJogo.NORMAL;
+
+		this.tabuleiro = new Tabuleiro(this);
 		this.jogadores.push(this.tabuleiro.adicionarJogador(0, 'red'));
 		this.jogadores.push(this.tabuleiro.adicionarJogador(1, 'green'));
-		this.jogadores.push(this.tabuleiro.adicionarJogador(2, 'blue'));
+		this.jogadores.push(this.tabuleiro.adicionarJogador(2, 'cyan'));
 		this.jogadores.push(this.tabuleiro.adicionarJogador(3, 'magenta'));
-		
-		configuracoes.numeroJogadores = 4;
 
 		var canvas = document.getElementById('canvasJogo');
-		canvas.onclick = function (evento) { 
-			for (var i = 0; i < self.jogadores.length; i++) {
-				self.jogadores[i].verificarClique(evento, self);
+		
+		canvas.onclick = function (evento) 
+		{
+			switch (self.modo)
+			{
+				case ModoJogo.NORMAL:
+					self.verificarCliqueNormal(evento, self);
+					break;
+				case ModoJogo.PERGUNTA:					
+				case ModoJogo.MINI_GAME:
+					self.verificarCliqueEvento(evento, self);
+					break;
 			}
 		};
 
 		this.jogadores[0].entrarTurno();
 
 		this.step();
+	}
+
+	this.verificarCliqueNormal = function(evento, jogo) {
+		for (var i = 0; i < jogo.jogadores.length; i++) 
+			jogo.jogadores[i].verificarClique(evento, jogo);
+	}
+
+	this.verificarCliqueEvento = function(evento, jogo) {
+		if (this.evento) 
+			this.evento.verificarClique(evento, jogo)
 	}
 
 	this.avancarTurno = function() {
@@ -38,30 +65,60 @@ function Jogo(contexto) {
 		this.jogadores[this.indiceJogadorAtual].entrarTurno();
 	}
 
-	this.step = function() {
+	this.step = function() 
+	{
 		if (!this.terminou)  
-		{
-			requestAnimationFrame(this.step.bind(this));
-
-			this.tabuleiro.atualizar();
-			for (var i = 0; i < this.jogadores.length; i++) 
+		{			
+			requestAnimationFrame(this.step.bind(this));			
+			switch (this.modo) 
 			{
-				this.jogadores[i].atualizar(this);
-				if (!this.terminou) 
-					this.jogadores[i].desenhar(this.contexto);
+				case ModoJogo.NORMAL:
+					this.desenharTabuleiroNormal();
+					break;				
+				case ModoJogo.PERGUNTA:		
+				case ModoJogo.MINI_GAME:
+					this.desenharEvento();
+					break;
 			}
 		}
 	}
 
+	this.desenharTabuleiroNormal = function() 
+	{
+		this.contexto.clearRect(Posicoes.TopoEsquerdo.x - 1, Posicoes.TopoEsquerdo.y - 1, Posicoes.BaseDireita.x - Posicoes.TopoEsquerdo.x + 2, Posicoes.BaseDireita.y - Posicoes.TopoEsquerdo.y + 2);
+		this.tabuleiro.atualizar();
+		for (var i = 0; i < this.jogadores.length; i++) 
+		{
+			this.jogadores[i].atualizar(this);
+			if (!this.terminou) 
+			{
+				this.jogadores[i].desenhar(this.contexto);
+			}
+		}
+	}
+
+	this.desenharEvento = function() 
+	{
+		this.evento.desenhar(this.contexto);
+	}
+
+	this.mudarModo = function(modoJogo) {
+		this.modo = modoJogo;
+	}
+
+	this.atribuirEvento = function(evento) {
+		this.evento = evento;
+	}
+
 	this.finalizar = function(jogadorVencedor) {
-		this.terminou = true;
-		this.contexto.clearRect(0, 0, 1920, 1080)
+		this.terminou = true;		
+		this.contexto.clearRect(Posicoes.TopoEsquerdo.x - 1, Posicoes.TopoEsquerdo.y - 1, Posicoes.BaseDireita.x - Posicoes.TopoEsquerdo.x + 2, Posicoes.BaseDireita.y - Posicoes.TopoEsquerdo.y + 2);
 		contexto.fillStyle = jogadorVencedor.cor;
 		contexto.textAlign = 'center';
 		contexto.font = '32px Arial';
 
-		var xTexto = (configuracoes.ultimaColunaPreenchida * configuracoes.TAMANHO_CELULA + configuracoes.TAMANHO_CELULA) / 2;
-		var yTexto = (configuracoes.ultimaLinhaPreenchida * configuracoes.TAMANHO_CELULA + configuracoes.TAMANHO_CELULA + configuracoes.ALTURA_MENU * 2 + configuracoes.DISTANCIA_MENU_TABULEIRO * 2) / 2;
+		var xTexto = (Posicoes.BaseDireita.x + Posicoes.TopoEsquerdo.x) / 2;
+		var yTexto = (Posicoes.BaseDireita.y + Posicoes.TopoEsquerdo.y) / 2 - 7;
 		contexto.fillText("O jogador " + jogadorVencedor.posicao + " venceu!", xTexto, yTexto);
 	}
 }

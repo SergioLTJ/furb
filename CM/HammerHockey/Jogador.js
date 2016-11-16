@@ -131,10 +131,10 @@ function Jogador(celula, posicao, cor) {
 		var xInferiorMenu = this.xMenu + largura;
 		var yInferiorMenu = this.yMenu + altura;
 
-		if (evento.offsetX > this.xMenu &&
-			evento.offsetX < xInferiorMenu &&
-			evento.offsetY > this.yMenu &&
-			evento.offsetY < yInferiorMenu)
+		if (evento.center.x > this.xMenu &&
+			evento.center.x < xInferiorMenu &&
+			evento.center.y > this.yMenu &&
+			evento.center.y < yInferiorMenu)
 		{
 			if (this.estaNoTurno)
 			{

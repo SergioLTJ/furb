@@ -301,13 +301,7 @@ function Pergunta(texto, respostas, jogo)
 
 	this.verificarBoundingBox = function(eventoClique, boundingBox) 
 	{
-		if (eventoClique.offsetX > boundingBox.esquerda &&
-			eventoClique.offsetX < boundingBox.direita &&
-			eventoClique.offsetY > boundingBox.cima &&
-			eventoClique.offsetY < boundingBox.baixo)
-			return true;
-
-		return false;
+		return Util.verificarBoundingBox(eventoClique.center.x, eventoClique.center.y, boundingBox);
 	}
 
 	this.ordenarRespostas = function() 

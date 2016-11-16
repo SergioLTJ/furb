@@ -1,7 +1,7 @@
 function ClienteSocket(jogo)
 {
 	this.jogo = jogo;
-	this.socket = new WebSocket("ws://localhost/Laputa");
+	this.socket = new WebSocket(configuracoes.URL_SERVER);
 	
 	this.ligarEventos = function() 
 	{

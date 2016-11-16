@@ -13,8 +13,11 @@ function Configuracoes() {
 
 	this.LARGURA_TELA_PERGUNTAS = 500;
 	this.TAMANHO_CIRCULO_RESPOSTAS = 8;
-
 	this.LARGURA_TELA_FINAL_PERGUNTAS = 300;
+
+	this.TAMANHO_QUADRADO_MONTAR_BLAH = 30;
+
+	this.URL_SERVER = 'ws://localhost/Comunicacao'
 }
 
 var configuracoes = new Configuracoes();

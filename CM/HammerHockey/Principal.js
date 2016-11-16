@@ -1,5 +1,5 @@
 $(document).ready(function () {
-	new ClienteSocket();
+	//new ClienteSocket();
 
-	//new Jogo(document.getElementById('canvasJogo').getContext('2d')).iniciar();
+	new Jogo(document.getElementById('canvasJogo').getContext('2d')).iniciar();
 });

@@ -29,21 +29,37 @@ function Jogo(contexto) {
 
 		var canvas = document.getElementById('canvasJogo');
 		
-		canvas.onclick = function (evento) 
+		configuracoes.numeroJogadores = 4;
+
+		var mc = new Hammer(canvas);
+		mc.on('tap',function (evento)
 		{
 			switch (self.modo)
 			{
 				case ModoJogo.NORMAL:
 					self.verificarCliqueNormal(evento, self);
 					break;
-				case ModoJogo.PERGUNTA:					
-				case ModoJogo.MINI_GAME:
+				case ModoJogo.PERGUNTA:				
 					self.verificarCliqueEvento(evento, self);
 					break;
+				default:
+					break;
 			}
-		};
+		});
+
+		mc.get('pan').set({ direction: Hammer.DIRECTION_ALL });
+		mc.on('panleft panright panup pandown', function(evento) {
+			if (self.modo == ModoJogo.MINI_GAME)
+				self.evento.verificarArraste(evento);
+		});
+
+		mc.on('press', function(evento) {
+			if (self.modo == ModoJogo.MINI_GAME)
+				self.evento.verificarAperto(evento);
+		});
 
 		this.jogadores[0].entrarTurno();
+		this.jogadores[0].movimentosRestantes = 1;
 
 		this.step();
 	}

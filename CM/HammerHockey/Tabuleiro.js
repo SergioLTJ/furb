@@ -3,6 +3,7 @@ var Posicoes = {
 	TopoDireito: {},
 	BaseEsquerda: {},
 	BaseDireita: {},
+	Centro: {},
 };
 
 function Tabuleiro(jogo) {
@@ -130,6 +131,9 @@ function Tabuleiro(jogo) {
 
 		Posicoes.BaseDireita.x = xSegundaColuna;
 		Posicoes.BaseDireita.y = ySegundaLinha;
+
+		Posicoes.Centro.x = (Posicoes.TopoEsquerdo.x + Posicoes.BaseDireita.x) / 2;
+		Posicoes.Centro.y = (Posicoes.TopoEsquerdo.y + Posicoes.BaseDireita.y) / 2;
 	}
 	
 	this.inicializarTabuleiro = function() {
@@ -152,7 +156,8 @@ function Tabuleiro(jogo) {
 			}
 		}
 
-		this.matriz[6][5] = new Celula(5, 6, 2, new Pergunta('Qualquer coisa Qualquer coisa Qualquer coisa Qualquer coisa Qualquer coisa Qualquer coisa', [new Resposta('Errada1', false), new Resposta('Errada2', false), new Resposta('Certa', true), new Resposta('Errada3', false)], this.jogo));
+		//this.matriz[6][5] = new Celula(5, 6, 2, new Pergunta('Qualquer coisa Qualquer coisa Qualquer coisa Qualquer coisa Qualquer coisa Qualquer coisa', [new Resposta('Errada1', false), new Resposta('Errada2', false), new Resposta('Certa', true), new Resposta('Errada3', false)], this.jogo));
+		this.matriz[6][5] = new Celula(5, 6, 2, new MontarAlgumaCoisa(this.jogo));
 		this.matriz[6][5].sucessor = this.matriz[7][5];
 		this.matriz[5][5].sucessor = this.matriz[6][5];
 

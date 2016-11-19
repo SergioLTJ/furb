@@ -33,8 +33,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\Users\sergi\Desktop\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,6 +51,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dados\AbriuTelaMontarCorpo.cs" />
+    <Compile Include="Dados\ClicouConfirmarTelaPergunta.cs" />
+    <Compile Include="Dados\CriouTelaPergunta.cs" />
+    <Compile Include="Dados\MoveuJogador.cs" />
+    <Compile Include="Dados\MoveuParte.cs" />
+    <Compile Include="Dados\PartesPorJogador.cs" />
+    <Compile Include="Dados\PerguntaPorJogador.cs" />
+    <Compile Include="Dados\Pergunta.cs" />
+    <Compile Include="Dados\SelecionouItemPergunta.cs" />
+    <Compile Include="Dados\TipoDado.cs" />
+    <Compile Include="Dados\TipoParteCorpo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -12,7 +12,7 @@ namespace Assets.Classes
 
         public GrafoTabuleiro()
         {
-            inicio = new VerticeTabuleiro(TipoVertice.inicio);
+            inicio = new VerticeTabuleiro(TipoVertice.normal);
             fim = inicio;
         }
 
@@ -20,6 +20,11 @@ namespace Assets.Classes
         {
             VerticeTabuleiro novo = new VerticeTabuleiro(tipo, fim, direcaoPai);
             fim = novo;
+        }
+
+        public void FechaCircuito()
+        {
+            fim.proximo = inicio;
         }
     }
 }

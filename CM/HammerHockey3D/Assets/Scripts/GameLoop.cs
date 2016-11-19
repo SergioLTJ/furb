@@ -1,60 +1,100 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Net;
 
+using WebSocketSharp.Server;
 using Assets.Classes;
 
-public class GameLoop : MonoBehaviour {
-
-    public TabuleiroCreator tabuleiroCreator;
-
-    private ArrayList tabuleiro;
-    private PlayerBehavior player;
-
-	// Use this for initialization
-	void Start () {
-        tabuleiroCreator = new TabuleiroCreator();
-        tabuleiro = new ArrayList();
-
-        GerarTabuleiro();
-
-        player = GameObject.Find("Jogador").GetComponent<PlayerBehavior>();
-        player.SetCasaInicial(tabuleiroCreator.GetInicio());
-	}
-	
-    void FixedUpdate()
+namespace HammerHockey3D
+{
+    public class GameLoop : MonoBehaviour
     {
-        
-    }
+        private WebSocketServer servidor;
+        public float espacamentoTabuleiro;
 
-	// Update is called once per frame
-	void Update () {
-	
-	}
+        public TabuleiroCreator tabuleiroCreator;
 
-    private void GerarTabuleiro()
-    {
-        VerticeTabuleiro vertice = tabuleiroCreator.GetInicio();
-        Vector3 posicaoAtual = new Vector3(0, 0, 0);
+        private ArrayList tabuleiro;
+        public PlayerBehavior player;
 
-        while (vertice != null)
+        public Color corMinigames;
+        public Color corPergunta;
+        public Color corInicio;
+
+        // Use this for initialization
+        void Start()
         {
-            GameObject novaPeca = Instantiate(Resources.Load("PecaTabuleiro"), posicaoAtual, Quaternion.identity) as GameObject;
-            Debug.Log("Criado objeto PecaTabuleiro nas coordenadas " + posicaoAtual.x + ", " + posicaoAtual.y + ", " + posicaoAtual.z);
+            StartServidor();
 
-            switch (vertice.tipo)
+            VerticeTabuleiro.ESPACAMENTO = espacamentoTabuleiro;
+
+            tabuleiroCreator = new TabuleiroCreator();
+            tabuleiro = new ArrayList();
+
+            GerarTabuleiro();
+
+            player = GameObject.Find("Jogador").GetComponent<PlayerBehavior>();
+            player.SetCasaInicial(tabuleiroCreator.GetInicio());
+        }
+
+        void StartServidor()
+        {
+            servidor = new WebSocketServer("ws://10.0.0.100:8000");
+            servidor.AddWebSocketService<Servidor>("/Comunicacao", () => new Servidor() { gameLoop = this });
+            servidor.Start();
+        }
+
+        void FixedUpdate()
+        {
+
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
+
+        private void GerarTabuleiro()
+        {
+            VerticeTabuleiro vertice = tabuleiroCreator.GetInicio();
+            Vector3 posicaoAtual = new Vector3(0, 0, 0);
+
+            int sequencia = 1;
+
+            do
             {
-                case TipoVertice.inicio:
-                    novaPeca.GetComponent<Renderer>().material.color = Color.blue;
-                    break;
-                case TipoVertice.final:
-                    novaPeca.GetComponent<Renderer>().material.color = Color.red;
-                    break;
-            }
+                GameObject novaPeca = Instantiate(Resources.Load("CasaTabuleiro"), posicaoAtual, Quaternion.identity) as GameObject;
+                Debug.Log("Criado objeto CasaTabuleiro nas coordenadas " + posicaoAtual.x + ", " + posicaoAtual.y + ", " + posicaoAtual.z + "; Tipo " + vertice.tipo + "; Seq " + sequencia);
 
-            posicaoAtual += vertice.GetTranslacao();
+                CasaBehavior casa = novaPeca.GetComponent<CasaBehavior>();
+                casa.SetTexto(sequencia.ToString());
 
-            tabuleiro.Add(novaPeca);
-            vertice = vertice.proximo;
+                if (sequencia == 1)
+                {
+                    casa.corCasa = corInicio;
+                }
+                else
+                {
+                    switch (vertice.tipo)
+                    {
+                        case TipoVertice.minigame:
+                            casa.corCasa = corMinigames;
+                            break;
+
+                        case TipoVertice.pergunta:
+                            casa.corCasa = corPergunta;
+                            break;
+                    }
+                }
+
+                tabuleiro.Add(novaPeca);
+                vertice = vertice.proximo;
+
+                sequencia++;
+                posicaoAtual = vertice.GetPosicao();
+
+            } while (vertice != tabuleiroCreator.GetInicio());
         }
     }
 }

@@ -1,0 +1,6 @@
+C:\Users\Avell\Documents\FURB\Deposito\TesteClient\TesteSocket\bin\Release\TesteSocket.exe.config
+C:\Users\Avell\Documents\FURB\Deposito\TesteClient\TesteSocket\bin\Release\TesteSocket.exe
+C:\Users\Avell\Documents\FURB\Deposito\TesteClient\TesteSocket\bin\Release\TesteSocket.pdb
+C:\Users\Avell\Documents\FURB\Deposito\TesteClient\TesteSocket\bin\Release\websocket-sharp.dll
+C:\Users\Avell\Documents\FURB\Deposito\TesteClient\TesteSocket\obj\Release\TesteSocket.exe
+C:\Users\Avell\Documents\FURB\Deposito\TesteClient\TesteSocket\obj\Release\TesteSocket.pdb

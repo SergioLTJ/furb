@@ -9,9 +9,9 @@ namespace Assets.Classes
 {
     public enum TipoVertice
     {
-        inicio,
-        intermediario,
-        final,
+        normal,
+        pergunta,
+        minigame,
     }
 
     public enum DirecaoAvanco
@@ -25,50 +25,55 @@ namespace Assets.Classes
 
     public class VerticeTabuleiro
     {
-        public const float TRANSLACAO = 2.2f;
+        public static float ESPACAMENTO = 0;
 
-        public VerticeTabuleiro proximo { get; private set; }
-        public DirecaoAvanco direcao { get; private set; }
- 
-        public TipoVertice tipo { get; private set; }
+        Vector2 posicao;
+
+        public VerticeTabuleiro proximo { get; set; }
+       
+        public TipoVertice tipo { get; set; }
 
         public VerticeTabuleiro(TipoVertice tipo)
         {
             this.tipo = tipo;
-            direcao = DirecaoAvanco.nenhum;
+            posicao = new Vector2(0, 0);
         }
 
-        public VerticeTabuleiro(TipoVertice tipo, VerticeTabuleiro pai, DirecaoAvanco direcaoPai)
+        public VerticeTabuleiro(TipoVertice tipo, VerticeTabuleiro pai, DirecaoAvanco direcao)
         {
             this.tipo = tipo;
+            this.posicao = pai.posicao + Deslocamento(direcao);
 
-            pai.direcao = direcaoPai;
             pai.proximo = this;
         }
 
-        public Vector3 GetTranslacao()
+        public Vector3 GetPosicao()
+        {
+            Debug.Log("Get Posicao: " + this.posicao);
+            return new Vector3(posicao.x * ESPACAMENTO, 0, posicao.y * ESPACAMENTO);
+        }
+
+        private Vector2 Deslocamento(DirecaoAvanco direcao)
         {
             float x = 0;
-            float y = 0;
             float z = 0;
 
             switch (direcao)
             {
                 case DirecaoAvanco.cima:
-                    z -= TRANSLACAO;
+                    z -= ESPACAMENTO;
                     break;
                 case DirecaoAvanco.baixo:
-                    z += TRANSLACAO;
+                    z += ESPACAMENTO;
                     break;
                 case DirecaoAvanco.direita:
-                    x -= TRANSLACAO;
+                    x -= ESPACAMENTO;
                     break;
                 case DirecaoAvanco.esquerda:
-                    x += TRANSLACAO;
+                    x += ESPACAMENTO;
                     break;
             }
-
-            return new Vector3(x, y, z);
+            return new Vector2(x, z);
         }
     }
 }

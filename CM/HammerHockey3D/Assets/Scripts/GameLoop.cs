@@ -13,13 +13,35 @@ namespace HammerHockey3D
         public float espacamentoTabuleiro;
 
         public TabuleiroCreator tabuleiroCreator;
+        public PerguntaBehavior UIPergunta;
 
         private ArrayList tabuleiro;
-        public PlayerBehavior player;
+        public PlayerBehavior[] players = new PlayerBehavior[4];
 
         public Color corMinigames;
         public Color corPergunta;
         public Color corInicio;
+
+        // Funcionalidades
+        public void AvancaPlayer(int index)
+        {
+            players[index].avancarPlayer = true;
+        }
+
+        public void MostraPergunta(string pergunta, string alt1, string alt2, string alt3, string alt4)
+        {
+            UIPergunta.MostraPergunta(pergunta, alt1, alt2, alt3, alt4);
+        }
+
+        public void SelecionaResposta(int index)
+        {
+            UIPergunta.SelecionaResposta(index);
+        }
+
+        public void FinalizaPergunta()
+        {
+            UIPergunta.FinalizaPergunta();
+        }
 
         // Use this for initialization
         void Start()
@@ -33,14 +55,19 @@ namespace HammerHockey3D
 
             GerarTabuleiro();
 
-            player = GameObject.Find("Jogador").GetComponent<PlayerBehavior>();
-            player.SetCasaInicial(tabuleiroCreator.GetInicio());
+            players[0] = GameObject.Find("Jogador01").GetComponent<PlayerBehavior>();
+            players[1] = GameObject.Find("Jogador02").GetComponent<PlayerBehavior>();
+            players[2] = GameObject.Find("Jogador03").GetComponent<PlayerBehavior>();
+            players[3] = GameObject.Find("Jogador04").GetComponent<PlayerBehavior>();
+
+            for (int i = 0; i < players.Length; ++i)
+                players[i].SetCasaInicial(tabuleiroCreator.GetInicio());
         }
 
         void StartServidor()
         {
             servidor = new WebSocketServer("ws://10.0.0.100:8000");
-            servidor.AddWebSocketService<Servidor>("/Comunicacao", () => new Servidor() { gameLoop = this });
+            servidor.AddWebSocketService<Comunicacao>("/Comunicacao", () => new Comunicacao() { gameLoop = this });
             servidor.Start();
         }
 

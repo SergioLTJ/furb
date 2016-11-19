@@ -93,6 +93,9 @@
  <Reference Include="UnityEngine.Analytics">
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
  </Reference>
+ <Reference Include="websocket-sharp">
+ <HintPath>C:/Users/Avell/Documents/FURB/FURB/CM/HammerHockey3D/Assets/websocket-sharp.dll</HintPath>
+ </Reference>
  <Reference Include="Vuforia.UnityExtensions.Editor">
  <HintPath>C:/Users/Avell/Documents/FURB/FURB/CM/HammerHockey3D/Assets/Vuforia/Editor/Scripts/Vuforia.UnityExtensions.Editor.dll</HintPath>
  </Reference>

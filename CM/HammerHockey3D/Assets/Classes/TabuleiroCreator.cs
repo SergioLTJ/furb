@@ -22,14 +22,85 @@ namespace Assets.Classes
 
         private void GerarGrafo()
         {
-            grafo.AdicionaVertice(TipoVertice.intermediario, DirecaoAvanco.baixo);
-            grafo.AdicionaVertice(TipoVertice.intermediario, DirecaoAvanco.baixo);
-            grafo.AdicionaVertice(TipoVertice.intermediario, DirecaoAvanco.direita);
-            grafo.AdicionaVertice(TipoVertice.intermediario, DirecaoAvanco.direita);
-            grafo.AdicionaVertice(TipoVertice.intermediario, DirecaoAvanco.direita);
-            grafo.AdicionaVertice(TipoVertice.intermediario, DirecaoAvanco.cima);
-            grafo.AdicionaVertice(TipoVertice.intermediario, DirecaoAvanco.cima);
-            grafo.AdicionaVertice(TipoVertice.final, DirecaoAvanco.direita);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.baixo);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.baixo);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.baixo);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.baixo);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.baixo);
+
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.direita);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.direita);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.direita);
+
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.cima);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.cima);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.cima);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.cima);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.cima);
+
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.direita);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.direita);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.direita);
+
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.baixo);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.baixo);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.baixo);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.baixo);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.baixo);
+
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.direita);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.direita);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.direita);
+
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.cima);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.cima);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.cima);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.cima);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.cima);
+
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.direita);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.direita);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.direita);
+
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.baixo);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.baixo);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.baixo);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.baixo);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.baixo);
+
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.direita);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.direita);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.direita);
+
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.cima);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.cima);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.cima);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.cima);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.cima);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.cima);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.cima);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.cima);
+
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.esquerda);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.esquerda);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.esquerda);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.esquerda);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.esquerda);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.esquerda);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.esquerda);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.esquerda);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.esquerda);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.esquerda);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.esquerda);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.esquerda);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.esquerda);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.esquerda);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.esquerda);
+
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.baixo);
+            grafo.AdicionaVertice(TipoVertice.normal, DirecaoAvanco.baixo);
+
+            grafo.FechaCircuito();
         }
 
     }

@@ -85,10 +85,21 @@ function AreaJogador(jogador)
 
 	this.definirAreasCorretas = function() 
 	{
-		this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2, this.boundingBox.cima + 35, 1));
-		this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2 + 50, this.boundingBox.cima + 95, 2));
-		this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2, this.boundingBox.cima + 95, 3));
-		this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2, this.boundingBox.cima + 175, 4));
+		if (this.jogador.posicao == 0 ||
+			this.jogador.posicao == 1)
+		{
+			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2, this.boundingBox.baixo - 50, 1));
+			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2 - 75, this.boundingBox.baixo - 125, 2));
+			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2, this.boundingBox.baixo - 150, 3));
+			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2, this.boundingBox.baixo - 250, 4));
+		} 
+		else 
+		{
+			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2, this.boundingBox.cima + 50, 1));
+			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2 + 75, this.boundingBox.cima + 125, 2));
+			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2, this.boundingBox.cima + 150, 3));
+			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2, this.boundingBox.cima + 250, 4));	
+		}
 	}
 
 	this.verificarIdJaUsada = function(id)
@@ -120,14 +131,27 @@ function AreaJogador(jogador)
 
 		var xCentro = (this.boundingBox.esquerda + this.boundingBox.direita) / 2
 
-		this.areasControlaveis.push(new Quadrado(this.boundingBox.esquerda + metadeQuadrado + 80, this.boundingBox.baixo - metadeQuadrado - 10, this.gerarId()));
-		this.areasControlaveis.push(new Quadrado((xCentro + this.boundingBox.esquerda) / 2 + 80, this.boundingBox.baixo - metadeQuadrado - 10, this.gerarId()));
-		this.areasControlaveis.push(new Quadrado((xCentro + this.boundingBox.direita) / 2 - 80, this.boundingBox.baixo - metadeQuadrado - 10, this.gerarId()));
-		this.areasControlaveis.push(new Quadrado(this.boundingBox.direita - metadeQuadrado - 80, this.boundingBox.baixo - metadeQuadrado - 10, this.gerarId()));
+		if (this.jogador.posicao == 0 ||
+			this.jogador.posicao == 1)
+		{
+			this.areasControlaveis.push(new Quadrado(this.boundingBox.esquerda + metadeQuadrado + 80, this.boundingBox.cima + metadeQuadrado + 10, this.gerarId()));
+			this.areasControlaveis.push(new Quadrado((xCentro + this.boundingBox.esquerda) / 2 + 80, this.boundingBox.cima + metadeQuadrado + 10, this.gerarId()));
+			this.areasControlaveis.push(new Quadrado((xCentro + this.boundingBox.direita) / 2 - 80, this.boundingBox.cima + metadeQuadrado + 10, this.gerarId()));
+			this.areasControlaveis.push(new Quadrado(this.boundingBox.direita - metadeQuadrado - 80, this.boundingBox.cima + metadeQuadrado + 10, this.gerarId()));
+		}
+		else
+		{
+			this.areasControlaveis.push(new Quadrado(this.boundingBox.esquerda + metadeQuadrado + 80, this.boundingBox.baixo - metadeQuadrado - 10, this.gerarId()));
+			this.areasControlaveis.push(new Quadrado((xCentro + this.boundingBox.esquerda) / 2 + 80, this.boundingBox.baixo - metadeQuadrado - 10, this.gerarId()));
+			this.areasControlaveis.push(new Quadrado((xCentro + this.boundingBox.direita) / 2 - 80, this.boundingBox.baixo - metadeQuadrado - 10, this.gerarId()));
+			this.areasControlaveis.push(new Quadrado(this.boundingBox.direita - metadeQuadrado - 80, this.boundingBox.baixo - metadeQuadrado - 10, this.gerarId()));
+		}
 	}
 
 	this.desenhar = function(contexto)
 	{
+		contexto.save();
+
 		for (var i = 0; i < this.areasCorretas.length; i++)
 		{
 			contexto.strokeStyle = 'green';
@@ -135,6 +159,8 @@ function AreaJogador(jogador)
 			contexto.strokeStyle = 'black';
 			this.areasControlaveis[i].desenhar(contexto);
 		}
+
+		contexto.restore();
 	}
 
 	this.verificarArraste = function(evento)

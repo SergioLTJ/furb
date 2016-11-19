@@ -1,0 +1,7 @@
+C:\Users\Avell\Documents\FURB\Deposito\TesteClient\TesteSocket\bin\Debug\TesteSocket.exe.config
+C:\Users\Avell\Documents\FURB\Deposito\TesteClient\TesteSocket\obj\Debug\TesteSocket.exe
+C:\Users\Avell\Documents\FURB\Deposito\TesteClient\TesteSocket\obj\Debug\TesteSocket.pdb
+C:\Users\Avell\Documents\FURB\Deposito\TesteClient\TesteSocket\bin\Debug\TesteSocket.exe
+C:\Users\Avell\Documents\FURB\Deposito\TesteClient\TesteSocket\bin\Debug\TesteSocket.pdb
+C:\Users\Avell\Documents\FURB\Deposito\TesteClient\TesteSocket\bin\Debug\websocket-sharp.dll
+C:\Users\Avell\Documents\FURB\Deposito\TesteClient\TesteSocket\obj\Debug\TesteClient.csprojResolveAssemblyReference.cache

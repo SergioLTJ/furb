@@ -39,7 +39,7 @@ namespace HammerHockey3D
 
         void StartServidor()
         {
-            servidor = new WebSocketServer("ws://0.0.0.0");
+            servidor = new WebSocketServer("ws://10.0.0.100:8000");
             servidor.AddWebSocketService<Servidor>("/Comunicacao", () => new Servidor() { gameLoop = this });
             servidor.Start();
         }

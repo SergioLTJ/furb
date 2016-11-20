@@ -8,8 +8,8 @@ function Jogador(celula, posicao, cor) {
 	this.corMenu = cor;
 	this.bufferCor = 'yellow';
 
-	this.texto = 'Jogador ' + (posicao + 1);
-	this.bufferTexto = 'Clique para rolar o dado';
+	this.texto = 'Equipe ' + (posicao + 1);
+	this.bufferTexto = 'Aperte para rolar o dado';
 
 	this.estaNoTurno = false;
 
@@ -20,14 +20,14 @@ function Jogador(celula, posicao, cor) {
 	this.tempoMovimentacao = 0;
 
 	this.atualizar = function(jogo) {
-		if (this.movimentosRestantes == 0)
+		if (this.movimentosRestantes == 0)		
 			return;
 
 		var data = new Date();
 		var tempoMillis = data.getTime();
 		if ((tempoMillis - this.tempoMovimentacao) > configuracoes.TEMPO_AVANCO_JOGADOR) 
-		{
-			this.mover();
+		{			
+			this.mover();			
 			if (this.celulaAtual.sucessor == null) 
 			{
 				jogo.finalizar(this);
@@ -35,9 +35,11 @@ function Jogador(celula, posicao, cor) {
 			else 
 			{
 				this.movimentosRestantes--;
+				this.texto = this.movimentosRestantes;
 				this.tempoMovimentacao = tempoMillis;
 				if (this.movimentosRestantes == 0)
 				{
+					this.texto = 'Equipe ' + (this.posicao + 1);
 					this.celulaAtual.onJogadorParouCelula(this);
 					jogo.avancarTurno();
 				}
@@ -144,7 +146,6 @@ function Jogador(celula, posicao, cor) {
 				this.estaNoTurno = false;
 				this.corMenu = this.cor;
 				this.bufferCor = 'yellow';
-				this.texto = 'Equipe ' + (this.posicao + 1);
 				this.rolarDado();
 			}
 		}

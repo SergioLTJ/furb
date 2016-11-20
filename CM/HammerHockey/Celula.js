@@ -21,12 +21,12 @@ function Celula(x, y, ordem, evento) {
 		if (this.evento != null) {			
 			texto = '?';			
 			if (this.evento.tipoEvento != TipoEvento.PERGUNTA) {
-				contexto.fillStyle = 'yellow';				
+				contexto.fillStyle = 'yellow';
 			}
 		} else if (this.sucessor == null) {
 			contexto.fillStyle = 'green';			
 		}
-		
+
 		contexto.fillRect(
 			xTopoEsquerdoCelula,
 			yTopoEsquerdoCelula,

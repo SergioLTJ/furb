@@ -29,8 +29,6 @@ function Jogo(contexto) {
 		this.jogadores.push(this.tabuleiro.adicionarJogador(2, 'cyan'));
 		this.jogadores.push(this.tabuleiro.adicionarJogador(3, 'magenta'));
 
-		var canvas = document.getElementById('canvasJogo');
-		
 		configuracoes.numeroJogadores = 4;
 
 		var div = document.getElementById('divToc');
@@ -114,8 +112,7 @@ function Jogo(contexto) {
 
 	this.desenharTabuleiroNormal = function() 
 	{
-		this.contexto.clearRect(Posicoes.TopoEsquerdo.x - 1, Posicoes.TopoEsquerdo.y - 1, Posicoes.BaseDireita.x - Posicoes.TopoEsquerdo.x + 2, Posicoes.BaseDireita.y - Posicoes.TopoEsquerdo.y + 2);
-		this.contexto.strokeRect(Posicoes.TopoEsquerdo.x, Posicoes.TopoEsquerdo.y, Posicoes.BaseDireita.x - Posicoes.TopoEsquerdo.x, Posicoes.BaseDireita.y - Posicoes.TopoEsquerdo.y);
+		this.contexto.clearRect(Posicoes.TopoEsquerdo.x - 1, Posicoes.TopoEsquerdo.y - 1, Posicoes.BaseDireita.x - Posicoes.TopoEsquerdo.x + 2, Posicoes.BaseDireita.y - Posicoes.TopoEsquerdo.y + 2);		
 		this.contexto.drawImage(this.imagemJogo, Posicoes.TopoEsquerdo.x - 20, Posicoes.TopoEsquerdo.y - 10);
 		this.tabuleiro.atualizar();
 		for (var i = 0; i < this.jogadores.length; i++) 

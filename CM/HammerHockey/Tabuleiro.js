@@ -12,17 +12,6 @@ function Tabuleiro(jogo) {
 
 	this.turnoDisponivel = true;
 
-	//this.matriz = [
-	//	[0, 0, 0, 0, 0, 0, 0, 0],
-	//	[0, 1, 2, 3, 4, 5, 6, 7],
-	//	[0, 24, 0, 0, 0, 0, 0, 8],
-	//	[0, 23, 0, 0, 0, 0, 0, 9],
-	//	[0, 22, 0, 0, 0, 0, 0, 10],
-	//	[0, 21, 0, 0, 0, 0, 0, 11],
-	//	[0, 20, 0, 0, 0, 0, 0, 12],
-	//	[0, 19, 18, 17, 16, 15, 14, 13],
-	//];
-
 	this.matriz = [	    
 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 		[0, 0, 0, 64, 63, 62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52, 51, 50, 49],
@@ -151,7 +140,7 @@ function Tabuleiro(jogo) {
 		if (i == posicaoFinal)
 			return new Celula(k, j, i);
 
-		var gerarEventoEspecial = Math.floor((Math.random() * 5)) == 4;
+		var gerarEventoEspecial = Math.floor((Math.random() * 10)) == 9;
 		if (gerarEventoEspecial)
 		{
 			return new Celula(k, j, i, new MontarAlgumaCoisa(this.jogo));

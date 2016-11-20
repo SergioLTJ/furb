@@ -6,7 +6,7 @@ function Configuracoes() {
 	this.ALTURA_MENU = 50;
 	this.LARGURA_MENU = 185;
 	this.TEMPO_ANIMACAO_TURNO = 500;
-	this.TEMPO_AVANCO_JOGADOR = 50;
+	this.TEMPO_AVANCO_JOGADOR = 500;
 	this.TAMANHO_TEXTO_CELULAS = '12px';
 	this.TAMANHO_TEXTO_EVENTOS = '20px';
 	this.TAMANHO_LINHA_RESPOSTAS = 10;
@@ -17,7 +17,7 @@ function Configuracoes() {
 
 	this.TAMANHO_QUADRADO_MONTAR_BLAH = 100;
 
-	this.URL_SERVER = 'ws://192.168.0.5/Comunicacao'
+	this.URL_SERVER = 'ws://192.168.0.5/Comunicacao';
 }
 
 var configuracoes = new Configuracoes();

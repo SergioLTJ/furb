@@ -1,45 +1,90 @@
-function Resposta(texto, correta) {
-	this.texto = texto;
-	this.correta = correta;
-	this.selecionada = false;
-	this.boundingBox = {};
-}
-
-function Pergunta(texto, respostas, jogo) 
+function AreaJogadorPerguntas(texto, respostas, jogador)
 {
+	this.jogador = jogador;
+	this.boundingBox = {};	
+
 	this.texto = texto;
 	this.respostas = respostas;
-	this.jogo = jogo;
 
-	this.jogador;
-
-	this.xInicial;
-	this.yInicial;
-
-	this.tipoEvento = TipoEvento.PERGUNTA;
 	this.botaoConfirmar = 
 	{
 		boundingBox: {},
 	};
 
-	this.selecionouResposta = false;
+	this.altura;
 
 	this.terminou = false;
 	this.acertou;
 
-	this.altura;
+	this.selecionouResposta = false;
 
-	this.disparar = function(jogador) 
+	this.definirBoundingBox = function()
 	{
-		this.jogador = jogador;
-		this.jogo.mudarModo(ModoJogo.PERGUNTA);		
-		this.jogo.atribuirEvento(this);
+		switch(this.jogador.posicao)
+		{
+			case 0:
+				this.boundingBox.cima = Posicoes.TopoEsquerdo.y;
+				this.boundingBox.baixo = Posicoes.Centro.y;
+				this.boundingBox.esquerda = Posicoes.TopoEsquerdo.x;
+				this.boundingBox.direita = Posicoes.Centro.x;
+				break;
+			case 1:
+				this.boundingBox.cima = Posicoes.TopoEsquerdo.y;
+				this.boundingBox.baixo = Posicoes.Centro.y;
+				this.boundingBox.esquerda = Posicoes.Centro.x;
+				this.boundingBox.direita = Posicoes.TopoDireito.x;
+				break;
+			case 2:
+				this.boundingBox.cima = Posicoes.Centro.y;
+				this.boundingBox.baixo = Posicoes.BaseEsquerda.y;
+				this.boundingBox.esquerda = Posicoes.TopoEsquerdo.x;
+				this.boundingBox.direita = Posicoes.Centro.x;
+				break;
+			case 3:
+				this.boundingBox.cima = Posicoes.Centro.y;
+				this.boundingBox.baixo = Posicoes.BaseEsquerda.y;
+				this.boundingBox.esquerda = Posicoes.Centro.x;
+				this.boundingBox.direita = Posicoes.TopoDireito.x;
+				break;
+		}
+	};
 
-		var xCentro = (Posicoes.TopoEsquerdo.x + Posicoes.BaseDireita.x) / 2;
-		var yCentro = (Posicoes.TopoEsquerdo.y + Posicoes.BaseDireita.y) / 2;
+	this.inicializar = function() 
+	{
+		this.definirBoundingBox();
+		this.ordenarRespostas();
+		
+		var xCentro = (this.boundingBox.esquerda + this.boundingBox.direita) / 2;
+		var yCentro = (this.boundingBox.cima + this.boundingBox.baixo) / 2;
 
 		this.xInicial = xCentro - configuracoes.LARGURA_TELA_PERGUNTAS / 2;
-		this.yInicial = yCentro - yCentro / 2;
+		this.xFinal = xCentro + configuracoes.LARGURA_TELA_PERGUNTAS / 2;
+		
+		if (this.jogador.posicao == 0 ||
+			this.jogador.posicao == 1)
+		{
+			this.yInicial = this.boundingBox.baixo - 20;
+		}
+		else
+		{
+			this.yInicial = this.boundingBox.cima + 20;
+		}
+	}	
+
+	this.determinarX = function(offset)
+	{
+		if (!offset)
+		{
+			offset = 0;
+		}
+
+		if (this.jogador.posicao == 0 ||
+			this.jogador.posicao == 1)
+		{
+			return this.xFinal - offset;
+		}
+
+		return this.xInicial + offset;
 	}
 
 	this.desenhar = function(contexto)
@@ -51,41 +96,46 @@ function Pergunta(texto, respostas, jogo)
 		contexto.restore();
 	}
 
-	this.desenharTelaPergunta = function(contexto)
+	this.desenharTexto = function(contexto, texto, x, y)
 	{
-		if (this.altura)
-		{
-			contexto.clearRect(
-				this.xInicial,
-				this.yInicial,
-				configuracoes.LARGURA_TELA_PERGUNTAS,
-				this.altura - this.yInicial
-			);
-		}
+		contexto.save();
+		contexto.translate(x, y);
+		if (this.jogador.posicao == 0 ||
+			this.jogador.posicao == 1)
+		{			
+			contexto.rotate(Math.PI);
+		}		
+		contexto.fillText(texto, 0, 0);
+		contexto.restore();
+	}
 
-		var offsetY = this.yInicial + 5;
+	this.desenharTelaPergunta = function(contexto)
+	{	
+		var offsetY = this.jogador.posicao == 0 || this.jogador.posicao == 1 ? this.yInicial - 5 : this.yInicial + 5;
 
-		contexto.lineWidth = 2;		
+		contexto.lineWidth = 2;
 
 		contexto.fillStyle = 'black';
 		contexto.font = '18px Arial bold';
 		contexto.textAlign  = 'center';
-		contexto.textBaseline = "top"; 
-		contexto.fillText('PERGUNTA', this.xInicial + configuracoes.LARGURA_TELA_PERGUNTAS / 2, offsetY);
-		offsetY += 27;
+		contexto.textBaseline = "top";
+		
+		this.desenharTexto(contexto, 'PERGUNTA', this.determinarX(configuracoes.LARGURA_TELA_PERGUNTAS / 2), offsetY);
 
+		offsetY = this.ajustarOffset(offsetY, 27);
+		
 		this.desenharDivisoria(contexto, offsetY);
 
-		offsetY += 5;
+		offsetY = this.ajustarOffset(offsetY, 5);
 
 		contexto.textAlign = 'left';
 		contexto.font = '14px Arial';
-		offsetY = this.wrapText(contexto, this.texto, this.xInicial + 5, offsetY, configuracoes.LARGURA_TELA_PERGUNTAS - 10, 20);
-		offsetY += 23;
+		offsetY = this.wrapText(contexto, this.texto, this.determinarX(5), offsetY, configuracoes.LARGURA_TELA_PERGUNTAS - 10, 20);
+		offsetY = this.ajustarOffset(offsetY, 23);
 
 		this.desenharDivisoria(contexto, offsetY);
 
-		offsetY += 5;
+		offsetY = this.ajustarOffset(offsetY, 5);
 
 		for (var i = 0; i < this.respostas.length; i++) 
 		{			
@@ -111,50 +161,62 @@ function Pergunta(texto, respostas, jogo)
 		);
 	}	
 
+	this.determinarDirecao = function(valor)
+	{
+		if (this.jogador.posicao == 0 ||
+			this.jogador.posicao == 1)
+		{
+			return -valor;
+		}
+
+		return valor;
+	}
+
 	this.desenharBotaoConfirmacao = function(contexto, offsetY)
 	{
 		contexto.fillStyle = this.selecionouResposta ? 'green' : 'gray';
 
 		contexto.strokeRect(
-			this.xInicial + configuracoes.LARGURA_TELA_PERGUNTAS - 105,
+			this.determinarX(configuracoes.LARGURA_TELA_PERGUNTAS - 105),
 			offsetY,
-			100,
-			25
+			this.determinarDirecao(100),
+			this.determinarDirecao(25)
 		);
 
 		contexto.fillRect(
-			this.xInicial + configuracoes.LARGURA_TELA_PERGUNTAS - 105,
+			this.determinarX(configuracoes.LARGURA_TELA_PERGUNTAS - 105),
 			offsetY,
-			100,
-			25
+			this.determinarDirecao(100),
+			this.determinarDirecao(25)
 		);
 
-		this.botaoConfirmar.boundingBox.esquerda = this.xInicial + configuracoes.LARGURA_TELA_PERGUNTAS - 105;
+		this.botaoConfirmar.boundingBox.esquerda = this.determinarX(configuracoes.LARGURA_TELA_PERGUNTAS - 105);
 		this.botaoConfirmar.boundingBox.cima = offsetY;
-		this.botaoConfirmar.boundingBox.baixo = offsetY + 25;
-		this.botaoConfirmar.boundingBox.direita = this.xInicial + configuracoes.LARGURA_TELA_PERGUNTAS - 5;
+		this.botaoConfirmar.boundingBox.baixo = offsetY + this.determinarDirecao(25);
+		this.botaoConfirmar.boundingBox.direita = this.determinarX(configuracoes.LARGURA_TELA_PERGUNTAS - 5);
+		this.botaoConfirmar.boundingBox = this.verificarInversaoBoundingBox(this.botaoConfirmar.boundingBox)
 
-		offsetY += 3;
+		offsetY = this.ajustarOffset(offsetY, 3);
 
 		contexto.fillStyle = 'black';
-		contexto.textAlign = 'center'		
-		contexto.fillText('Confirmar', this.xInicial + configuracoes.LARGURA_TELA_PERGUNTAS - 52.5, offsetY);
-
-		offsetY += 28;
+		contexto.textAlign = 'center';
+		this.desenharTexto(contexto, 'Confirmar', this.determinarX(configuracoes.LARGURA_TELA_PERGUNTAS - 52.5), offsetY);
+		
+		offsetY= this.ajustarOffset(offsetY, 28);
 
 		return offsetY;
 	}
 
 	this.desenharTelaFinal = function(contexto, offsetY) 
 	{
-		offsetY -= 5;
+		offsetY = this.jogador.posicao == 0 || this.jogador.posicao == 1 ? offsetY + 5 : offsetY - 5;
 
 		contexto.fillStyle = this.acertou ? 'green' : 'red';
 		contexto.fillRect(
-			this.xInicial,
+			this.determinarX(),
 			offsetY,
-			configuracoes.LARGURA_TELA_PERGUNTAS,
-			50
+			this.determinarDirecao(configuracoes.LARGURA_TELA_PERGUNTAS),
+			this.determinarDirecao(50)
 		);
 
 		contexto.fillStyle = 'black';
@@ -164,26 +226,16 @@ function Pergunta(texto, respostas, jogo)
 		var texto = this.acertou
 						? 'RESPOSTA CORRETA!'
 						: 'RESPOSTA ERRADA!';
-		contexto.fillText(texto, this.xInicial + configuracoes.LARGURA_TELA_PERGUNTAS / 2, offsetY);
-		offsetY += 27;
+		this.desenharTexto(contexto, texto, this.determinarX(configuracoes.LARGURA_TELA_PERGUNTAS / 2), offsetY)
+		offsetY = this.ajustarOffset(offsetY, 27);
 
 		contexto.font = '14px Arial';
 		contexto.textAlign  = 'left';
 		texto = this.acertou 
 					   ? 'Você avançará uma casa por acertar a pergunta.'
-					   : 'Você voltará uma casa por errar a pergunta.';
-		contexto.fillText(texto, this.xInicial + 5, offsetY);
-		offsetY += 23;
-
-		if ((new Date().getTime() - this.tempoFinal) > 4000)
-		{			
-			if (this.acertou)		
-				this.jogador.mover();
-			else		
-				this.jogador.retroceder();
-
-			this.jogo.mudarModo(ModoJogo.NORMAL);		
-		}
+					   : 'Você não avançará nenhuma casa.';
+		this.desenharTexto(contexto, texto, this.determinarX(5), offsetY);
+		offsetY = this.ajustarOffset(offsetY, 23);
 
 		return offsetY;
 	}
@@ -192,8 +244,8 @@ function Pergunta(texto, respostas, jogo)
 	{
 		var offsetYInicial = offsetY;
 
-		offsetY = this.wrapText(contexto, resposta.texto, this.xInicial + configuracoes.TAMANHO_CIRCULO_RESPOSTAS + 21, offsetY, configuracoes.LARGURA_TELA_PERGUNTAS - 27, 20);
-		offsetY += 23;
+		offsetY = this.wrapText(contexto, resposta.texto, this.determinarX(configuracoes.TAMANHO_CIRCULO_RESPOSTAS + 21), offsetY, configuracoes.LARGURA_TELA_PERGUNTAS - 27, 20);
+		offsetY = this.ajustarOffset(offsetY, 23);
 
 		contexto.lineWidth = 1;
 
@@ -201,42 +253,71 @@ function Pergunta(texto, respostas, jogo)
 		{
 			contexto.fillStyle = 'green';
 			contexto.beginPath();
-			contexto.arc(this.xInicial + configuracoes.TAMANHO_CIRCULO_RESPOSTAS / 2 + 9, (offsetYInicial + offsetY) / 2 - 2, configuracoes.TAMANHO_CIRCULO_RESPOSTAS, 0, 2 * Math.PI);
+			contexto.arc(this.determinarX(configuracoes.TAMANHO_CIRCULO_RESPOSTAS / 2 + 9), (offsetYInicial + offsetY) / 2 - this.determinarDirecao(2), configuracoes.TAMANHO_CIRCULO_RESPOSTAS, 0, 2 * Math.PI);
 			contexto.fill();
 			contexto.fillStyle = 'black';		
 		}
 
 		contexto.beginPath();
-		contexto.arc(this.xInicial + configuracoes.TAMANHO_CIRCULO_RESPOSTAS / 2 + 9, (offsetYInicial + offsetY) / 2 - 2, configuracoes.TAMANHO_CIRCULO_RESPOSTAS, 0, 2 * Math.PI);
+		contexto.arc(this.determinarX(configuracoes.TAMANHO_CIRCULO_RESPOSTAS / 2 + 9), (offsetYInicial + offsetY) / 2 - this.determinarDirecao(2), configuracoes.TAMANHO_CIRCULO_RESPOSTAS, 0, 2 * Math.PI);
 		contexto.stroke();
 
 		contexto.lineWidth = 2;
 
-		var xDivisoriaHorizontal = this.xInicial + configuracoes.TAMANHO_CIRCULO_RESPOSTAS + 18;
+		var xDivisoriaHorizontal = this.determinarX(configuracoes.TAMANHO_CIRCULO_RESPOSTAS + 18);
 
 		contexto.beginPath();
-		contexto.moveTo(xDivisoriaHorizontal, offsetYInicial - 5);
+		contexto.moveTo(xDivisoriaHorizontal, this.jogador.posicao == 0 || this.jogador.posicao == 1 ? offsetYInicial + 5 : offsetYInicial - 5);
 		contexto.lineTo(xDivisoriaHorizontal, offsetY);
 		contexto.stroke();
 
 		this.desenharDivisoria(contexto, offsetY);
 
-		resposta.boundingBox.esquerda = this.xInicial;
-		resposta.boundingBox.cima = offsetYInicial - 5;
-		resposta.boundingBox.baixo = offsetY;
+		resposta.boundingBox.esquerda = this.determinarX();
 		resposta.boundingBox.direita = xDivisoriaHorizontal;
+		resposta.boundingBox.cima = offsetYInicial + this.determinarDirecao(-7);
+		resposta.boundingBox.baixo = offsetY;
+		resposta.boundingBox = this.verificarInversaoBoundingBox(resposta.boundingBox)
 
-		offsetY += 5;
+		offsetY = this.ajustarOffset(offsetY, 5);
 
 		return offsetY;
+	}
+
+	this.verificarInversaoBoundingBox = function(boundingBox)
+	{
+		if (this.jogador.posicao == 0 ||
+			this.jogador.posicao == 1)
+		{
+			var intermediario = boundingBox.cima;
+			boundingBox.cima = boundingBox.baixo;
+			boundingBox.baixo = intermediario;
+
+			intermediario = boundingBox.esquerda;
+			boundingBox.esquerda = boundingBox.direita;
+			boundingBox.direita = intermediario;
+		}
+
+		return boundingBox;
 	}
 
 	this.desenharDivisoria = function(contexto, y)
 	{
 		contexto.beginPath();
-		contexto.moveTo(this.xInicial, y);
-		contexto.lineTo(this.xInicial + configuracoes.LARGURA_TELA_PERGUNTAS, y);
+		contexto.moveTo(this.determinarX(), y);
+		contexto.lineTo(this.determinarX(configuracoes.LARGURA_TELA_PERGUNTAS), y);
 		contexto.stroke();
+	}
+
+	this.ajustarOffset = function(offset, valor)
+	{
+		if (this.jogador.posicao == 0 ||
+			this.jogador.posicao == 1)
+		{
+			return (offset - valor);
+		}
+
+		return offset + valor;
 	}
 
 	this.wrapText = function(context, text, x, y, maxWidth, lineHeight) 
@@ -249,15 +330,15 @@ function Pergunta(texto, respostas, jogo)
           var metrics = context.measureText(testLine);
           var testWidth = metrics.width;
           if (testWidth > maxWidth && n > 0) {
-            context.fillText(line, x, y);
+          	this.desenharTexto(context, line, x, y);
             line = words[n] + ' ';
-            y += lineHeight;
+            y = this.ajustarOffset(y, lineHeight);
           }
           else {
             line = testLine;
           }
         }
-        context.fillText(line, x, y);
+        this.desenharTexto(context, line, x, y);
         return y;
      }
 
@@ -272,23 +353,30 @@ function Pergunta(texto, respostas, jogo)
 			{
 				this.respostas[i].selecionada = true;
 				this.selecionouResposta = true;
-				this.desmarcarOutrasRespostas(i);				
+				this.desmarcarOutrasRespostas(i);
+				socket.selecionouItemPergunta(this.jogador.posicao, i);
 			}
 		}
 
 		if (this.selecionouResposta &&
 			this.verificarBoundingBox(eventoClique, this.botaoConfirmar.boundingBox))
-		{
-			this.terminou = true;
+		{			
 			for (var i = 0; i < this.respostas.length; i++) 
 			{
 				if (this.respostas[i].selecionada)
 				{
-					this.tempoFinal = new Date().getTime();
+					this.terminou = true;
 					this.acertou = this.respostas[i].correta;
+					socket.clicouConfirmarTelaPergunta(this.jogador.posicao, this.acertou);
+					if (this.acertou)
+					{
+						return this.jogador;
+					}
 				}
-			}
+			}			
 		}
+
+		return false;
 	}
 
 	this.desmarcarOutrasRespostas = function(indiceRespostaMarcada) 
@@ -301,7 +389,12 @@ function Pergunta(texto, respostas, jogo)
 
 	this.verificarBoundingBox = function(eventoClique, boundingBox) 
 	{
-		return Util.verificarBoundingBox(eventoClique.center.x, eventoClique.center.y, boundingBox);
+		var xEvento = eventoClique.clientX;
+		var yEvento = eventoClique.clientY;
+
+		return Util.verificarBoundingBox(xEvento, yEvento, boundingBox);
+		//return Util.verificarBoundingBox(eventoClique.srcEvent.offsetX, eventoClique.srcEvent.offsetY, boundingBox);
+		//return Util.verificarBoundingBox(eventoClique.center.x, eventoClique.center.y, boundingBox);
 	}
 
 	this.ordenarRespostas = function() 
@@ -322,5 +415,135 @@ function Pergunta(texto, respostas, jogo)
   		}
 	}	
 
-	this.ordenarRespostas();
+	this.inicializar();
+}
+
+
+function Resposta(texto, correta) {
+	this.texto = texto;
+	this.correta = correta;
+	this.selecionada = false;
+	this.boundingBox = {};
+}
+
+function Pergunta(texto, respostas, jogo) 
+{	
+	this.jogo = jogo;
+	this.areas = [];
+	this.tipoEvento = TipoEvento.PERGUNTA;		
+
+	this.texto = texto;
+	this.respostas = respostas;
+
+	this.terminou = false;
+
+	this.copiar = function(respostas)
+	{
+		var respostasLocais = [];
+		for (var i = 0; i < respostas.length; i++)
+		{
+			respostasLocais.push(new Resposta(respostas[i].texto, respostas[i].correta));
+		}
+		return respostasLocais;
+	}
+
+	this.disparar = function(jogador) 
+	{
+		this.jogo.mudarModo(ModoJogo.PERGUNTA);
+		this.jogo.atribuirEvento(this);
+
+		for (var i = 0; i < this.jogo.jogadores.length; i++)
+		{
+			this.areas.push(new AreaJogadorPerguntas(texto, this.copiar(this.respostas), this.jogo.jogadores[i]))
+		}
+
+		var perguntasPorJogador = [];
+		for (var i = 0; i < this.areas.length; i++)
+		{
+			var respostas = [];
+			for (var j = 0; j < this.areas[i].respostas.length; j++)
+			{
+				respostas.push(this.areas[i].respostas[j].texto);
+			}
+			perguntasPorJogador.push( 
+				{ 
+					'pergunta': 
+					{ 
+						'enunciado': this.texto, 
+						'respostas': respostas,
+					},
+					'jogador': this.areas[i].jogador.posicao,
+				} 
+			);
+		}
+
+		socket.criouTelaPergunta(perguntasPorJogador);
+	}
+
+	this.verificarClique = function(eventoClique, jogo) 
+	{
+		if (!this.terminou)
+		{
+			for (var i = 0; i < this.areas.length; i++)
+			{
+				jogadorQueAcertou = this.areas[i].verificarClique(eventoClique, jogo);
+				if (jogadorQueAcertou)
+				{
+					this.jogadorQueAcertou = jogadorQueAcertou;
+					this.tempoFinal = new Date().getTime();
+					this.terminou = true;
+				}
+				else
+				{
+					this.verificarTodasAreasRespondidas();
+				}
+			}
+		}
+	}
+
+	this.verificarTodasAreasRespondidas = function()
+	{
+		for (var i = 0; i < this.areas.length; i++)
+		{
+			if (!this.areas[i].terminou)
+			{
+				return;
+			}
+		}
+		this.tempoFinal = new Date().getTime();
+		this.terminou = true;
+	}
+
+	this.desenhar = function(contexto) 
+	{
+		contexto.clearRect(Posicoes.TopoEsquerdo.x - 1, Posicoes.TopoEsquerdo.y - 1, Posicoes.BaseDireita.x - Posicoes.TopoEsquerdo.x + 2, Posicoes.BaseDireita.y - Posicoes.TopoEsquerdo.y + 2);
+
+		// Linha vertical centro
+		contexto.beginPath();
+		contexto.moveTo(Posicoes.Centro.x, Posicoes.TopoEsquerdo.y);
+		contexto.lineTo(Posicoes.Centro.x, Posicoes.BaseEsquerda.y);
+		contexto.stroke();
+
+		// Linha horizontal centro
+		contexto.beginPath();
+		contexto.moveTo(Posicoes.TopoEsquerdo.x, Posicoes.Centro.y);
+		contexto.lineTo(Posicoes.TopoDireito.x, Posicoes.Centro.y);
+		contexto.stroke();
+
+		if ((new Date().getTime() - this.tempoFinal) > 4000)
+		{			
+			if (this.jogadorQueAcertou)
+			{
+				this.jogadorQueAcertou.mover();
+			}
+			this.jogo.mudarModo(ModoJogo.NORMAL);
+		} 
+		else 
+		{
+			for (var i = 0; i < this.areas.length; i++)
+			{
+				this.areas[i].desenhar(contexto);
+			}
+		}
+	}	
 }

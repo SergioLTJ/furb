@@ -74,9 +74,9 @@ function Jogador(celula, posicao, cor) {
 		
 		if (this.posicao == 0 || 
 			this.posicao == 2) {
-			return (celula.x * configuracoes.TAMANHO_CELULA) + (umQuartoCelula);
+			return (celula.x * configuracoes.TAMANHO_CELULA + celula.x * 10) + (umQuartoCelula);
 		} else {
-			return (celula.x * configuracoes.TAMANHO_CELULA) + (configuracoes.TAMANHO_CELULA - umQuartoCelula);
+			return (celula.x * configuracoes.TAMANHO_CELULA + celula.x * 10) + (configuracoes.TAMANHO_CELULA - umQuartoCelula);
 		}
 	}
 
@@ -85,9 +85,9 @@ function Jogador(celula, posicao, cor) {
 		
 		if (this.posicao == 0 || 
 			this.posicao == 1) {
-			return (celula.y * configuracoes.TAMANHO_CELULA) + (umQuartoCelula);
+			return (celula.y * configuracoes.TAMANHO_CELULA + celula.y * 10) + (umQuartoCelula);
 		} else {
-			return (celula.y * configuracoes.TAMANHO_CELULA) + (configuracoes.TAMANHO_CELULA - umQuartoCelula);
+			return (celula.y * configuracoes.TAMANHO_CELULA + celula.y * 10) + (configuracoes.TAMANHO_CELULA - umQuartoCelula);
 		}
 	}
 
@@ -131,17 +131,20 @@ function Jogador(celula, posicao, cor) {
 		var xInferiorMenu = this.xMenu + largura;
 		var yInferiorMenu = this.yMenu + altura;
 
-		if (evento.center.x > this.xMenu &&
-			evento.center.x < xInferiorMenu &&
-			evento.center.y > this.yMenu &&
-			evento.center.y < yInferiorMenu)
+		var xEvento = parseInt(evento.pageX) - 8;
+		var yEvento = parseInt(evento.pageY) - 8;
+		
+		if (xEvento > this.xMenu &&
+			xEvento < xInferiorMenu &&
+			yEvento > this.yMenu &&
+			yEvento < yInferiorMenu)
 		{
 			if (this.estaNoTurno)
 			{
 				this.estaNoTurno = false;
 				this.corMenu = this.cor;
 				this.bufferCor = 'yellow';
-				this.texto = 'Jogador ' + (this.posicao + 1);
+				this.texto = 'Equipe ' + (this.posicao + 1);
 				this.rolarDado();
 			}
 		}
@@ -154,8 +157,10 @@ function Jogador(celula, posicao, cor) {
 	}
 
 	this.rolarDado = function() {
-		this.movimentosRestantes = Math.floor((Math.random() * 6) + 1);
+		var quantidadeMovimentos = Math.floor((Math.random() * 6) + 1);
+		this.movimentosRestantes = quantidadeMovimentos;
 		this.tempoMovimentacao = new Date().getTime();
+		socket.moveuJogador(this.posicao, quantidadeMovimentos);
 	}
 
 	this.definirPosicoesMenu = function() {		

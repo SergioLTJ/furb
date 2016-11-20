@@ -16,6 +16,8 @@ function Jogo(contexto) {
 
 	this.evento;
 
+	this.imagemJogo = document.getElementById('fundo');
+
 	this.iniciar = function() {
 		var self = this;
 		
@@ -31,35 +33,46 @@ function Jogo(contexto) {
 		
 		configuracoes.numeroJogadores = 4;
 
-		var mc = new Hammer(canvas);
-		mc.on('tap',function (evento)
+		var div = document.getElementById('divToc');
+
+		div.addEventListener('touchstart', function(e) 
 		{
-			switch (self.modo)
+			e.preventDefault();
+
+			for (var i = 0; i < e.changedTouches.length; i++)
 			{
-				case ModoJogo.NORMAL:
-					self.verificarCliqueNormal(evento, self);
-					break;
-				case ModoJogo.PERGUNTA:				
-					self.verificarCliqueEvento(evento, self);
-					break;
-				default:
-					break;
+				switch (self.modo)
+				{
+					case ModoJogo.NORMAL:
+						self.verificarCliqueNormal(e.changedTouches[i], self);
+						break;
+					case ModoJogo.PERGUNTA:
+					case ModoJogo.MINI_GAME:
+						self.verificarCliqueEvento(e.changedTouches[i], self);
+						break;
+					default:
+						break;
+				}
 			}
-		});
+		}, false);
+		
+		div.addEventListener('touchmove', function(e) {
+			e.preventDefault();
 
-		mc.get('pan').set({ direction: Hammer.DIRECTION_ALL });
-		mc.on('panleft panright panup pandown', function(evento) {
 			if (self.modo == ModoJogo.MINI_GAME)
-				self.evento.verificarArraste(evento);
-		});
+				for (var i = 0; i < e.changedTouches.length; i++)
+					self.evento.verificarMovimento(e.changedTouches[i]);
+		}, false);
 
-		mc.on('press', function(evento) {
+		div.addEventListener('touchend', function(e) {
+			e.preventDefault();
+
 			if (self.modo == ModoJogo.MINI_GAME)
-				self.evento.verificarAperto(evento);
-		});
+				for (var i = 0; i < e.changedTouches.length; i++)
+					self.evento.verificarFinal(e.changedTouches[i]);
+		}, false);
 
-		this.jogadores[0].entrarTurno();
-		this.jogadores[0].movimentosRestantes = 1;
+		this.jogadores[0].entrarTurno();		
 
 		this.step();
 	}
@@ -102,6 +115,8 @@ function Jogo(contexto) {
 	this.desenharTabuleiroNormal = function() 
 	{
 		this.contexto.clearRect(Posicoes.TopoEsquerdo.x - 1, Posicoes.TopoEsquerdo.y - 1, Posicoes.BaseDireita.x - Posicoes.TopoEsquerdo.x + 2, Posicoes.BaseDireita.y - Posicoes.TopoEsquerdo.y + 2);
+		this.contexto.strokeRect(Posicoes.TopoEsquerdo.x, Posicoes.TopoEsquerdo.y, Posicoes.BaseDireita.x - Posicoes.TopoEsquerdo.x, Posicoes.BaseDireita.y - Posicoes.TopoEsquerdo.y);
+		this.contexto.drawImage(this.imagemJogo, Posicoes.TopoEsquerdo.x - 20, Posicoes.TopoEsquerdo.y - 10);
 		this.tabuleiro.atualizar();
 		for (var i = 0; i < this.jogadores.length; i++) 
 		{
@@ -135,6 +150,6 @@ function Jogo(contexto) {
 
 		var xTexto = (Posicoes.BaseDireita.x + Posicoes.TopoEsquerdo.x) / 2;
 		var yTexto = (Posicoes.BaseDireita.y + Posicoes.TopoEsquerdo.y) / 2 - 7;
-		contexto.fillText("O jogador " + jogadorVencedor.posicao + " venceu!", xTexto, yTexto);
+		contexto.fillText("A equipe " + (jogadorVencedor.posicao + 1) + " venceu!", xTexto, yTexto);
 	}
 }

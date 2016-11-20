@@ -1,12 +1,11 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <ProjectGuid>{F15073EF-7689-6A63-45FF-2F608A4A4C11}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -46,84 +45,85 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Classes\GrafoTabuleiro.cs" />
-    <Compile Include="Assets\Classes\Servidor.cs" />
-    <Compile Include="Assets\Classes\TabuleiroCreator.cs" />
-    <Compile Include="Assets\Classes\VerticeTabuleiro.cs" />
-    <Compile Include="Assets\Scripts\PerguntaBehavior.cs" />
-    <Compile Include="Assets\Scripts\CasaBehavior.cs" />
-    <Compile Include="Assets\Scripts\GameLoop.cs" />
-    <Compile Include="Assets\Scripts\PlayerBehavior.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\BackgroundPlaneBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\CloudRecoBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\CylinderTargetBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\DatabaseLoadBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\DefaultInitializationErrorHandler.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\DefaultSmartTerrainEventHandler.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\DefaultTrackableEventHandler.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\DeviceTrackerBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\DigitalEyewearBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\GLErrorHandler.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\HideExcessAreaBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\ImageTargetBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\Internal\AndroidUnityPlayer.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\Internal\ComponentFactoryStarterBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\Internal\IOSUnityPlayer.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\Internal\VuforiaBehaviourComponentFactory.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\Internal\WSAUnityPlayer.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\KeepAliveBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\MarkerBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\MaskOutBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\MultiTargetBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\ObjectTargetBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\PropBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\ReconstructionBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\ReconstructionFromTargetBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\SmartTerrainTrackerBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\SurfaceBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\TextRecoBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\TurnOffBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\TurnOffWordBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\UserDefinedTargetBuildingBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\Utilities\VRIntegrationHelper.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\VideoBackgroundBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\VideoBackgroundManager.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\VirtualButtonBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\VuMarkBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\VuforiaBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\WebCamBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\WireframeBehaviour.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\WireframeTrackableEventHandler.cs" />
-    <Compile Include="Assets\Vuforia\Scripts\WordBehaviour.cs" />
-    <None Include="Assets\Vuforia\Shaders\ColoredLines.shader" />
-    <None Include="Assets\link.xml" />
-    <None Include="Assets\Vuforia\Shaders\VertexLitWithZ.shader" />
-    <None Include="Assets\readme_SDK.txt" />
-    <None Include="Assets\Vuforia\Shaders\RenderVideoBackground.shader" />
-    <None Include="Assets\Vuforia\Shaders\VideoBackground.shader" />
-    <None Include="Assets\license_3rdpartynotice.txt" />
-    <None Include="Assets\StreamingAssets\QCAR\Multimidia.xml" />
-    <None Include="Assets\Vuforia\Editor\WebcamProfiles\profiles.xml" />
-    <None Include="Assets\Vuforia\Shaders\DepthMask.shader" />
-    <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
-    <None Include="Assets\Vuforia\Shaders\ClippingMask.shader" />
-    <None Include="Assets\Vuforia\Shaders\BrightTexture.shader" />
-    <None Include="Assets\Vuforia\Shaders\Text3D.shader" />
-    <Reference Include="UnityEngine.UI">
-      <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Analytics">
-      <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
-    </Reference>
-    <Reference Include="websocket-sharp">
-      <HintPath>C:/Users/Avell/Documents/FURB/FURB/CM/HammerHockey3D/Assets/websocket-sharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Vuforia.UnityExtensions">
-      <HintPath>C:/Users/Avell/Documents/FURB/FURB/CM/HammerHockey3D/Assets/Vuforia/Scripts/Internal/Vuforia.UnityExtensions.dll</HintPath>
-    </Reference>
+     <Compile Include="Assets\Classes\GrafoTabuleiro.cs" />
+     <Compile Include="Assets\Classes\Servidor.cs" />
+     <Compile Include="Assets\Classes\TabuleiroCreator.cs" />
+     <Compile Include="Assets\Classes\VerticeTabuleiro.cs" />
+     <Compile Include="Assets\Scripts\CasaBehavior.cs" />
+     <Compile Include="Assets\Scripts\GameLoop.cs" />
+     <Compile Include="Assets\Scripts\Minigame.cs" />
+     <Compile Include="Assets\Scripts\PerguntaBehavior.cs" />
+     <Compile Include="Assets\Scripts\PlayerBehavior.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\BackgroundPlaneBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\CloudRecoBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\CylinderTargetBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\DatabaseLoadBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\DefaultInitializationErrorHandler.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\DefaultSmartTerrainEventHandler.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\DefaultTrackableEventHandler.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\DeviceTrackerBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\DigitalEyewearBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\GLErrorHandler.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\HideExcessAreaBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\ImageTargetBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\Internal\AndroidUnityPlayer.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\Internal\ComponentFactoryStarterBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\Internal\IOSUnityPlayer.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\Internal\VuforiaBehaviourComponentFactory.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\Internal\WSAUnityPlayer.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\KeepAliveBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\MarkerBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\MaskOutBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\MultiTargetBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\ObjectTargetBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\PropBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\ReconstructionBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\ReconstructionFromTargetBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\SmartTerrainTrackerBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\SurfaceBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\TextRecoBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\TurnOffBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\TurnOffWordBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\UserDefinedTargetBuildingBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\Utilities\VRIntegrationHelper.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\VideoBackgroundBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\VideoBackgroundManager.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\VirtualButtonBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\VuMarkBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\VuforiaBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\WebCamBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\WireframeBehaviour.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\WireframeTrackableEventHandler.cs" />
+     <Compile Include="Assets\Vuforia\Scripts\WordBehaviour.cs" />
+     <None Include="Assets\Vuforia\Shaders\ColoredLines.shader" />
+     <None Include="Assets\link.xml" />
+     <None Include="Assets\Vuforia\Shaders\VertexLitWithZ.shader" />
+     <None Include="Assets\readme_SDK.txt" />
+     <None Include="Assets\Vuforia\Shaders\RenderVideoBackground.shader" />
+     <None Include="Assets\Vuforia\Shaders\VideoBackground.shader" />
+     <None Include="Assets\license_3rdpartynotice.txt" />
+     <None Include="Assets\StreamingAssets\QCAR\Multimidia.xml" />
+     <None Include="Assets\Vuforia\Editor\WebcamProfiles\profiles.xml" />
+     <None Include="Assets\Vuforia\Shaders\DepthMask.shader" />
+     <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
+     <None Include="Assets\Vuforia\Shaders\ClippingMask.shader" />
+     <None Include="Assets\Vuforia\Shaders\BrightTexture.shader" />
+     <None Include="Assets\Vuforia\Shaders\Text3D.shader" />
+ <Reference Include="UnityEngine.UI">
+ <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.Networking">
+ <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.Analytics">
+ <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
+ </Reference>
+ <Reference Include="websocket-sharp">
+ <HintPath>C:/Users/Avell/Documents/FURB/FURB/CM/HammerHockey3D/Assets/websocket-sharp.dll</HintPath>
+ </Reference>
+ <Reference Include="Vuforia.UnityExtensions">
+ <HintPath>C:/Users/Avell/Documents/FURB/FURB/CM/HammerHockey3D/Assets/Vuforia/Scripts/Internal/Vuforia.UnityExtensions.dll</HintPath>
+ </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -133,4 +133,5 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  
 </Project>

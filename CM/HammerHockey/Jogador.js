@@ -50,9 +50,12 @@ function Jogador(celula, posicao, cor) {
 	this.desenhar = function (contexto) {
 		contexto.fillStyle = this.cor;
 
-		contexto.beginPath();
-		contexto.arc(this.posicaoX, this.posicaoY, configuracoes.TAMANHO_JOGADOR / 2, 0, 2 * Math.PI);
-		contexto.fill();
+		if (this.celulaAtual.antecessor != null)
+		{
+			contexto.beginPath();
+			contexto.arc(this.posicaoX, this.posicaoY, configuracoes.TAMANHO_JOGADOR / 2, 0, 2 * Math.PI);
+			contexto.fill();
+		}
 		
 		this.desenharMenu(contexto);
 	}

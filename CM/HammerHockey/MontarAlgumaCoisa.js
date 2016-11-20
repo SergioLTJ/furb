@@ -1,16 +1,19 @@
 function Quadrado(xCentro, yCentro, id)
 {
 	this.x = xCentro;
+	this.xAnterior = 0;
 	this.y = yCentro;
+	this.yAnterior = 0;
 	this.tamanho = configuracoes.TAMANHO_QUADRADO_MONTAR_BLAH;
 	this.id = id;
 	this.deltaXAnterior = 0;
 	this.deltaYAnterior = 0;
 	this.selecionado = false;
+	this.boundingBox = {};
+	this.viva = true;	
 	
 	this.definirBoundingBox = function() 
-	{		
-		this.boundingBox = { };
+	{
 		this.boundingBox.cima = this.y - (this.tamanho / 2);
 		this.boundingBox.baixo = this.y + (this.tamanho / 2);
 		this.boundingBox.esquerda = this.x - (this.tamanho / 2);
@@ -19,8 +22,8 @@ function Quadrado(xCentro, yCentro, id)
 
 	this.verificarOverlap = function(outro)
 	{
-		return (Math.abs(this.x - outro.x) < 5 &&
-				Math.abs(this.y - outro.y) < 5 &&
+		return (Math.abs(this.x - outro.x) < 15 &&
+				Math.abs(this.y - outro.y) < 15 &&
 				this.id == outro.id);
 	}
 
@@ -29,11 +32,28 @@ function Quadrado(xCentro, yCentro, id)
 		contexto.strokeRect(this.boundingBox.esquerda, this.boundingBox.cima, this.tamanho, this.tamanho);
 	}
 
+	this.alterarX = function(x)
+	{
+		this.xAnterior = this.x;
+		this.x = x;
+	}
+
+	this.alterarY = function(y)
+	{
+		this.yAnterior = this.y;
+		this.y = y;
+	}
+
 	this.mover = function(x, y)
 	{
-		this.x += x;
-		this.y += y;
+		this.x = x;
+		this.y = y;
 		this.definirBoundingBox();
+	}
+
+	this.enviarSocket = function(jogador)
+	{
+		socket.moveuParte(jogador, this.xAnterior - this.x, this.yAnterior - this.y, this.id);
 	}
 
 	this.definirBoundingBox();
@@ -47,10 +67,10 @@ function AreaJogador(jogador)
 	this.areasCorretas = [];
 	this.areasControlaveis = [];
 
-	this.areasSelecionadas = [];
-
 	this.deltaXAnterior = 0;
 	this.deltaYAnterior = 0;
+
+	this.toquesNaArea = [];
 
 	this.definirBoundingBox = function()
 	{
@@ -88,17 +108,17 @@ function AreaJogador(jogador)
 		if (this.jogador.posicao == 0 ||
 			this.jogador.posicao == 1)
 		{
-			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2, this.boundingBox.baixo - 50, 1));
-			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2 - 75, this.boundingBox.baixo - 125, 2));
-			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2, this.boundingBox.baixo - 150, 3));
-			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2, this.boundingBox.baixo - 250, 4));
+			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2, this.boundingBox.baixo - 50, 0));
+			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2 - 75, this.boundingBox.baixo - 125, 1));
+			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2, this.boundingBox.baixo - 150, 2));
+			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2, this.boundingBox.baixo - 250, 3));
 		} 
 		else 
 		{
-			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2, this.boundingBox.cima + 50, 1));
-			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2 + 75, this.boundingBox.cima + 125, 2));
-			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2, this.boundingBox.cima + 150, 3));
-			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2, this.boundingBox.cima + 250, 4));	
+			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2, this.boundingBox.cima + 50, 0));
+			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2 + 75, this.boundingBox.cima + 125, 1));
+			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2, this.boundingBox.cima + 150, 2));
+			this.areasCorretas.push(new Quadrado((this.boundingBox.esquerda + this.boundingBox.direita) / 2, this.boundingBox.cima + 250, 3));	
 		}
 	}
 
@@ -119,7 +139,7 @@ function AreaJogador(jogador)
 		
 		do 
 		{
-			id = Math.floor((Math.random() * 4) + 1);
+			id = Math.floor((Math.random() * 4));
 		} while (this.verificarIdJaUsada(id));
 
 		return id;
@@ -154,44 +174,97 @@ function AreaJogador(jogador)
 
 		for (var i = 0; i < this.areasCorretas.length; i++)
 		{
-			contexto.strokeStyle = 'green';
+			contexto.strokeStyle = this.areasCorretas[i].preenchida ? 'green' : 'blue';
 			this.areasCorretas[i].desenhar(contexto);
 			contexto.strokeStyle = 'black';
-			this.areasControlaveis[i].desenhar(contexto);
+			if (this.areasControlaveis[i].viva)
+				this.areasControlaveis[i].desenhar(contexto);
 		}
 
 		contexto.restore();
 	}
 
+	this.verificarToque = function(evento)
+	{
+		for (var i = 0; i < this.areasControlaveis.length; i++)
+			if (Util.verificarBoundingBox(evento.clientX, evento.clientY, this.areasControlaveis[i].boundingBox))
+				this.toquesNaArea.push( { 'id': evento.identifier, 'indexArea': i } );
+	}
+
 	this.verificarArraste = function(evento)
 	{
-		for (var i = 0; i < this.areasControlaveis.length; i++)
-		{
-			if (this.areasControlaveis[i].selecionado && 
-				Util.verificarBoundingBox(evento.center.x, evento.center.y, this.areasControlaveis[i].boundingBox))
-			{
-				this.areasControlaveis[i].mover(evento.deltaX - this.areasControlaveis[i].deltaXAnterior, evento.deltaY - this.areasControlaveis[i].deltaYAnterior);
-				this.areasControlaveis[i].deltaXAnterior = evento.deltaX;
-				this.areasControlaveis[i].deltaYAnterior = evento.deltaY;
-				return;
-			}
-		}
+		var indiceToque = this.obterIndiceToque(evento);
+		if (indiceToque < 0) return;
+
+		var toque = this.toquesNaArea[indiceToque];
+		var area = this.areasControlaveis[toque.indexArea];
+
+		area.alterarX(evento.clientX);
+		area.alterarY(evento.clientY);
+
+		var metadeTamanho = area.tamanho / 2;
+
+		if ((area.x + metadeTamanho) > this.boundingBox.direita)
+			area.x = this.boundingBox.direita - metadeTamanho;
+		if ((area.x - metadeTamanho) < this.boundingBox.esquerda)
+			area.x = this.boundingBox.esquerda + metadeTamanho;
+
+		if ((area.y + metadeTamanho) > this.boundingBox.baixo)
+			area.y = this.boundingBox.baixo - metadeTamanho;
+		if ((area.y - metadeTamanho) < this.boundingBox.cima)
+			area.y = this.boundingBox.cima + metadeTamanho;
+
+		area.definirBoundingBox();
+		area.enviarSocket(this.jogador.posicao);
 	}
 
-	this.verificarAperto = function(evento)
+	this.verificarFimToque = function(evento)
 	{
-		for (var i = 0; i < this.areasControlaveis.length; i++)
+		var indiceToque = this.obterIndiceToque(evento);
+		if (indiceToque < 0) return;
+	
+		var area = this.areasControlaveis[this.toquesNaArea[indiceToque].indexArea];
+
+		for (var i = 0; i < this.areasCorretas.length; i++)
 		{
-			if (Util.verificarBoundingBox(evento.center.x, evento.center.y, this.areasControlaveis[i].boundingBox))
+			if (area.verificarOverlap(this.areasCorretas[i]))
 			{
-				this.areasControlaveis[i].selecionado = true;
+				area.viva = false;
+				this.areasCorretas[i].preenchida = true;
 			}
 		}
+		
+		this.toquesNaArea.splice(indiceToque, 1);
+
+		return this.verificarFimJogo();
 	}
 
-	this.definirBoundingBox();
-	this.definirAreasCorretas();
-	this.inicializarAreasControlaveis();
+	this.verificarFimJogo = function() 
+	{
+		for (var i = 0; i < this.areasCorretas.length; i++)
+			if (!this.areasCorretas[i].preenchida)
+				return -1;
+
+		return this.jogador.posicao;
+	}
+
+	this.obterIndiceToque = function(evento)
+	{
+		for (var i = 0; i < this.toquesNaArea.length; i++)
+			if (this.toquesNaArea[i].id == evento.identifier)
+				return i;
+
+		return -1;
+	}
+
+	this.inicializar = function()
+	{
+		this.definirBoundingBox();
+		this.definirAreasCorretas();
+		this.inicializarAreasControlaveis();
+	}
+
+	this.inicializar();
 }
 
 function MontarAlgumaCoisa(jogo) 
@@ -204,13 +277,26 @@ function MontarAlgumaCoisa(jogo)
 
 	this.disparar = function(jogador) 
 	{
-		this.jogo.mudarModo(ModoJogo.MINI_GAME);		
-		this.jogo.atribuirEvento(this);		
+		this.jogo.mudarModo(ModoJogo.MINI_GAME);
+		this.jogo.atribuirEvento(this);
 		
 		for(var i = 0; i < this.jogadores.length; i++)
 		{
 			this.areas.push(new AreaJogador(this.jogadores[i]));
 		}
+
+		var partesPorJogador = [];
+
+		for (var i = 0; i < this.areas.length; i++)
+		{
+			var partes = [];
+			for (var j = 0; j < this.areas[i].areasControlaveis.length; j++)
+				partes.push(this.areas[i].areasControlaveis[j].id);
+
+			partesPorJogador.push({ 'partesCorpo': partes, 'jogador': this.areas[i].jogador.posicao });
+		}
+
+		socket.abriuTelaMontarCorpo(partesPorJogador);
 	}
 
 	this.desenhar = function(contexto)
@@ -228,31 +314,90 @@ function MontarAlgumaCoisa(jogo)
 		contexto.moveTo(Posicoes.TopoEsquerdo.x, Posicoes.Centro.y);
 		contexto.lineTo(Posicoes.TopoDireito.x, Posicoes.Centro.y);
 		contexto.stroke();
-
+		
 		for (var i = 0; i < this.areas.length; i++)
 		{
 			this.areas[i].desenhar(contexto);
 		}
-	}
 
-	this.verificarArraste = function(evento)
-	{
-		for (var i = 0; i < this.areas.length; i++)
+		if (this.terminou)
 		{
-			this.areas[i].verificarArraste(evento);
+			this.desenharTelaFinal(contexto);
+			if ((new Date().getTime() - this.tempoFinal) > 4000)
+			{
+				var jogador = this.jogadores[this.jogadorVencedor];
+				jogador.mover();
+				jogador.mover();
+				jogador.mover();
+				this.jogo.mudarModo(ModoJogo.NORMAL);
+			}
 		}
 	}
 
-	this.verificarAperto = function(evento)
+	this.desenharTelaFinal = function(contexto)
 	{
+		contexto.save();
+		contexto.fillStyle = 'white';
+		contexto.strokeStyle = 'black';
+		contexto.lineWidth = 2;
+		contexto.fillRect(Posicoes.Centro.x - 185, Posicoes.Centro.y - 45, 370, 90);
+		contexto.strokeRect(Posicoes.Centro.x - 185, Posicoes.Centro.y - 45, 370, 90);
+		contexto.lineWidth = 1;
+		contexto.fillStyle = 'black';
+		contexto.font = '24px Arial bold';
+		contexto.fillText('A equipe ' + (this.jogadorVencedor + 1) + ' venceu!', Posicoes.Centro.x - 175, Posicoes.Centro.y - 17);
+		contexto.fillText('Essa equipe avançará três casas.', Posicoes.Centro.x - 175, Posicoes.Centro.y + 20);
+		contexto.restore();
+	}
+
+	this.verificarClique = function(evento)
+	{
+		if (this.terminou)
+			return;
+
+		evento = this.ajustarEvento(evento);
+
+		for (var i = 0; i < this.areas.length; i++)
+			if (Util.verificarBoundingBox(evento.clientX, evento.clientY, this.areas[i].boundingBox))
+				this.areas[i].verificarToque(evento);
+	}
+
+	this.verificarMovimento = function(evento)
+	{
+		if (this.terminou)
+			return;
+
+		evento = this.ajustarEvento(evento);
+		
+		for (var i = 0; i < this.areas.length; i++)
+			if (Util.verificarBoundingBox(evento.clientX, evento.clientY, this.areas[i].boundingBox))
+				this.areas[i].verificarArraste(evento);
+			
+	}
+
+	this.verificarFinal = function(evento)
+	{
+		if (this.terminou)
+			return;
+
+		evento = this.ajustarEvento(evento);
+
 		for (var i = 0; i < this.areas.length; i++)
 		{
-			this.areas[i].verificarAperto(evento);
+			var jogadorVencedor = this.areas[i].verificarFimToque(evento);
+			if (jogadorVencedor > -1)
+			{
+				this.terminou = true;
+				this.tempoFinal = new Date().getTime();
+				this.jogadorVencedor = jogadorVencedor;
+			}
 		}
 	}
 
-	this.verificarSoltar = function(evento)
+	this.ajustarEvento = function(evento) 
 	{
-
+		evento.clientX = parseInt(evento.clientX) - 8;
+		evento.clientY = parseInt(evento.clientY) - 8;		
+		return evento;
 	}
 }

@@ -41,10 +41,11 @@ function AbriuTelaMontarCorpo(partesPorJogador)
 	this.partesPorJogador = partesPorJogador
 }
 
-function MoveuParte(jogador, offsetX, offsetY)
+function MoveuParte(jogador, offsetX, offsetY, parte)
 {
 	this.tipo = TipoDado.MOVEU_PARTE,
 	this.jogador = jogador,
 	this.offsetX = offsetX,
 	this.offsetY = offsetY
+	this.parte = parte;
 }

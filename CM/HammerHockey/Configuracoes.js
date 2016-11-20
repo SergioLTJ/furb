@@ -1,5 +1,5 @@
 function Configuracoes() {
-	this.TAMANHO_CELULA = 70;
+	this.TAMANHO_CELULA = 74;
 	this.TAMANHO_JOGADOR = (this.TAMANHO_CELULA / 4) - 3;
 
 	this.DISTANCIA_MENU_TABULEIRO = 10;
@@ -15,7 +15,7 @@ function Configuracoes() {
 	this.TAMANHO_CIRCULO_RESPOSTAS = 8;
 	this.LARGURA_TELA_FINAL_PERGUNTAS = 300;
 
-	this.TAMANHO_QUADRADO_MONTAR_BLAH = 50;
+	this.TAMANHO_QUADRADO_MONTAR_BLAH = 100;
 
 	this.URL_SERVER = 'ws://192.168.0.5/Comunicacao'
 }

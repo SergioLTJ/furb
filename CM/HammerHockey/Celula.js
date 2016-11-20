@@ -11,32 +11,28 @@ function Celula(x, y, ordem, evento) {
 	this.desenhar = function(contexto) {
 		contexto.save();
 
-		var xTopoEsquerdoCelula = configuracoes.TAMANHO_CELULA * this.x;
-		var yTopoEsquerdoCelula = configuracoes.TAMANHO_CELULA * this.y;
+		var xTopoEsquerdoCelula = configuracoes.TAMANHO_CELULA * this.x + this.x * 10;
+		var yTopoEsquerdoCelula = configuracoes.TAMANHO_CELULA * this.y + this.y * 10;
 		
 		var texto = this.ordem;
 
-		if (this.evento != null) {
-			contexto.fillStyle = 'yellow';
+		contexto.fillStyle = 'white';
+
+		if (this.evento != null) {			
 			texto = '?';			
 			if (this.evento.tipoEvento != TipoEvento.PERGUNTA) {
-				contexto.fillRect(
-					xTopoEsquerdoCelula,
-					yTopoEsquerdoCelula,
-					configuracoes.TAMANHO_CELULA, 
-					configuracoes.TAMANHO_CELULA
-				);
+				contexto.fillStyle = 'yellow';				
 			}
+		} else if (this.sucessor == null) {
+			contexto.fillStyle = 'green';			
 		}
-		if (this.sucessor == null) {
-			contexto.fillStyle = 'green';
-			contexto.fillRect(
-				xTopoEsquerdoCelula,
-				yTopoEsquerdoCelula, 
-				configuracoes.TAMANHO_CELULA, 
-				configuracoes.TAMANHO_CELULA
-			);
-		}
+		
+		contexto.fillRect(
+			xTopoEsquerdoCelula,
+			yTopoEsquerdoCelula,
+			configuracoes.TAMANHO_CELULA,
+			configuracoes.TAMANHO_CELULA
+		);
 
 		contexto.strokeRect(
 			xTopoEsquerdoCelula,

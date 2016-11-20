@@ -137,7 +137,13 @@ function Tabuleiro(jogo) {
 	
 	this.gerarComPergunta = function(k, j, i)
 	{
-		return new Celula(k, j, i, new Pergunta('Qualquer coisa Qualquer coisa Qualquer coisa Qualquer coisa Qualquer coisa Qualquer coisa', [new Resposta('Errada1', false), new Resposta('Errada2', false), new Resposta('Certa', true), new Resposta('Errada3', false)], this.jogo));
+		var pergunta = null;
+		do
+		{
+			pergunta = this.perguntas[Math.floor((Math.random() * 21))];
+		} while(pergunta.usada);
+
+		return new Celula(k, j, i, pergunta.pergunta);
 	}
 
 	this.gerarComEvento = function(k, j, i, posicaoFinal)
@@ -203,5 +209,138 @@ function Tabuleiro(jogo) {
 		return maior;
 	}
 
+	this.inicializarPerguntas = function()
+	{
+		this.perguntas = [];
+
+		this.perguntas.push( { 'pergunta': new Pergunta("Como é formado o sistema digestório:", [
+		new Resposta("faringe, estômago, intestino delgado, intestino grosso e ânus", false),
+		new Resposta("esôfago, estômago, fígado, intestino delgado, intestino grosso, reto e ânus.", false),
+		new Resposta("boca, faringe, esôfago, estômago, fígado, vesícula biliar, pâncreas, intestino delgado, intestino grosso, reto e ânus.", true)
+		], this.jogo), 'usada': false } );
+		
+		this.perguntas.push( { 'pergunta': new Pergunta("A importância da digestão para o nosso corpo é:", [
+		new Resposta("desenvolver nosso organismo.", false),
+		new Resposta("transformar os alimentos em nutrientes e eliminá-los.", false),
+		new Resposta("retirar os nutrientes indispensáveis dos alimentos ingeridos; para o desenvolvimento e manutenção do organismo", true)
+		], this.jogo), 'usada': false } );
+		
+		this.perguntas.push( { 'pergunta': new Pergunta("A Digestão dos alimentos se inicia na:", [
+		new Resposta("nas glândulas salivares.", false),
+		new Resposta("na boca.", true),
+		new Resposta("no estômago.", false)
+		], this.jogo), 'usada': false } );
+		
+		this.perguntas.push( { 'pergunta': new Pergunta("Formam o caminho por onde o alimento passa até chegar ao estômago:", [
+		new Resposta("boca, faringe e esôfago", true),
+		new Resposta("faringe, esôfago vesícula biliar", false),
+		new Resposta("Boca e esôfago", false)
+		], this.jogo), 'usada': false } );
+		
+		this.perguntas.push( { 'pergunta': new Pergunta("As glândulas anexas ao tubo digestório são:", [
+		new Resposta("glândulas salivares, fígado e estômago.", false),
+		new Resposta("glândulas salivares, pâncreas e esôfago.", false),
+		new Resposta("glândulas salivares, pâncreas e o fígado.", true)
+		], this.jogo), 'usada': false } );
+		
+		this.perguntas.push( { 'pergunta': new Pergunta("Qual a função dos movimentos peristálticos: ", [
+		new Resposta("ativar as glândulas anexas", false),
+		new Resposta("fazer com que o bolo alimentar caminhe para o reto para ser eliminado pelo ânus.", false),
+		new Resposta("fazer com que o bolo alimentar caminhe ao longo do tubo digestório, para que a digestão ocorra.", true)
+		], this.jogo), 'usada': false } );
+		
+		
+		this.perguntas.push( { 'pergunta': new Pergunta("Ele movimenta, amassa e mexe o alimento. O suco gástrico é produzido aí:", [
+		new Resposta("pâncreas", false),
+		new Resposta("estômago", true),
+		new Resposta("intestino delgado", false)
+		], this.jogo), 'usada': false } );
+		
+		this.perguntas.push( { 'pergunta': new Pergunta("Nele, o alimento já muito transformado, mistura-se com três líquidos e juntos transformam os nutrientes em alimentos:", [
+		new Resposta("intestino delgado", true),
+		new Resposta("intestino grosso", false),
+		new Resposta("estômago", false)
+		]), 'usada': false } );
+		
+		this.perguntas.push( { 'pergunta': new Pergunta("Tem a função de absorver a água, evitando que ela seja eliminada junto com as fezes:", [
+		new Resposta("intestino grosso", true),
+		new Resposta("ânus", false),
+		new Resposta("intestino delgado", false)
+		], this.jogo), 'usada': false } );
+		
+		this.perguntas.push( { 'pergunta': new Pergunta("Maior glândula do nosso corpo, que é a responsável pela produção da bile:", [
+		new Resposta("pâncreas ", false),
+		new Resposta("glândulas salivares ", false),
+		new Resposta("fígado ", true)
+		], this.jogo), 'usada': false } );		
+		
+		this.perguntas.push( { 'pergunta': new Pergunta("Como é formado o sistema respiratório:", [
+		new Resposta("faringe, laringe, brônquios e pulmões", false),
+		new Resposta("nariz, laringe, brônquios e pulmões ", false),
+		new Resposta("nariz, faringe, laringe, traqueia, brônquios, pulmões.", true)
+		], this.jogo), 'usada': false } );
+		
+		this.perguntas.push( { 'pergunta': new Pergunta("Órgão responsável por captar, filtrar e umedecer o ar inspirado:", [
+		new Resposta("nariz", true),
+		new Resposta("laringe", false),
+		new Resposta("boca", false)
+		], this.jogo), 'usada': false } );
+		
+		this.perguntas.push( { 'pergunta': new Pergunta("Como se designa a saída de ar pelos pulmões:", [
+		new Resposta("respiração", false),
+		new Resposta("inspiração", false),
+		new Resposta("expiração", true)
+		], this.jogo), 'usada': false } );
+		
+		this.perguntas.push( { 'pergunta': new Pergunta("Qual é o gás mais importante para nosso organismo:", [
+		new Resposta("Oxigênio.", true),
+		new Resposta("Gás Carbônico.", false),
+		new Resposta("Nitrogênio.", false)
+		], this.jogo), 'usada': false } );
+		
+		this.perguntas.push( { 'pergunta': new Pergunta("O sistema respiratório possui como função principal:", [
+		new Resposta("transportar o sangue pelo  nosso corpo.", false),
+		new Resposta("permitir a entrada de oxigênio no nosso corpo e a saída de gás carbônico", true),
+		new Resposta("eliminar as impurezas pela urina.", false)
+		], this.jogo), 'usada': false } );
+		
+		this.perguntas.push( { 'pergunta': new Pergunta("Sua principal função é fornecer ao nosso sangue oxigênio:", [
+		new Resposta("pulmões ", true),
+		new Resposta("traqueia", false),
+		new Resposta("brônquios ", false)
+		], this.jogo), 'usada': false } );
+		
+		this.perguntas.push( { 'pergunta': new Pergunta("O processo de troca gasosa no pulmão — oxigênio por dióxido de carbono:", [
+		new Resposta("hematose", true), 
+		new Resposta("respiração", false),
+		new Resposta("homeostase", false)
+		], this.jogo), 'usada': false } );
+		
+		this.perguntas.push( { 'pergunta': new Pergunta("O sistema respiratório tem função de ofertar oxigênio ao organismo e expelir gás carbônico. O principal músculo que auxilia o processo respiratório é:", [
+		new Resposta("esternocleidomastoideo", false),
+		new Resposta("diafragma", true),
+		new Resposta("pulmão", false)
+		], this.jogo), 'usada': false } );
+		
+		this.perguntas.push( { 'pergunta': new Pergunta("A faringe é responsável por conduzir o ar e os alimentos; por isso, pertence a dois sistemas, o digestório e o respiratório. Antes que o ar chegue até a laringe, ele precisa passar na faringe. Existe uma estrutura cartilaginosa que separa para onde vai o alimento e o ar, qual:", [
+		new Resposta("glândulas salivares", false),
+		new Resposta("diafragma ", false),
+		new Resposta("epiglote", true)
+		], this.jogo), 'usada': false } );
+		
+		this.perguntas.push( { 'pergunta': new Pergunta("Dupla membrana que envolve o pulmão:", [
+		new Resposta("pleura", true),
+		new Resposta("alvéolos pulmonares ", false),
+		new Resposta("plasmática ", false)
+		], this.jogo), 'usada': false } );
+		
+		this.perguntas.push( { 'pergunta': new Pergunta("Sua função é filtrar, umedecer e aquecer o ar para conduzi-lo aos pulmões:", [
+		new Resposta("traqueia", true), 
+		new Resposta("laringe", false),
+		new Resposta("faringe", false)
+		], this.jogo), 'usada': false } );
+	}
+
+	this.inicializarPerguntas();
  	this.inicializarTabuleiro();
 }

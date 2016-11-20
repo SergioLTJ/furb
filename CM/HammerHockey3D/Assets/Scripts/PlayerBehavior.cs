@@ -33,7 +33,7 @@ public class PlayerBehavior : MonoBehaviour {
         {
             transform.position = Vector3.SmoothDamp(transform.position, translacao, ref velocidade, velocidadeAnimacao);
         }
-        else if (Input.GetKey(KeyCode.Space) || avancarPlayer)
+        else if (avancarPlayer)
         {
             translacao = casaAtual.GetPosicao() + deslocamento;
             translacao.y = alturaPlayer;

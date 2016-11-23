@@ -14,6 +14,7 @@ public class PerguntaBehavior : MonoBehaviour {
     public Text alt4;
 
     public GameObject selecao;
+    public int status = 0; // 1 = certo; 2 = errado
 
     public void MostraPergunta(string pergunta, string alt1, string alt2, string alt3, string alt4)
     {
@@ -22,9 +23,20 @@ public class PerguntaBehavior : MonoBehaviour {
         this.alt1.text = "1) " + alt1;
         this.alt2.text = "2) " + alt2;
         this.alt3.text = "3) " + alt3;
-        this.alt4.text = "4) " + alt4;
+        //this.alt4.text = "4) " + alt4;
 
         AtivaDesativaPergunta(true);
+    }
+
+    public void MostraErroAcerto(bool acerto)
+    {
+        pergunta.text = acerto ? "ACERTOU!" : "ERROU!";
+        this.alt1.text = "";
+        this.alt2.text = "";
+        this.alt3.text = "";
+        this.alt4.text = "";
+
+        status = acerto ? 1 : 2;
     }
 
     public void SelecionaResposta(int indice)

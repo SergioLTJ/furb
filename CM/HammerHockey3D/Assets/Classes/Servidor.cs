@@ -7,6 +7,9 @@ using WebSocketSharp.Server;
 using HammerHockey3D;
 using UnityEngine;
 using WebSocketSharp;
+using Classes;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 //using System.Runtime.Serialization.Json;
 //using Newtonsoft.Json.Linq;
@@ -20,77 +23,87 @@ namespace Assets.Classes
         protected override void OnOpen()
         {
             Debug.Log("Conectado");
-            base.OnOpen();
         }
 
-        /*
         protected override void OnMessage(MessageEventArgs e)
         {
-            var json = JObject.Parse(e.Data);
-            var data = (JValue)json["tipo"];
-            var tipoDado = (TipoDado)data.Value<int>();
+            Debug.Log("Mensagem");
 
-            switch (tipoDado)
+            var json = JObject.Parse(e.Data);
+            var data = (int)json["tipo"];
+
+            switch ((TipoDado)data)
             {
                 case TipoDado.MOVEU_JOGADOR:
-                    MoveuJogador(Deserializar<MoveuJogador>(e.RawData));
+                    MoveuJogador(Deserializar<MoveuJogador>(e.Data));
                     break;
                 case TipoDado.SELECIONOU_ITEM_PERGUNTA:
-                    SelecionouItemPergunta(Deserializar<SelecionouItemPergunta>(e.RawData));
+                    SelecionouItemPergunta(Deserializar<SelecionouItemPergunta>(e.Data));
                     break;
                 case TipoDado.CRIOU_TELA_PERGUNTA:
-                    CriouTelaPergunta(Deserializar<CriouTelaPergunta>(e.RawData));
+                    CriouTelaPergunta(Deserializar<CriouTelaPergunta>(e.Data));
                     break;
                 case TipoDado.CLICOU_CONFIRMAR_TELA_PERGUNTA:
-                    ClicouConfirmarTelaPergunta(Deserializar<ClicouConfirmarTelaPergunta>(e.RawData));
+                    ClicouConfirmarTelaPergunta(Deserializar<ClicouConfirmarTelaPergunta>(e.Data));
                     break;
                 case TipoDado.ABRIU_TELA_MONTAR_CORPO:
-                    AbriuTelaMontarCorpo(Deserializar<AbriuTelaMontarCorpo>(e.RawData));
+                    AbriuTelaMontarCorpo(Deserializar<AbriuTelaMontarCorpo>(e.Data));
                     break;
                 case TipoDado.MOVEU_PARTE:
-                    MoveuParte(Deserializar<MoveuParte>(e.RawData));
+                    MoveuParte(Deserializar<MoveuParte>(e.Data));
                     break;
             }
         }
 
         private void MoveuParte(MoveuParte moveuParte)
         {
-            Console.WriteLine("MoveuParte");
+            Debug.Log("MoveuParte");
         }
 
         private void AbriuTelaMontarCorpo(AbriuTelaMontarCorpo abriuTelaMontarCorpo)
         {
-            Console.WriteLine("AbriuTelaMontarCorpo");
+            Debug.Log("AbriuTelaMontarCorpo");
         }
 
         private void ClicouConfirmarTelaPergunta(ClicouConfirmarTelaPergunta clicouConfirmarTelaPergunta)
         {
-            Console.WriteLine("ClicouConfirmarTelaPergunta");
+            gameLoop.MostraErroAcerto(clicouConfirmarTelaPergunta.jogador, clicouConfirmarTelaPergunta.estaCorreto);
+
+            if (gameLoop.DeveFinalizarPerguntas())
+            {
+                System.Threading.Thread.Sleep(4000);
+                gameLoop.FinalizaPergunta();
+            }
         }
 
         private void CriouTelaPergunta(CriouTelaPergunta criouTelaPergunta)
         {
-            Console.WriteLine("CriouTelaPergunta");
+            for (int i = 0; i < criouTelaPergunta.perguntasPorJogador.Length; ++i)
+            {
+                PerguntaPorJogador pergunta = criouTelaPergunta.perguntasPorJogador[i];
+                gameLoop.MostraPergunta(pergunta.jogador, pergunta.pergunta.enunciado, pergunta.pergunta.respostas[0], pergunta.pergunta.respostas[1], pergunta.pergunta.respostas[2], pergunta.pergunta.respostas[3]);
+            }
         }
 
         private void SelecionouItemPergunta(SelecionouItemPergunta selecionouItemPergunta)
         {
-            Console.WriteLine("SelecionouItemPergunta");
+            gameLoop.SelecionaResposta(selecionouItemPergunta.jogador, selecionouItemPergunta.indiceResposta);
         }
 
         private void MoveuJogador(MoveuJogador moveuJogador)
         {
-            Console.WriteLine("MoveuJogador");
+            gameLoop.AvancaPlayer(moveuJogador.indice, moveuJogador.quantidade);
         }
 
-        private T Deserializar<T>(byte[] dadosJson)
+        private T Deserializar<T>(string dadosJson)
         {
-            var serializador = new DataContractJsonSerializer(typeof(T));
-            using (var stream = new MemoryStream(dadosJson))
-            {
-                return (T)serializador.ReadObject(stream);
-            }
+            return JsonConvert.DeserializeObject<T>(dadosJson);
+
+            //var serializador = new DataContractJsonSerializer(typeof(T));
+            //using (var stream = new MemoryStream(dadosJson))
+            //{
+            //    return (T)serializador.ReadObject(stream);
+            //}
         }
-        */
     }      
 }

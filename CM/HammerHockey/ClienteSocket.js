@@ -10,7 +10,6 @@ function ClienteSocket()
 		this.socket.onopen = function (e) 
 		{
 			self.estaConectado = true;
-			self.moveuJogador(1, 1);
   		};
 	
   		this.socket.onmessage = function (e) 

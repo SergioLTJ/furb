@@ -174,7 +174,7 @@ function AreaJogador(jogador)
 
 		for (var i = 0; i < this.areasCorretas.length; i++)
 		{
-			contexto.strokeStyle = this.areasCorretas[i].preenchida ? 'green' : 'blue';
+			contexto.strokeStyle = this.areasCorretas[i].preenchida ? 'green' : this.jogador.cor;
 			this.areasCorretas[i].desenhar(contexto);
 			contexto.strokeStyle = 'black';
 			if (this.areasControlaveis[i].viva)

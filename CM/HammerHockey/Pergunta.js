@@ -518,6 +518,12 @@ function Pergunta(texto, respostas, jogo)
 	{
 		contexto.clearRect(Posicoes.TopoEsquerdo.x - 1, Posicoes.TopoEsquerdo.y - 1, Posicoes.BaseDireita.x - Posicoes.TopoEsquerdo.x + 2, Posicoes.BaseDireita.y - Posicoes.TopoEsquerdo.y + 2);
 
+		contexto.save();
+		contexto.strokeStyle = 'black';
+		contexto.lineWidth = 2;
+		contexto.strokeRect(Posicoes.TopoEsquerdo.x - 1, Posicoes.TopoEsquerdo.y - 1, Posicoes.BaseDireita.x - Posicoes.TopoEsquerdo.x + 2, Posicoes.BaseDireita.y - Posicoes.TopoEsquerdo.y + 2);
+		contexto.restore();
+
 		// Linha vertical centro
 		contexto.beginPath();
 		contexto.moveTo(Posicoes.Centro.x, Posicoes.TopoEsquerdo.y);

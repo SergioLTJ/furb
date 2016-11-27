@@ -17,7 +17,7 @@ public class PlayerBehavior : MonoBehaviour {
 
     float alturaPlayer;
 
-    public bool avancarPlayer = false;
+    public int avancarPlayer = 0;
 
     // Use this for initialization
     void Start()
@@ -33,13 +33,13 @@ public class PlayerBehavior : MonoBehaviour {
         {
             transform.position = Vector3.SmoothDamp(transform.position, translacao, ref velocidade, velocidadeAnimacao);
         }
-        else if (avancarPlayer)
+        else if (avancarPlayer > 0)
         {
             translacao = casaAtual.GetPosicao() + deslocamento;
             translacao.y = alturaPlayer;
             casaAtual = casaAtual.proximo;
 
-            avancarPlayer = false;
+            avancarPlayer--;
         }
     }
 

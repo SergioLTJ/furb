@@ -1,3 +1,4 @@
 $(document).ready(function () {
-	new Jogo(document.getElementById('canvasJogo').getContext('2d')).iniciar();
+	new ClienteSocket();
+	//new Jogo(document.getElementById('canvasJogo').getContext('2d')).iniciar();
 });

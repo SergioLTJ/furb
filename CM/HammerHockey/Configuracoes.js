@@ -17,9 +17,9 @@ function Configuracoes() {
 	this.TAMANHO_CIRCULO_RESPOSTAS = 8;
 	this.LARGURA_TELA_FINAL_PERGUNTAS = 300;
 
-	this.TAMANHO_QUADRADO_MONTAR_BLAH = 100;
+	this.TAMANHO_QUADRADO_MONTAR_BLAH = 65;
 
-	this.URL_SERVER = 'ws://192.168.0.5/Comunicacao';
+	this.URL_SERVER = 'ws://10.9.32.116:8000/Comunicacao';
 }
 
 var configuracoes = new Configuracoes();

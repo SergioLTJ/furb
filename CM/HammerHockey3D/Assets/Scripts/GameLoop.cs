@@ -13,34 +13,53 @@ namespace HammerHockey3D
         public float espacamentoTabuleiro;
 
         public TabuleiroCreator tabuleiroCreator;
-        public PerguntaBehavior UIPergunta;
 
         private ArrayList tabuleiro;
         public PlayerBehavior[] players = new PlayerBehavior[4];
+        public PerguntaBehavior[] perguntas = new PerguntaBehavior[4];
+        public Minigame[] minigames = new Minigame[4];
 
         public Color corMinigames;
         public Color corPergunta;
         public Color corInicio;
 
         // Funcionalidades
-        public void AvancaPlayer(int index)
+        public void AvancaPlayer(int index, int casas)
         {
-            players[index].avancarPlayer = true;
+            players[index].avancarPlayer = casas;
         }
 
-        public void MostraPergunta(string pergunta, string alt1, string alt2, string alt3, string alt4)
+        public void MostraPergunta(int index, string pergunta, string alt1, string alt2, string alt3, string alt4)
         {
-            UIPergunta.MostraPergunta(pergunta, alt1, alt2, alt3, alt4);
+            perguntas[index].MostraPergunta(pergunta, alt1, alt2, alt3, alt4);
         }
 
-        public void SelecionaResposta(int index)
+        public void SelecionaResposta(int index, int resposta)
         {
-            UIPergunta.SelecionaResposta(index);
+            perguntas[index].SelecionaResposta(resposta);
+        }
+
+        public void MostraErroAcerto(int index, bool acerto)
+        {
+            perguntas[index].MostraErroAcerto(acerto);
+        }
+
+        public bool DeveFinalizarPerguntas()
+        {
+            for (int i = 0; i < perguntas.Length; ++i)
+            {
+                if (perguntas[i].status == 1)
+                    return true;
+                else if (perguntas[i].status == 0)
+                    return false;
+            }
+            return true;
         }
 
         public void FinalizaPergunta()
         {
-            UIPergunta.FinalizaPergunta();
+            for (int i = 0; i < perguntas.Length; ++i )
+                perguntas[i].FinalizaPergunta();
         }
 
         // Use this for initialization
@@ -60,13 +79,27 @@ namespace HammerHockey3D
             players[2] = GameObject.Find("Jogador03").GetComponent<PlayerBehavior>();
             players[3] = GameObject.Find("Jogador04").GetComponent<PlayerBehavior>();
 
+            perguntas[0] = GameObject.Find("Pergunta01").GetComponent<PerguntaBehavior>();
+            perguntas[1] = GameObject.Find("Pergunta02").GetComponent<PerguntaBehavior>();
+            perguntas[2] = GameObject.Find("Pergunta03").GetComponent<PerguntaBehavior>();
+            perguntas[3] = GameObject.Find("Pergunta04").GetComponent<PerguntaBehavior>();
+
+            minigames[0] = GameObject.Find("Minigame01").GetComponent<Minigame>();
+            minigames[1] = GameObject.Find("Minigame02").GetComponent<Minigame>();
+            minigames[2] = GameObject.Find("Minigame03").GetComponent<Minigame>();
+            minigames[3] = GameObject.Find("Minigame04").GetComponent<Minigame>();
+
             for (int i = 0; i < players.Length; ++i)
+            {
                 players[i].SetCasaInicial(tabuleiroCreator.GetInicio());
+                minigames[i].SetCorPlayer(players[i].GetComponent<Renderer>().material.color);
+            }
         }
 
         void StartServidor()
         {
-            servidor = new WebSocketServer("ws://10.0.0.100:8000");
+            //servidor = new WebSocketServer("wss://0.0.0.0:8000");
+            servidor = new WebSocketServer(IPAddress.Any, 8000);
             servidor.AddWebSocketService<Comunicacao>("/Comunicacao", () => new Comunicacao() { gameLoop = this });
             servidor.Start();
         }

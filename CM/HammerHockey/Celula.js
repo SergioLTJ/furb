@@ -40,21 +40,11 @@ function Celula(x, y, ordem, evento) {
 			configuracoes.TAMANHO_CELULA, 
 			configuracoes.TAMANHO_CELULA
 		);
-
-		if (this.antecessor == null)
-		{
-			var imagem = document.getElementById('targetu');
-			contexto.drawImage(imagem, 0, 0, imagem.width, imagem.height,
-                               xTopoEsquerdoCelula, yTopoEsquerdoCelula, configuracoes.TAMANHO_CELULA, configuracoes.TAMANHO_CELULA);
-		}
-
-		if (this.antecessor != null)
-		{
-			contexto.fillStyle = 'black';
-			contexto.textAlign = 'center';
-			contexto.font = (this.evento != null ? configuracoes.TAMANHO_TEXTO_EVENTOS : configuracoes.TAMANHO_TEXTO_CELULAS) + ' Arial';
-			contexto.fillText(texto, xTopoEsquerdoCelula + configuracoes.TAMANHO_CELULA / 2, yTopoEsquerdoCelula + configuracoes.TAMANHO_CELULA / 2 + 3);
-		}
+		
+		contexto.fillStyle = 'black';
+		contexto.textAlign = 'center';
+		contexto.font = (this.evento != null ? configuracoes.TAMANHO_TEXTO_EVENTOS : configuracoes.TAMANHO_TEXTO_CELULAS) + ' Arial';
+		contexto.fillText(texto, xTopoEsquerdoCelula + configuracoes.TAMANHO_CELULA / 2, yTopoEsquerdoCelula + configuracoes.TAMANHO_CELULA / 2 + 3);
 		
 		contexto.restore();
 	}

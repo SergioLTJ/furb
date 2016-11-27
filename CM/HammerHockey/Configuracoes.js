@@ -19,7 +19,7 @@ function Configuracoes() {
 
 	this.TAMANHO_QUADRADO_MONTAR_BLAH = 65;
 
-	this.URL_SERVER = 'ws://10.9.32.116:8000/Comunicacao';
+	this.URL_SERVER = 'ws://192.168.0.5/Comunicacao';
 }
 
 var configuracoes = new Configuracoes();

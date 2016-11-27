@@ -130,7 +130,9 @@ function Jogo(contexto) {
 	{
 		if (!this.terminou)  
 		{			
-			requestAnimationFrame(this.step.bind(this));			
+			requestAnimationFrame(this.step.bind(this));
+			this.contexto.clearRect(Posicoes.TopoEsquerdo.x - 1, Posicoes.TopoEsquerdo.y - 1, Posicoes.BaseDireita.x - Posicoes.TopoEsquerdo.x + 2, Posicoes.BaseDireita.y - Posicoes.TopoEsquerdo.y + 2);		
+			this.contexto.drawImage(this.imagemJogo, Posicoes.TopoEsquerdo.x - 20, Posicoes.TopoEsquerdo.y - 10);
 			switch (this.modo) 
 			{
 				case ModoJogo.NORMAL:
@@ -145,9 +147,7 @@ function Jogo(contexto) {
 	}
 
 	this.desenharTabuleiroNormal = function() 
-	{
-		this.contexto.clearRect(Posicoes.TopoEsquerdo.x - 1, Posicoes.TopoEsquerdo.y - 1, Posicoes.BaseDireita.x - Posicoes.TopoEsquerdo.x + 2, Posicoes.BaseDireita.y - Posicoes.TopoEsquerdo.y + 2);		
-		this.contexto.drawImage(this.imagemJogo, Posicoes.TopoEsquerdo.x - 20, Posicoes.TopoEsquerdo.y - 10);
+	{		
 		this.tabuleiro.atualizar();
 		for (var i = 0; i < this.jogadores.length; i++) 
 		{

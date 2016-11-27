@@ -1,4 +1,5 @@
 $(document).ready(function () {
 	//new ClienteSocket();
-	new Jogo(document.getElementById('canvasJogo').getContext('2d')).iniciar();
+	new TelaInicial(document.getElementById('canvasJogo').getContext('2d'));
+	//new Jogo(document.getElementById('canvasJogo').getContext('2d')).iniciar();
 });

@@ -11,10 +11,6 @@ function ClienteSocket()
 		{
 			self.estaConectado = true;
   		};
-	
-  		this.socket.onmessage = function (e) 
-  		{
-  		};
 	}
 
 	this.moveuJogador = function(indiceJogador, quantidade)

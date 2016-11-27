@@ -33,6 +33,40 @@ function Jogo(contexto) {
 
 		var div = document.getElementById('divToc');
 
+		if (configuracoes.ATIVAR_EVENTOS_MOUSE)
+		{
+			div.addEventListener('mousedown', function(e) {
+				e.preventDefault();
+				
+				switch (self.modo)
+				{
+					case ModoJogo.NORMAL:
+						self.verificarCliqueNormal(e, self);
+						break;
+					case ModoJogo.PERGUNTA:
+					case ModoJogo.MINI_GAME:
+						self.verificarCliqueEvento(e, self);
+						break;
+					default:
+						break;
+				}
+			}, false);
+	
+			div.addEventListener('mousemove', function(e) {
+				e.preventDefault();
+	
+				if (self.modo == ModoJogo.MINI_GAME)
+					self.evento.verificarMovimento(e);
+			}, false);
+	
+			div.addEventListener('mouseup', function(e) {
+				e.preventDefault();
+	
+				if (self.modo == ModoJogo.MINI_GAME)
+					self.evento.verificarFinal(e);
+			}, false);
+		}
+
 		div.addEventListener('touchstart', function(e) 
 		{
 			e.preventDefault();
@@ -70,7 +104,7 @@ function Jogo(contexto) {
 					self.evento.verificarFinal(e.changedTouches[i]);
 		}, false);
 
-		this.jogadores[0].entrarTurno();		
+		this.jogadores[0].entrarTurno();			
 
 		this.step();
 	}

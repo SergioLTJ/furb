@@ -132,6 +132,7 @@ function Tabuleiro(jogo) {
 			pergunta = this.perguntas[Math.floor((Math.random() * 21))];
 		} while(pergunta.usada);
 
+		pergunta.usada = true;
 		return new Celula(k, j, i, pergunta.pergunta);
 	}
 
@@ -236,8 +237,7 @@ function Tabuleiro(jogo) {
 		new Resposta("ativar as glândulas anexas", false),
 		new Resposta("fazer com que o bolo alimentar caminhe para o reto para ser eliminado pelo ânus.", false),
 		new Resposta("fazer com que o bolo alimentar caminhe ao longo do tubo digestório, para que a digestão ocorra.", true)
-		], this.jogo), 'usada': false } );
-		
+		], this.jogo), 'usada': false } );		
 		
 		this.perguntas.push( { 'pergunta': new Pergunta("Ele movimenta, amassa e mexe o alimento. O suco gástrico é produzido aí:", [
 		new Resposta("pâncreas", false),

@@ -454,7 +454,7 @@ function Pergunta(texto, respostas, jogo)
 
 		for (var i = 0; i < this.jogo.jogadores.length; i++)
 		{
-			this.areas.push(new AreaJogadorPerguntas(texto, this.copiar(this.respostas), this.jogo.jogadores[i]))
+			this.areas.push(new AreaJogadorPerguntas(texto, this.copiar(this.respostas), this.jogo.jogadores[i]));
 		}
 
 		var perguntasPorJogador = [];

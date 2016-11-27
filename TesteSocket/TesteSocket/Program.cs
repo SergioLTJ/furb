@@ -10,6 +10,11 @@ namespace TesteSocket
 {
     public class Comunicacao : WebSocketBehavior
     {
+        protected override void OnOpen()
+        {
+            Console.WriteLine("ABRIU!");
+        }
+
         protected override void OnMessage(MessageEventArgs e)
         {
             var json = JObject.Parse(e.Data);
@@ -41,7 +46,7 @@ namespace TesteSocket
 
         private void MoveuParte(MoveuParte moveuParte)
         {
-            Console.WriteLine("MoveuParte");
+            Console.WriteLine("MoveuParte " + (int)moveuParte.parte);
         }
 
         private void AbriuTelaMontarCorpo(AbriuTelaMontarCorpo abriuTelaMontarCorpo)

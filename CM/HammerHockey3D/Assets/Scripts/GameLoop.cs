@@ -26,7 +26,7 @@ namespace HammerHockey3D
         // Funcionalidades
         public void AvancaPlayer(int index, int casas)
         {
-            players[index].avancarPlayer = casas + 1;
+            players[index].avancarPlayer = casas;
         }
 
         public void MostraPergunta(int index, string pergunta, string alt1, string alt2, string alt3)
@@ -114,10 +114,17 @@ namespace HammerHockey3D
             for (int i = 0; i < perguntas.Length; ++i)
             {
                 if (perguntas[i].status == 1)
+                {
+                    Debug.Log("TA CERTO");
                     return true;
+                }
                 else if (perguntas[i].status == 0)
+                {
+                    Debug.Log("N RESPONDIDA");
                     deve = false;
+                }
             }
+            Debug.Log("DEVE " + deve);
             return deve;
         }
 

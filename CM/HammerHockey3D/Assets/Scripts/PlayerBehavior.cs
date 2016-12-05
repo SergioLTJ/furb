@@ -49,6 +49,6 @@ public class PlayerBehavior : MonoBehaviour {
 
     public void SetCasaInicial(VerticeTabuleiro vertice)
     {
-        casaAtual = vertice;
+        casaAtual = vertice.proximo;
     }
 }

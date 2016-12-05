@@ -111,6 +111,7 @@ namespace Assets.Classes
 
         private void MoveuJogador(MoveuJogador moveuJogador)
         {
+            Debug.Log("Jogador " + moveuJogador.indice + " andou " + moveuJogador.quantidade);
             gameLoop.AvancaPlayer(moveuJogador.indice, moveuJogador.quantidade);
         }
 

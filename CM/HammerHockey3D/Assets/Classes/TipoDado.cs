@@ -16,5 +16,10 @@ namespace Classes
         ABRIU_TELA_MONTAR_CORPO = 4,
 
         MOVEU_PARTE = 5,
+
+        ENCAIXOU_PARTE = 6,
+
+        FIM_QUEBRA_CABECA = 7,
+
     }
 }

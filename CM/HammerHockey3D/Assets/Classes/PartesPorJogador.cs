@@ -6,7 +6,7 @@ namespace Classes
     public class PartesPorJogador
     {
        
-        public TipoParteCorpo[] partesCorpo { get; set; }
+        public int[] partesCorpo { get; set; }
 
        
         public int jogador { get; set; }

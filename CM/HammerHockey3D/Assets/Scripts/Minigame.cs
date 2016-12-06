@@ -3,7 +3,9 @@ using System.Collections;
 
 public class Minigame : MonoBehaviour {
 
-    public float distanciaEncaixe = 1.0f;
+    static float conversaoXY = 0.03926f / 2;
+    Vector2 origemRelativa = new Vector2(166.75f, 0); //new Vector2(8.5f, -13);
+
     public Color corEncaixe;
 
     public GameObject torso;
@@ -28,17 +30,39 @@ public class Minigame : MonoBehaviour {
     private Color corPulmao;
     private Color corIntestino;
 
+    public bool encaixouCerebro   = false;
+    public bool encaixouCoracao   = false;
+    public bool encaixouPulmao    = false;
+    public bool encaixouIntestino = false;
+
+    public bool mostraMinigame = false;
+
+    public Vector2 posCerebro  ;
+    public Vector2 posCoracao  ;
+    public Vector2 posPulmao   ;
+    public Vector2 posIntestino;
+
     // Funcionalidades
-    public void MostraMinigame(bool mostrar)
+    public void MostraMinigame()
     {
-        gameObject.SetActive(mostrar);
+        torso.SetActive(mostraMinigame);
+        cabeca.SetActive(mostraMinigame);
+        bracoD.SetActive(mostraMinigame);
+        bracoE.SetActive(mostraMinigame);
+        pernaD.SetActive(mostraMinigame);
+        pernaE.SetActive(mostraMinigame);
+
+        cerebro.SetActive(mostraMinigame);
+        coracao.SetActive(mostraMinigame);
+        pulmao.SetActive(mostraMinigame);
+        intestino.SetActive(mostraMinigame);
     }
 
-    public void MoveCerebro(Vector2 v)
+    public void MoveCerebro()
     {
-        Vector3 posicao = ToPosicaoLocal(v);
+        Vector3 posicao = ToPosicaoLocal(posCerebro);
 
-        if (Vector3.Distance(posicao, posicaoCerebro) < distanciaEncaixe)
+        if (encaixouCerebro)
         {
             posicao = posicaoCerebro;
             cerebro.GetComponent<Renderer>().material.color = corEncaixe;
@@ -51,11 +75,11 @@ public class Minigame : MonoBehaviour {
         cerebro.transform.position = posicao;
     }
 
-    public void MoveCoracao(Vector2 v)
+    public void MoveCoracao()
     {
-        Vector3 posicao = ToPosicaoLocal(v);
+        Vector3 posicao = ToPosicaoLocal(posCoracao);
 
-        if (Vector3.Distance(posicao, posicaoCoracao) < distanciaEncaixe)
+        if (encaixouCoracao)
         {
             posicao = posicaoCoracao;
             coracao.GetComponent<Renderer>().material.color = corEncaixe;
@@ -68,11 +92,11 @@ public class Minigame : MonoBehaviour {
         coracao.transform.position = posicao;
     }
 
-    public void MovePulmao(Vector2 v)
+    public void MovePulmao()
     {
-        Vector3 posicao = ToPosicaoLocal(v);
+        Vector3 posicao = ToPosicaoLocal(posPulmao);
 
-        if (Vector3.Distance(posicao, posicaoPulmao) < distanciaEncaixe)
+        if (encaixouPulmao)
         {
             posicao = posicaoPulmao;
             pulmao.GetComponent<Renderer>().material.color = corEncaixe;
@@ -85,11 +109,11 @@ public class Minigame : MonoBehaviour {
         pulmao.transform.position = posicao;
     }
 
-    public void MoveIntestino(Vector2 v)
+    public void MoveIntestino()
     {
-        Vector3 posicao = ToPosicaoLocal(v);
+        Vector3 posicao = ToPosicaoLocal(posIntestino);
 
-        if (Vector3.Distance(posicao, posicaoIntestino) < distanciaEncaixe)
+        if (encaixouIntestino)
         {
             posicao = posicaoIntestino;
             intestino.GetComponent<Renderer>().material.color = corEncaixe;
@@ -98,7 +122,6 @@ public class Minigame : MonoBehaviour {
         {
             intestino.GetComponent<Renderer>().material.color = corIntestino;
         }
-
 
         intestino.transform.position = posicao;
     }
@@ -120,21 +143,31 @@ public class Minigame : MonoBehaviour {
         posicaoPulmao       = pulmao.transform.position;
         posicaoIntestino    = intestino.transform.position;
 
+        posCerebro   = new Vector2(0, 0);
+        posCoracao   = new Vector2(0, 0);
+        posPulmao    = new Vector2(0, 0);
+        posIntestino = new Vector2(0, 0);
+
         corCerebro   = cerebro.GetComponent<Renderer>().material.color;
         corCoracao   = coracao.GetComponent<Renderer>().material.color;
         corPulmao    = pulmao.GetComponent<Renderer>().material.color;
         corIntestino = intestino.GetComponent<Renderer>().material.color;
 
-        MostraMinigame(false);
+        MostraMinigame();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+        MostraMinigame();
+
+        MoveCerebro();
+        MoveCoracao();
+        MovePulmao();
+        MoveIntestino();
 	}
 
     private Vector3 ToPosicaoLocal(Vector2 v)
     {
-        return new Vector3(v.x + posicaoCerebro.x, posicaoCerebro.y, v.y + posicaoCerebro.z);
+        return new Vector3(transform.position.x + ((v.x + origemRelativa.x) * conversaoXY), posicaoCerebro.y, transform.position.z + ((v.y + origemRelativa.y) * conversaoXY));
     }
 }

@@ -7,6 +7,17 @@ public class PerguntaBehavior : MonoBehaviour {
     public GameObject fundo;
     public GameObject separador;
 
+    string stringPergunta;
+    string stringAlt1;
+    string stringAlt2;
+    string stringAlt3;
+    string stringAlt4;
+
+    bool bAtivaPergunta = false;
+    bool bAtivaSelecao = false;
+
+    int indexSelecao = 0;
+
     public Text pergunta;
     public Text alt1;
     public Text alt2;
@@ -16,32 +27,58 @@ public class PerguntaBehavior : MonoBehaviour {
     public GameObject selecao;
     public int status = 0; // 1 = certo; 2 = errado
 
-    public void MostraPergunta(string pergunta, string alt1, string alt2, string alt3, string alt4)
+    public void MostraPergunta(string pergunta, string alt1, string alt2, string alt3)
     {
-        this.pergunta.text = pergunta;
+        stringPergunta = pergunta;
 
-        this.alt1.text = "1) " + alt1;
-        this.alt2.text = "2) " + alt2;
-        this.alt3.text = "3) " + alt3;
-        //this.alt4.text = "4) " + alt4;
+        stringAlt1 = "1) " + alt1;
+        stringAlt2 = "2) " + alt2;
+        stringAlt3 = "3) " + alt3;
 
-        AtivaDesativaPergunta(true);
+        bAtivaPergunta = true;
     }
 
     public void MostraErroAcerto(bool acerto)
     {
-        pergunta.text = acerto ? "ACERTOU!" : "ERROU!";
-        this.alt1.text = "";
-        this.alt2.text = "";
-        this.alt3.text = "";
-        this.alt4.text = "";
+        stringPergunta = acerto ? "ACERTOU!" : "ERROU!";
+        stringAlt1 = "";
+        stringAlt2 = "";
+        stringAlt3 = "";
 
         status = acerto ? 1 : 2;
     }
 
     public void SelecionaResposta(int indice)
     {
-        switch (indice)
+        indexSelecao = indice;
+
+        bAtivaSelecao = true;
+    }
+
+    public void FinalizaPergunta()
+    {
+        bAtivaPergunta = false;
+        bAtivaSelecao = false;
+    }
+
+	// Use this for initialization
+	void Start () {
+        AtivaDesativaPergunta();
+        AtivaDesativaSelecao();
+	}
+	
+	// Update is called once per frame
+	void Update () {
+        pergunta.text = stringPergunta;
+        alt1.text = stringAlt1;
+        alt2.text = stringAlt2;
+        alt3.text = stringAlt3;
+        alt4.text = stringAlt4;
+
+        AtivaDesativaPergunta();
+        AtivaDesativaSelecao();
+
+        switch (indexSelecao)
         {
             case 1:
                 selecao.transform.position = alt1.transform.position;
@@ -56,41 +93,22 @@ public class PerguntaBehavior : MonoBehaviour {
                 selecao.transform.position = alt4.transform.position;
                 break;
         }
-
-        AtivaDesativaSelecao(true);
-    }
-
-    public void FinalizaPergunta()
-    {
-        AtivaDesativaPergunta(false);
-        AtivaDesativaSelecao(false);
-    }
-
-	// Use this for initialization
-	void Start () {
-        AtivaDesativaPergunta(false);
-        AtivaDesativaSelecao(false);
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	    
 	}
 
-    void AtivaDesativaPergunta(bool ativar)
+    void AtivaDesativaPergunta()
     {
-        fundo.SetActive(ativar);
-        separador.SetActive(ativar);
+        fundo.SetActive(bAtivaPergunta);
+        separador.SetActive(bAtivaPergunta);
 
-        pergunta.gameObject.SetActive(ativar);
-        alt1.gameObject.SetActive(ativar);
-        alt2.gameObject.SetActive(ativar);
-        alt3.gameObject.SetActive(ativar);
-        alt4.gameObject.SetActive(ativar);        
+        pergunta.gameObject.SetActive(bAtivaPergunta);
+        alt1.gameObject.SetActive(bAtivaPergunta);
+        alt2.gameObject.SetActive(bAtivaPergunta);
+        alt3.gameObject.SetActive(bAtivaPergunta);
+        alt4.gameObject.SetActive(bAtivaPergunta);        
     }
 
-    void AtivaDesativaSelecao(bool ativar)
+    void AtivaDesativaSelecao()
     {
-        selecao.SetActive(ativar);
+        selecao.SetActive(bAtivaSelecao);
     }
 }

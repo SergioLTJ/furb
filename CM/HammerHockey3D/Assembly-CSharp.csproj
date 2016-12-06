@@ -48,6 +48,7 @@
      <Compile Include="Assets\Classes\AbriuTelaMontarCorpo.cs" />
      <Compile Include="Assets\Classes\ClicouConfirmarTelaPergunta.cs" />
      <Compile Include="Assets\Classes\CriouTelaPergunta.cs" />
+     <Compile Include="Assets\Classes\EncaixouParte.cs" />
      <Compile Include="Assets\Classes\GrafoTabuleiro.cs" />
      <Compile Include="Assets\Classes\MoveuJogador.cs" />
      <Compile Include="Assets\Classes\MoveuParte.cs" />

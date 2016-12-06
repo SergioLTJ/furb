@@ -12,7 +12,7 @@ namespace Classes
         public int jogador { get; set; }
 
        
-        public TipoParteCorpo parte { get; set; }
+        public int parte { get; set; }
 
        
         public double offsetX { get; set; }

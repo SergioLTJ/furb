@@ -49,7 +49,6 @@ namespace Assets.Classes
 
         public Vector3 GetPosicao()
         {
-            Debug.Log("Get Posicao: " + this.posicao);
             return new Vector3(posicao.x * ESPACAMENTO, 0, posicao.y * ESPACAMENTO);
         }
 

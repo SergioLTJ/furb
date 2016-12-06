@@ -50,18 +50,18 @@ function TelaInicial(contexto)
 		for (var i = 0; i < e.changedTouches.length; i++)
 		{
 			var evento = e.changedTouches[i];
-			evento.clientX -= 8;
-			evento.clientY -= 8;
+			evento.pageX -= 8;
+			evento.pageY -= 8;
 			this.verificarBotao(evento);
 		}
 	}
 
 	this.verificarBotao = function(e)
 	{
-		if (e.clientX > 660 &&
-			e.clientX < 1160 &&
-			e.clientY > 695 &&
-			e.clientY < 795)
+		if (e.pageX > 660 &&
+			e.pageX < 1160 &&
+			e.pageY > 695 &&
+			e.pageY < 795)
 		{
 			self.contexto.clearRect(0, 0, 1920, 1080);
 			self.div.removeEventListener('mousedown', self.verificarBotao);

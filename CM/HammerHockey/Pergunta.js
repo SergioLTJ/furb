@@ -492,6 +492,7 @@ function Pergunta(texto, respostas, jogo)
 					this.jogadorQueAcertou = jogadorQueAcertou;
 					this.tempoFinal = new Date().getTime();
 					this.terminou = true;
+					socket.moveuJogador(this.jogadorQueAcertou.posicao, 1);
 				}
 				else
 				{

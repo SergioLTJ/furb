@@ -104,9 +104,23 @@ function Jogo(contexto) {
 					self.evento.verificarFinal(e.changedTouches[i]);
 		}, false);
 
-		this.jogadores[0].entrarTurno();			
+		document.getElementById("btnPergunta").onclick = function() { self.irPara(TipoEvento.PERGUNTA) };
+		document.getElementById("btnMinigame").onclick = function() { self.irPara(TipoEvento.MINI_GAME) };
+
+		this.jogadores[0].entrarTurno();
 
 		this.step();
+	}
+
+	this.irPara = function(tipoEvento)
+	{
+		var jogador = this.jogadores[this.indiceJogadorAtual];
+		while(jogador.celulaAtual.evento == null ||
+			  jogador.celulaAtual.evento.tipoEvento != tipoEvento)
+		{
+			jogador.mover();
+		}
+		jogador.celulaAtual.onJogadorParouCelula(jogador);
 	}
 
 	this.verificarCliqueNormal = function(evento, jogo) {

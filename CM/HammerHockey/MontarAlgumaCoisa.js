@@ -53,7 +53,16 @@ function Quadrado(xCentro, yCentro, id)
 
 	this.enviarSocket = function(jogador)
 	{
-		socket.moveuParte(jogador, this.xAnterior - this.x, this.yAnterior - this.y, this.id);
+		var movimentoX = this.xAnterior - this.x;
+		var movimentoY = this.yAnterior - this.y;
+		
+		if (jogador.posicao == 0 ||
+			jogador.posicao == 1)
+		{
+			movimentoX = -movimentoX;
+		}
+
+		socket.moveuParte(jogador, movimentoX, movimentoY, this.id);
 	}
 
 	this.definirBoundingBox();
@@ -154,10 +163,11 @@ function AreaJogador(jogador)
 		if (this.jogador.posicao == 0 ||
 			this.jogador.posicao == 1)
 		{
-			this.areasControlaveis.push(new Quadrado(this.boundingBox.esquerda + metadeQuadrado + 80, this.boundingBox.cima + metadeQuadrado + 10, this.gerarId()));
-			this.areasControlaveis.push(new Quadrado((xCentro + this.boundingBox.esquerda) / 2 + 80, this.boundingBox.cima + metadeQuadrado + 10, this.gerarId()));
-			this.areasControlaveis.push(new Quadrado((xCentro + this.boundingBox.direita) / 2 - 80, this.boundingBox.cima + metadeQuadrado + 10, this.gerarId()));
 			this.areasControlaveis.push(new Quadrado(this.boundingBox.direita - metadeQuadrado - 80, this.boundingBox.cima + metadeQuadrado + 10, this.gerarId()));
+			this.areasControlaveis.push(new Quadrado((xCentro + this.boundingBox.direita) / 2 - 80, this.boundingBox.cima + metadeQuadrado + 10, this.gerarId()));
+			this.areasControlaveis.push(new Quadrado((xCentro + this.boundingBox.esquerda) / 2 + 80, this.boundingBox.cima + metadeQuadrado + 10, this.gerarId()));
+			this.areasControlaveis.push(new Quadrado(this.boundingBox.esquerda + metadeQuadrado + 80, this.boundingBox.cima + metadeQuadrado + 10, this.gerarId()));
+
 		}
 		else
 		{
@@ -231,6 +241,7 @@ function AreaJogador(jogador)
 			{
 				area.viva = false;
 				this.areasCorretas[i].preenchida = true;
+				socket.encaixouParte(this.jogador.posicao, this.areasCorretas[i].id);
 			}
 		}
 		
@@ -332,6 +343,7 @@ function MontarAlgumaCoisa(jogo)
 			if ((new Date().getTime() - this.tempoFinal) > 4000)
 			{
 				var jogador = this.jogadores[this.jogadorVencedor];
+				socket.moveuJogador(jogador.posicao, 3);
 				jogador.mover();
 				jogador.mover();
 				jogador.mover();
@@ -346,8 +358,8 @@ function MontarAlgumaCoisa(jogo)
 		contexto.fillStyle = 'white';
 		contexto.strokeStyle = 'black';
 		contexto.lineWidth = 2;
-		contexto.fillRect(Posicoes.Centro.x - 185, Posicoes.Centro.y - 45, 370, 90);
-		contexto.strokeRect(Posicoes.Centro.x - 185, Posicoes.Centro.y - 45, 370, 90);
+		contexto.fillRect(Posicoes.Centro.x - 235, Posicoes.Centro.y - 45, 420, 90);
+		contexto.strokeRect(Posicoes.Centro.x - 235, Posicoes.Centro.y - 45, 420, 90);
 		contexto.lineWidth = 1;
 		contexto.fillStyle = 'black';
 		contexto.font = '24px Arial bold';
@@ -393,6 +405,7 @@ function MontarAlgumaCoisa(jogo)
 			var jogadorVencedor = this.areas[i].verificarFimToque(evento);
 			if (jogadorVencedor > -1)
 			{
+				socket.finalizouParte();
 				this.terminou = true;
 				this.tempoFinal = new Date().getTime();
 				this.jogadorVencedor = jogadorVencedor;

@@ -3,6 +3,7 @@ function Configuracoes() {
 	this.TAMANHO_JOGADOR = (this.TAMANHO_CELULA / 4) - 3;
 
 	this.ATIVAR_EVENTOS_MOUSE = true;
+	this.ATIVAR_SOCKET = true;
 
 	this.DISTANCIA_MENU_TABULEIRO = 10;
 	this.ALTURA_MENU = 50;
@@ -19,7 +20,7 @@ function Configuracoes() {
 
 	this.TAMANHO_QUADRADO_MONTAR_BLAH = 65;
 
-	this.URL_SERVER = 'ws://192.168.0.5/Comunicacao';
+	this.URL_SERVER = 'ws://10.9.32.116:8000/Comunicacao';
 }
 
 var configuracoes = new Configuracoes();

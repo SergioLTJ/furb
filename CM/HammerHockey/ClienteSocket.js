@@ -1,3 +1,14 @@
+function ClienteSocketFake()
+{
+	this.moveuJogador = function(indiceJogador, quantidade)	{ }
+	this.criouTelaPergunta = function(perguntasPorJogador) { }
+	this.selecionouItemPergunta = function(jogador, indiceResposta) { }
+	this.clicouConfirmarTelaPergunta = function(jogador, estaCorreto) {	}
+	this.abriuTelaMontarCorpo = function(partesPorJogador) { }
+	this.moveuParte = function(jogador, offsetX, offsetY, parte) { }
+	this.encaixouParte = function(jogador, parte) { }	
+}
+
 function ClienteSocket()
 {
 	this.socket = new WebSocket(configuracoes.URL_SERVER);
@@ -43,7 +54,17 @@ function ClienteSocket()
 		this.socket.send(JSON.stringify(new MoveuParte(jogador, offsetX, offsetY, parte)));		
 	}
 
+	this.encaixouParte = function(jogador, parte)
+	{
+		this.socket.send(JSON.stringify( { 'tipo': 6, 'jogador': jogador, 'parte': parte } ));
+	}
+	
+	this.finalizouParte = function()
+	{
+		this.socket.send(JSON.stringify( { 'tipo': 7 }));
+	}
+
 	this.ligarEventos();
 }
 
-socket = new ClienteSocket();
+socket = configuracoes.ATIVAR_SOCKET ? new ClienteSocket() : new ClienteSocketFake();

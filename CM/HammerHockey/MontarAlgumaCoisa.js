@@ -363,8 +363,8 @@ function MontarAlgumaCoisa(jogo)
 		contexto.lineWidth = 1;
 		contexto.fillStyle = 'black';
 		contexto.font = '24px Arial bold';
-		contexto.fillText('A equipe ' + (this.jogadorVencedor + 1) + ' venceu!', Posicoes.Centro.x - 175, Posicoes.Centro.y - 17);
-		contexto.fillText('Essa equipe avançará três casas.', Posicoes.Centro.x - 175, Posicoes.Centro.y + 20);
+		contexto.fillText('A equipe ' + (this.jogadorVencedor + 1) + ' venceu!', Posicoes.Centro.x - 215, Posicoes.Centro.y - 17);
+		contexto.fillText('Essa equipe avançará três casas.', Posicoes.Centro.x - 215, Posicoes.Centro.y + 20);
 		contexto.restore();
 	}
 

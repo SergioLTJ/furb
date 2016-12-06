@@ -7,6 +7,7 @@ function ClienteSocketFake()
 	this.abriuTelaMontarCorpo = function(partesPorJogador) { }
 	this.moveuParte = function(jogador, offsetX, offsetY, parte) { }
 	this.encaixouParte = function(jogador, parte) { }	
+	this.finalizouParte = function() { }
 }
 
 function ClienteSocket()
